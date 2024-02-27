@@ -1,0 +1,32 @@
+.report-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-card-footer {
+  display: flex;
+  margin-top: 8px;
+}
+
+.section-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.report-card-footer-button-wrapper {
+  gap: 8px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.css-gcc2o7-MuiButton-startIcon {
+  width: 18px;
+}

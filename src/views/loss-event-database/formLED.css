@@ -1,0 +1,39 @@
+.form-sheet {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title {
+  display: flex;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.form-input-wrapper {
+  gap: 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.css-17vuo9n-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+  -webkit-text-fill-color: black !important;
+}
+
+.button-wrapper {
+  gap: 16px;
+  display: flex;
+  margin-top: 16px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.form-sheet ::-webkit-scrollbar {
+  height: 10px;
+}
+
+.form-sheet ::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 10px;
+}

@@ -1,0 +1,20 @@
+.form-sheet {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-title {
+  display: flex;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.detail-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.css-gcc2o7-MuiButton-startIcon {
+  width: 18px;
+}
