@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useNavigate } from 'react-router';
 import { validationSchema } from './validationForm';
 import { IconX, IconCloudUpload } from '@tabler/icons';
 import {
   Card,
+  Alert,
   Table,
   Paper,
   Button,
   Divider,
+  Snackbar,
   TableRow,
   TableBody,
   TableCell,
@@ -41,10 +43,9 @@ const BCrumb = [
 
 const EditFormLED = (props) => {
   const navigate = useNavigate();
-  const { masterData, getDropdown } = props;
+  const { masterData, getDropdown, createFormLed } = props;
 
-  const { createFormLed } = props;
-
+  const [snackOpen, setsnackOpen] = useState(false);
   const [rows, setRows] = useState([
     {
       PIC: '',
@@ -102,7 +103,7 @@ const EditFormLED = (props) => {
     initialValues: {
       impact: '',
       caseCause: 0,
-      rootCause: '',
+      brief: '',
       actionPlan: [
         {
           PIC: '',
@@ -168,15 +169,35 @@ const EditFormLED = (props) => {
   };
 
   const deleteRowHandle = (index) => {
-    const newRows = rows.filter((item, i) => i !== index);
-    const newForm = formik.values.actionPlan.filter((item, i) => i !== index);
-    setRows(newRows);
-    formik.setFieldValue('actionPlan', newForm);
+    if (rows.length > 1) {
+      const newRows = rows.filter((item, i) => i !== index);
+      const newForm = formik.values.actionPlan.filter((item, i) => i !== index);
+      setRows(newRows);
+      formik.setFieldValue('actionPlan', newForm);
+    } else {
+      setsnackOpen(true);
+    }
+  };
+
+  const closeSnackBar = () => {
+    setsnackOpen(false);
   };
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
       <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
+      <Snackbar
+        key="top center"
+        open={snackOpen}
+        onClose={closeSnackBar}
+        message="Setiap laporan harus memiliki setidaknya 1 action plan"
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={4000}
+      >
+        <Alert severity="error" variant="filled">
+          Setiap laporan harus memiliki Action Plan!
+        </Alert>
+      </Snackbar>
 
       <DashboardCard>
         {masterData?.isLoading ? (
@@ -243,18 +264,18 @@ const EditFormLED = (props) => {
 
             <div className="form-input-wrapper">
               <Typography variant="body1" sx={{ width: '20%' }}>
-                Akar permasalahan
+                Konologi singkat
               </Typography>
 
               <TextField
                 sx={{ width: '80%' }}
-                id="rootCause"
-                value={formik.values.rootCause}
-                error={formik.touched.rootCause && Boolean(formik.errors.rootCause)}
+                id="brief"
+                value={formik.values.brief}
+                error={formik.touched.brief && Boolean(formik.errors.brief)}
                 onBlur={formik.handleBlur}
                 variant="outlined"
                 onChange={formik.handleChange}
-                helperText={formik.touched.rootCause && formik.errors.rootCause}
+                helperText={formik.touched.brief && formik.errors.brief}
                 placeholder="akar masalah dari kejadian tersebut"
               />
             </div>
@@ -320,7 +341,7 @@ const EditFormLED = (props) => {
                 onBlur={formik.handleBlur}
                 variant="outlined"
                 onChange={formik.handleChange}
-                rows={4}
+                rows={3}
                 helperText={formik.touched.impact && formik.errors.impact}
                 placeholder="dampak dari kejadian tersebut"
                 multiline

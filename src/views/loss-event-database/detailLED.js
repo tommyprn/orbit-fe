@@ -61,52 +61,6 @@ const DetailLED = (props) => {
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
 
-  const downloadFile = (name) => {};
-
-  const dummy = [
-    {
-      actionPlan: 'Dendam Di Hatikkkk',
-      email: 'suarahati@gmail.com',
-      id: 14,
-      namaFile: null,
-      penanggungJawab: 'Kasih Dong',
-      targetPenyelesaian: '05-12-2023',
-      unitKerjaEntity: {
-        idUnitKerja: 1,
-        isEnable: true,
-        kodeUnitKerja: 'BOC',
-        namaUnitKerja: 'BOA',
-      },
-    },
-    {
-      actionPlan: 'Dendam Di Hatikkkk',
-      email: 'suarahati@gmail.com',
-      id: 14,
-      namaFile: null,
-      penanggungJawab: 'Kasih Dong',
-      targetPenyelesaian: '05-12-2023',
-      unitKerjaEntity: {
-        idUnitKerja: 1,
-        isEnable: true,
-        kodeUnitKerja: 'BOC',
-        namaUnitKerja: 'BOA',
-      },
-    },
-    {
-      actionPlan: 'Dendam Di Hatikkkk',
-      email: 'suarahati@gmail.com',
-      id: 14,
-      namaFile: null,
-      penanggungJawab: 'Kasih Dong',
-      targetPenyelesaian: '05-12-2023',
-      unitKerjaEntity: {
-        idUnitKerja: 1,
-        isEnable: true,
-        kodeUnitKerja: 'BOC',
-        namaUnitKerja: 'BOA',
-      },
-    },
-  ];
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
       <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
@@ -350,11 +304,14 @@ const DetailLED = (props) => {
                             </TableCell>
                             <TableCell>
                               {row?.namaFile ? (
-                                <Button
-                                  startIcon={<IconDownload />}
-                                  onClick={() => downloadFile(row.namaFile)}
-                                >
-                                  {row.namaFile}
+                                <Button startIcon={<IconDownload />}>
+                                  <a
+                                    id={row.id}
+                                    href={`http://10.80.240.45:1933/api/v1/download-lampiran?id=${row.id}`}
+                                    // target="_blank"
+                                  >
+                                    {row.namaFile}
+                                  </a>
                                 </Button>
                               ) : (
                                 <Typography variant="body1">Tidak ada File</Typography>

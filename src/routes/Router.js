@@ -7,7 +7,7 @@ import Loadable from '../layouts/full/shared/loadable/Loadable';
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 
 /* ****Master Pages***** */
-const SamplePage = Loadable(lazy(() => import('../views/sample-page/SamplePage')));
+const Dashboard = Loadable(lazy(() => import('../views/dashboard/dashboard')));
 const GLNumberPage = Loadable(lazy(() => import('../views/master/costCentre')));
 const WorkUnitPage = Loadable(lazy(() => import('../views/master/workUnit')));
 const BaselOnePage = Loadable(lazy(() => import('../views/master/caseCategory/levelOne')));
@@ -35,7 +35,7 @@ const Router = [
     path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/', exact: true, element: <SamplePage /> },
+      { path: '/', exact: true, element: <Dashboard /> },
 
       // ============================== MASTER ROUTES =====================================
       { path: '/master/workUnit', exact: true, element: <WorkUnitPage /> },

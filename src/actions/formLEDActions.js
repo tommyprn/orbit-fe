@@ -22,7 +22,9 @@ export const fetchFormLedFailure = (error) => ({
 
 export const createFormLed = (payload) => {
   const queryString = stringify(
-    {},
+    {
+      // nip: payload?.nip,
+    },
     {
       arrayFormat: 'comma',
       encode: false,
@@ -38,20 +40,20 @@ export const createFormLed = (payload) => {
 
     const formData = new FormData();
 
-    formData.append('dampak', payload.impact);
-    formData.append('penyebabKejadian', payload.caseCause);
-    formData.append('rootPenyebabKejadian', payload.rootCause);
-    formData.append('statusKejadian', payload.caseStatus);
     formData.append('ssl', payload.costCentre);
+    formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
-    formData.append('tanggalLapor', payload.reportDate);
-    formData.append('nominalRealisasiKerugian', payload.actualLoss);
-    formData.append('tanggalKejadian', payload.incidentDate);
     formData.append('aktivitas', payload.caseCategory);
-    formData.append('potensiKerugian', payload.potentialLoss);
-    formData.append('tanggalIdentifikasi', payload.identifiedDate);
-    formData.append('nominalRecovery', payload.recoveryAmount);
+    formData.append('tanggalLapor', payload.reportDate);
     formData.append('recoverySource', payload.recoveryAmount);
+    formData.append('statusKejadian', payload.caseStatus);
+    formData.append('tanggalKejadian', payload.incidentDate);
+    formData.append('potensiKerugian', payload.potentialLoss);
+    formData.append('nominalRecovery', payload.recoveryAmount);
+    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('tanggalIdentifikasi', payload.identifiedDate);
+    formData.append('kronologiSingkat', payload.brief);
+    formData.append('nominalRealisasiKerugian', payload.actualLoss);
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
         if (actionKey === 'file' && actionValue !== '') {
@@ -73,6 +75,76 @@ export const createFormLed = (payload) => {
     try {
       const res = await fetch(API_URL + `save-form-led?` + queryString, {
         method: 'POST',
+        headers: requestHeaders,
+        body: formData,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchFormLedSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchFormLedFailure(err));
+    }
+  };
+};
+
+export const editFormLed = (payload) => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchFormLedStart());
+
+    const requestHeaders = {
+      Authorization: 'Bearer ac',
+    };
+
+    const formData = new FormData();
+    formData.append('idLaporan', payload.id);
+    formData.append('dampak', payload.impact);
+    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('rootPenyebabKejadian', payload.rootCause);
+    formData.append('statusKejadian', payload.caseStatus);
+    formData.append('ssl', payload.costCentre);
+    formData.append('kronologi', payload.chronology);
+    formData.append('tanggalLapor', payload.reportDate);
+    formData.append('nominalRealisasiKerugian', payload.actualLoss);
+    formData.append('tanggalKejadian', payload.incidentDate);
+    formData.append('aktivitas', payload.caseCategory);
+    formData.append('potensiKerugian', payload.potentialLoss);
+    formData.append('tanggalIdentifikasi', payload.identifiedDate);
+    formData.append('nominalRecovery', payload.recoveryAmount);
+    formData.append('recoverySource', payload.recoverySource);
+    payload.actionPlan.forEach((action, index) => {
+      Object.entries(action).forEach(([actionKey, actionValue]) => {
+        if (actionKey === 'file' && typeof actionValue !== 'string') {
+          formData.append(`actionPlans[${index}].multipartFile`, actionValue);
+        } else if (actionKey === 'email') {
+          formData.append(`actionPlans[${index}].email`, actionValue);
+        } else if (actionKey === 'plan') {
+          formData.append(`actionPlans[${index}].actionPlan`, actionValue);
+        } else if (actionKey === 'targetDate') {
+          formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
+        } else if (actionKey === 'workUnit') {
+          formData.append(`actionPlans[${index}].unitKerja`, actionValue.id);
+        } else if (actionKey === 'PIC') {
+          formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
+        } else if (actionKey === 'id') {
+          formData.append(`actionPlans[${index}].idActionPlan`, actionValue);
+        }
+      });
+    });
+    try {
+      const res = await fetch(API_URL + `update-form-led?` + queryString, {
+        method: 'PUT',
         headers: requestHeaders,
         body: formData,
       });
@@ -191,6 +263,7 @@ export const getOneFormLed = (id) => {
   const queryString = stringify(
     {
       id,
+      // nip: payload?.nip,
     },
     {
       arrayFormat: 'comma',
@@ -212,6 +285,7 @@ export const getOneFormLed = (id) => {
         headers: requestHeaders,
       });
       const responseJSON = await res.json();
+
       if (res.status === 200) {
         dispatch(fetchOneFormLedSuccess(responseJSON));
       }

@@ -14,8 +14,8 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { getAllList } from 'src/actions/formLEDActions';
-import { IconFileDescription, IconPencil } from '@tabler/icons';
+import { getAllInbox } from 'src/actions/formLEDActions';
+import { IconFileDescription } from '@tabler/icons';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -23,12 +23,12 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
-import './listLED.css';
+import './inboxLED.css';
 
 const BCrumb = [
   {
     title:
-      'Pada halaman ini anda dapat melihat semua laporan yang sudah dibuat dan saat ini sedang membutuhkan persetujuan/ perubahan oleh user lain',
+      'Pada halaman ini anda dapat melihat seluruh laporan yang telah dibuat dan membutuhkan persetujuan/ perubahan dari user',
   },
 ];
 
@@ -43,7 +43,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ListLED = (props) => {
-  const { LED, getAllList } = props;
+  const { LED, getAllInbox } = props;
   const navigation = useNavigate();
   const user = JSON.parse(localStorage.getItem('history'));
 
@@ -53,16 +53,12 @@ const ListLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getAllList({ page, perPage: rowsPerPage }, keyword, user.role);
+      await getAllInbox({ page, perPage: rowsPerPage }, keyword, user.role);
     })();
   }, [page, keyword, rowsPerPage]);
 
   const onDetail = (id) => {
     navigation(`/LED/detailReport/${id}`);
-  };
-
-  const onEdit = (id) => {
-    navigation(`/LED/editReport/${id}`);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -81,8 +77,8 @@ const ListLED = (props) => {
 
   const data = LED.LED;
   return (
-    <PageContainer title="List" description="List LED Page">
-      <Breadcrumb title="List" items={BCrumb} />
+    <PageContainer title="Inbox" description="Inbox LED Page">
+      <Breadcrumb title="Inbox" items={BCrumb} />
 
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
@@ -123,24 +119,12 @@ const ListLED = (props) => {
                       <TableCell>{row.statusLaporan.nama}</TableCell>
                       <TableCell>
                         <Button
-                          sx={{ marginRight: '8px' }}
                           size="small"
                           color={'primary'}
                           variant="contained"
                           startIcon={<IconFileDescription />}
                           onClick={() => {
                             onDetail(row.id);
-                          }}
-                        >
-                          {'Detail'}
-                        </Button>
-                        <Button
-                          size="small"
-                          color="warning"
-                          variant="contained"
-                          startIcon={<IconPencil />}
-                          onClick={() => {
-                            onEdit(row.id);
                           }}
                         >
                           {'Detail'}
@@ -191,7 +175,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllList: (pagination, keyword, role) => dispatch(getAllList(pagination, keyword, role)),
+    getAllInbox: (pagination, keyword, role) => dispatch(getAllInbox(pagination, keyword, role)),
   };
 };
 

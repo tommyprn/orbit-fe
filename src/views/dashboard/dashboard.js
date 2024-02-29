@@ -23,12 +23,12 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
-import './inboxLED.css';
+import '../loss-event-database/inboxLED.css';
 
 const BCrumb = [
   {
     title:
-      'Pada halaman ini anda dapat melihat semua laporan yang sudah dibuat dan saat ini sedang membutuhkan persetujuan/ perubahan oleh user lain',
+      'Pada halaman ini anda dapat melihat seluruh laporan yang membutuhkan perubahan/persetujuan dari anda',
   },
 ];
 
@@ -42,7 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const InboxLED = (props) => {
+const Dashboard = (props) => {
   const { LED, getAllList } = props;
   const navigation = useNavigate();
   const user = JSON.parse(localStorage.getItem('history'));
@@ -81,8 +81,8 @@ const InboxLED = (props) => {
 
   const data = LED.LED;
   return (
-    <PageContainer title="List" description="List LED Page">
-      <Breadcrumb title="List" items={BCrumb} />
+    <PageContainer title="Dashboard" description="Dashboard Page">
+      <Breadcrumb title="Dashboard" items={BCrumb} />
 
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
@@ -195,4 +195,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InboxLED);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
