@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './quill-text.css';
 
 const QuillTextField = (props) => {
-  const { id, value, onChange, formik, helperText } = props;
+  const { id, value, onChange, isError, helperText } = props;
   const [text, setText] = useState(value);
 
   const handleQuillChange = (content) => {
@@ -15,7 +15,11 @@ const QuillTextField = (props) => {
     }
   };
 
-  const error = formik.values[`${id}`] === '<p><br></p>' || Boolean(formik.errors[`${id}`]);
+  const error = value === '<p><br></p>' || Boolean(isError[`${id}`]);
+
+  useEffect(() => {
+    setText(value);
+  }, [value]);
 
   return (
     <div className="quill-text-container">

@@ -160,7 +160,7 @@ export const editFormLed = (payload) => {
   };
 };
 
-export const getAllList = (pagination, keyword, role) => {
+export const getAllInbox = (pagination, keyword, role) => {
   const queryString = stringify(
     {
       role: role,
@@ -200,7 +200,7 @@ export const getAllList = (pagination, keyword, role) => {
   };
 };
 
-export const getAllInbox = (pagination, keyword, role) => {
+export const getAllList = (pagination, keyword, role) => {
   const queryString = stringify(
     {
       role: role,

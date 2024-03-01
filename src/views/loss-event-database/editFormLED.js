@@ -34,6 +34,7 @@ import Spinner from '../spinner/Spinner';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import QuillTextField from 'src/components/quil-text/quill-text';
 
 const BCrumb = [
   {
@@ -87,6 +88,13 @@ const EditFormLED = (props) => {
   }, [getDropdown, getOneFormLed, params]);
 
   useEffect(() => {
+    const newData = masterData?.caseCategory?.levelThree?.data?.find((item) => {
+      return item.id === caseCategoryValue.id;
+    });
+
+    setSelectedCategory(newData);
+  }, [caseCategoryValue]);
+  useEffect(() => {
     if (dataLaporan) {
       setCostCentreValue({
         id: dataLaporan?.sslEntity?.id,
@@ -114,14 +122,6 @@ const EditFormLED = (props) => {
       setWorkUnitValue(newData);
     }
   }, [dataLaporan, dataActionPlan]);
-
-  useEffect(() => {
-    const newData = masterData?.caseCategory?.levelThree?.data?.find((item) => {
-      return item.id === caseCategoryValue.id;
-    });
-
-    setSelectedCategory(newData);
-  }, [caseCategoryValue]);
 
   const formik = useFormik({
     initialValues: {
@@ -189,7 +189,7 @@ const EditFormLED = (props) => {
     navigate(-1);
   };
 
-  const RecordedView = () => {
+  const recordedView = () => {
     return (
       <>
         <div className="form-input-wrapper">
@@ -231,18 +231,12 @@ const EditFormLED = (props) => {
             Kronologi
           </Typography>
 
-          <TextField
-            sx={{ width: '80%' }}
+          <QuillTextField
             id="chronology"
             value={formik.values.chronology}
-            error={formik.touched.chronology && Boolean(formik.errors.chronology)}
-            onBlur={formik.handleBlur}
-            variant="outlined"
-            rows={3}
-            onChange={formik.handleChange}
-            helperText={formik.touched.chronology && formik.errors.chronology}
-            placeholder="kronologi kejadian"
-            multiline
+            isError={formik.errors}
+            onChange={(val) => formik.setFieldValue('chronology', val)}
+            helperText="kronologi kejadian wajib diisi"
           />
         </div>
 
@@ -322,16 +316,12 @@ const EditFormLED = (props) => {
             Dampak
           </Typography>
 
-          <TextField
-            sx={{ width: '80%' }}
+          <QuillTextField
             id="impact"
             value={formik.values.impact}
-            error={formik.touched.impact && Boolean(formik.errors.impact)}
-            onBlur={formik.handleBlur}
-            variant="outlined"
-            onChange={formik.handleChange}
-            helperText={formik.touched.impact && formik.errors.impact}
-            placeholder="dampak dari kejadian tersebut"
+            isError={formik.errors}
+            onChange={(val) => formik.setFieldValue('impact', val)}
+            helperText="dampak kejadian wajib diisi"
           />
         </div>
 
@@ -582,7 +572,7 @@ const EditFormLED = (props) => {
     );
   };
 
-  const RecordPlanView = (index) => {
+  const recordPlanView = (index) => {
     return (
       <>
         <TableCell>
@@ -697,7 +687,7 @@ const EditFormLED = (props) => {
     );
   };
 
-  const OnProgressView = () => {
+  const onProgressView = () => {
     return (
       <>
         <>
@@ -723,9 +713,12 @@ const EditFormLED = (props) => {
             <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
               Kronologi singkat
             </Typography>
-            <Typography variant="body1" sx={{ width: '80%' }}>
-              {dataLaporan?.rootPenyebabKejadian}
-            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{ width: '80%' }}
+              dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologiSingkat }}
+            />
           </div>
 
           <div className="detail-wrapper">
@@ -759,9 +752,11 @@ const EditFormLED = (props) => {
             <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
               Dampak
             </Typography>
-            <Typography variant="body1" sx={{ width: '80%' }}>
-              {dataLaporan?.dampak}
-            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ width: '80%' }}
+              dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
+            />
           </div>
 
           <div className="detail-wrapper">
@@ -867,7 +862,7 @@ const EditFormLED = (props) => {
     );
   };
 
-  const OnProgressPlanView = (row) => {
+  const onProgressPlanView = (row) => {
     return (
       <>
         <TableCell>
@@ -905,11 +900,9 @@ const EditFormLED = (props) => {
               <Typography variant="h4">Incident Number: {dataLaporan?.idLaporan}</Typography>
             </div>
 
-            {dataLaporan?.statusLaporanEntity?.nama === 'Recorded' ? (
-              <RecordedView />
-            ) : (
-              <OnProgressView />
-            )}
+            {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
+              ? recordedView()
+              : onProgressView()}
 
             <Divider sx={{ marginTop: 'px' }} />
             <Card
@@ -962,8 +955,8 @@ const EditFormLED = (props) => {
                           >
                             <TableCell>{index + 1}</TableCell>
                             {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
-                              ? RecordPlanView(index)
-                              : OnProgressPlanView(row)}
+                              ? recordPlanView(index)
+                              : onProgressPlanView(row)}
                             <TableCell>
                               {
                                 <Button

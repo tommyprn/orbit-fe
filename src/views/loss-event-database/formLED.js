@@ -251,9 +251,8 @@ const EditFormLED = (props) => {
 
               <QuillTextField
                 id="chronology"
-                label="Enter Text"
                 value={formik.values.chronology}
-                formik={formik}
+                isError={formik.errors}
                 onChange={(val) => formik.setFieldValue('chronology', val)}
                 helperText="kronologi kejadian wajib diisi"
               />
@@ -332,9 +331,8 @@ const EditFormLED = (props) => {
 
               <QuillTextField
                 id="impact"
-                label="Enter Text"
                 value={formik.values.impact}
-                formik={formik}
+                isError={formik.errors}
                 onChange={(val) => formik.setFieldValue('impact', val)}
                 helperText="dampak kejadian wajib diisi"
               />
