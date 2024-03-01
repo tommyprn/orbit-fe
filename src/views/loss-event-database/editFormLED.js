@@ -704,9 +704,12 @@ const EditFormLED = (props) => {
             <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
               Kronologi{' '}
             </Typography>
-            <Typography variant="body1" sx={{ width: '80%' }}>
-              {dataLaporan?.kronologi}
-            </Typography>
+
+            <Typography
+              variant="body1"
+              sx={{ width: '80%' }}
+              dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+            />
           </div>
 
           <div className="detail-wrapper">
@@ -714,11 +717,9 @@ const EditFormLED = (props) => {
               Kronologi singkat
             </Typography>
 
-            <Typography
-              variant="body1"
-              sx={{ width: '80%' }}
-              dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologiSingkat }}
-            />
+            <Typography variant="body1" sx={{ width: '80%' }}>
+              {dataLaporan?.kronologiSingkat}
+            </Typography>
           </div>
 
           <div className="detail-wrapper">
@@ -900,10 +901,10 @@ const EditFormLED = (props) => {
               <Typography variant="h4">Incident Number: {dataLaporan?.idLaporan}</Typography>
             </div>
 
-            {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
+            {/* {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
               ? recordedView()
-              : onProgressView()}
-
+              : onProgressView()} */}
+            {onProgressView()}
             <Divider sx={{ marginTop: 'px' }} />
             <Card
               elevation={0}
@@ -954,9 +955,10 @@ const EditFormLED = (props) => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell>{index + 1}</TableCell>
-                            {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
+                            {/* {dataLaporan?.statusLaporanEntity?.nama === 'Recorded'
                               ? recordPlanView(index)
-                              : onProgressPlanView(row)}
+                              : onProgressPlanView(row)} */}
+                            {onProgressPlanView(row)}
                             <TableCell>
                               {
                                 <Button
