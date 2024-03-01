@@ -1,0 +1,28 @@
+.ql-toolbar {
+  border-radius: 7px 7px 0 0 !important;
+  border-color: #e3e8f1 !important;
+}
+
+.ql-container {
+  border-radius: 0 0 7px 7px !important;
+  border-color: #e3e8f1 !important;
+}
+
+.helper-text {
+  color: #fa896b;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.66;
+  text-align: left;
+  margin-top: 3px;
+  margin-right: 14px;
+  margin-bottom: 0;
+  margin-left: 14px;
+}
+
+.quill-text-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}

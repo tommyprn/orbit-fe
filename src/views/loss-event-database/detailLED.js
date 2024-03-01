@@ -58,8 +58,18 @@ const DetailLED = (props) => {
   const backHandler = () => {
     navigate(-1);
   };
+
+  const domParser = (htmlString) => {
+    const parser = new DOMParser();
+    if (htmlString) {
+      const html = parser?.parseFromString(htmlString, 'text/html');
+      return html?.body;
+    }
+  };
+
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
+  console.log(dataLaporan?.kronologi);
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -88,9 +98,11 @@ const DetailLED = (props) => {
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                   Kronologi{' '}
                 </Typography>
-                <Typography variant="body1" sx={{ width: '80%' }}>
-                  {dataLaporan?.kronologi}
-                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ width: '80%' }}
+                  dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+                />
               </div>
 
               <div className="detail-wrapper">
@@ -133,9 +145,12 @@ const DetailLED = (props) => {
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                   Dampak
                 </Typography>
-                <Typography variant="body1" sx={{ width: '80%' }}>
-                  {dataLaporan?.dampak}
-                </Typography>
+
+                <Typography
+                  variant="body1"
+                  sx={{ width: '80%' }}
+                  dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
+                />
               </div>
 
               <div className="detail-wrapper">

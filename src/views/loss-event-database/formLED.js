@@ -34,6 +34,7 @@ import Spinner from '../spinner/Spinner';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import QuillTextField from 'src/components/quil-text/quill-text';
 
 const BCrumb = [
   {
@@ -248,18 +249,13 @@ const EditFormLED = (props) => {
                 Kronologi
               </Typography>
 
-              <TextField
-                sx={{ width: '80%' }}
+              <QuillTextField
                 id="chronology"
+                label="Enter Text"
                 value={formik.values.chronology}
-                error={formik.touched.chronology && Boolean(formik.errors.chronology)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                rows={3}
-                onChange={formik.handleChange}
-                helperText={formik.touched.chronology && formik.errors.chronology}
-                placeholder="kronologi kejadian"
-                multiline
+                formik={formik}
+                onChange={(val) => formik.setFieldValue('chronology', val)}
+                helperText="kronologi kejadian wajib diisi"
               />
             </div>
 
@@ -334,18 +330,13 @@ const EditFormLED = (props) => {
                 Dampak
               </Typography>
 
-              <TextField
-                sx={{ width: '80%' }}
+              <QuillTextField
                 id="impact"
+                label="Enter Text"
                 value={formik.values.impact}
-                error={formik.touched.impact && Boolean(formik.errors.impact)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                onChange={formik.handleChange}
-                rows={3}
-                helperText={formik.touched.impact && formik.errors.impact}
-                placeholder="dampak dari kejadian tersebut"
-                multiline
+                formik={formik}
+                onChange={(val) => formik.setFieldValue('impact', val)}
+                helperText="dampak kejadian wajib diisi"
               />
             </div>
 
