@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { validationSchema } from './validationForm';
-import { useNavigate, useParams } from 'react-router';
 import { IconCloudUpload } from '@tabler/icons';
+import { useNavigate, useParams } from 'react-router';
 import {
   Card,
   Table,
@@ -128,7 +128,7 @@ const EditFormLED = (props) => {
       id: dataLaporan?.idLaporan,
       impact: dataLaporan?.dampak ?? '',
       caseCause: dataLaporan?.penyebabKejadianEntity?.id ?? 0,
-      brief: dataLaporan?.rootPenyebabKejadian ?? '',
+      brief: dataLaporan?.kronologiSingkat ?? '',
       actionPlan:
         dataActionPlan?.map((item) => {
           return {

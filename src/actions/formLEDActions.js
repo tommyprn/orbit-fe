@@ -20,11 +20,9 @@ export const fetchFormLedFailure = (error) => ({
   payload: error,
 });
 
-export const createFormLed = (payload) => {
+export const createFormLed = (payload, user) => {
   const queryString = stringify(
-    {
-      // nip: payload?.nip,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -41,18 +39,19 @@ export const createFormLed = (payload) => {
     const formData = new FormData();
 
     formData.append('ssl', payload.costCentre);
+    formData.append('nip', user.nip);
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
     formData.append('tanggalLapor', payload.reportDate);
-    formData.append('recoverySource', payload.recoveryAmount);
+    formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('tanggalKejadian', payload.incidentDate);
     formData.append('potensiKerugian', payload.potentialLoss);
     formData.append('nominalRecovery', payload.recoveryAmount);
     formData.append('penyebabKejadian', payload.caseCause);
-    formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('kronologiSingkat', payload.brief);
+    formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('nominalRealisasiKerugian', payload.actualLoss);
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
@@ -108,21 +107,21 @@ export const editFormLed = (payload) => {
     };
 
     const formData = new FormData();
-    formData.append('idLaporan', payload.id);
-    formData.append('dampak', payload.impact);
-    formData.append('penyebabKejadian', payload.caseCause);
-    formData.append('rootPenyebabKejadian', payload.rootCause);
-    formData.append('statusKejadian', payload.caseStatus);
     formData.append('ssl', payload.costCentre);
+    formData.append('dampak', payload.impact);
+    formData.append('idLaporan', payload.id);
     formData.append('kronologi', payload.chronology);
-    formData.append('tanggalLapor', payload.reportDate);
-    formData.append('nominalRealisasiKerugian', payload.actualLoss);
-    formData.append('tanggalKejadian', payload.incidentDate);
     formData.append('aktivitas', payload.caseCategory);
+    formData.append('tanggalLapor', payload.reportDate);
+    formData.append('statusKejadian', payload.caseStatus);
+    formData.append('sumberRecovery', payload.recoverySource);
+    formData.append('tanggalKejadian', payload.incidentDate);
     formData.append('potensiKerugian', payload.potentialLoss);
-    formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('nominalRecovery', payload.recoveryAmount);
-    formData.append('recoverySource', payload.recoverySource);
+    formData.append('kronologiSingkat', payload.brief);
+    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('tanggalIdentifikasi', payload.identifiedDate);
+    formData.append('nominalRealisasiKerugian', payload.actualLoss);
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
         if (actionKey === 'file' && typeof actionValue !== 'string') {

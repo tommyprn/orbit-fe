@@ -42,6 +42,7 @@ const BCrumb = [
 ];
 
 const EditFormLED = (props) => {
+  const user = JSON.parse(localStorage.getItem('history'));
   const navigate = useNavigate();
   const { masterData, getDropdown, createFormLed } = props;
 
@@ -110,7 +111,7 @@ const EditFormLED = (props) => {
           plan: '',
           file: '',
           email: '',
-          workUnit: 0,
+          workUnit: { id: 0, label: '' },
           targetDate: '',
         },
       ],
@@ -128,8 +129,8 @@ const EditFormLED = (props) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      createFormLed(values);
-      navigate('/LED/list');
+      createFormLed(values, user);
+      navigate('/LED/inbox');
     },
   });
 
@@ -639,177 +640,191 @@ const EditFormLED = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell>
-                            <IconButton
-                              color="error"
-                              size="small"
-                              onClick={() => deleteRowHandle(index)}
-                            >
-                              <IconX fontSize="inherit" />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>
-                            <TextField
-                              id={`actionPlan.${index}.plan`}
-                              sx={{ width: '400px' }}
-                              rows={4}
-                              value={formik.values?.actionPlan?.[index]?.plan}
-                              error={
-                                formik.touched?.actionPlan?.[index]?.plan &&
-                                Boolean(formik.errors?.actionPlan?.[index]?.plan)
-                              }
-                              onBlur={formik.handleBlur}
-                              variant="outlined"
-                              onChange={formik.handleChange}
-                              helperText={
-                                formik.touched?.actionPlan?.[index]?.plan &&
-                                formik.errors?.actionPlan?.[index]?.plan
-                              }
-                              placeholder="rencana penanggulangan"
-                              multiline
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Autocomplete
-                              id={`actionPlan.${index}.workUnit`}
-                              sx={{ width: '200px' }}
-                              value={formik.actionPlan?.[index]?.workUnit}
-                              options={createOption(masterData.dropdown.workUnit)}
-                              onChange={(event, newValue) => {
-                                formik.setFieldValue(`actionPlan.${index}.workUnit`, newValue.id);
-                              }}
-                              isOptionEqualToValue={(option, value) => option.id === value.id}
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  id={`actionPlan.${index}.workUnit`}
-                                  value={formik.values?.actionPlan?.[index]?.workUnit}
-                                  error={
-                                    formik.touched?.actionPlan?.[index]?.workUnit &&
-                                    Boolean(formik.errors?.actionPlan?.[index]?.workUnit)
-                                  }
-                                  onBlur={formik.handleBlur}
-                                  variant="standard"
-                                  helperText={
-                                    formik.touched?.actionPlan?.[index]?.workUnit &&
-                                    formik.errors?.actionPlan?.[index]?.workUnit
-                                  }
-                                  placeholder="pilih kode unit kerja"
-                                />
-                              )}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <TextField
-                              id={`actionPlan.${index}.PIC`}
-                              sx={{ width: '200px' }}
-                              value={formik.values?.actionPlan?.[index]?.PIC}
-                              error={
-                                formik.touched?.actionPlan?.[index]?.PIC &&
-                                Boolean(formik.errors?.actionPlan?.[index]?.PIC)
-                              }
-                              onBlur={formik.handleBlur}
-                              variant="standard"
-                              onChange={formik.handleChange}
-                              helperText={
-                                formik.touched?.actionPlan?.[index]?.PIC &&
-                                formik.errors?.actionPlan?.[index]?.PIC
-                              }
-                              placeholder="penanggung jawab rencana"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <TextField
-                              id={`actionPlan.${index}.email`}
-                              sx={{ width: '200px' }}
-                              value={formik.values?.actionPlan?.[index]?.email}
-                              error={
-                                formik.touched?.actionPlan?.[index]?.email &&
-                                Boolean(formik.errors?.actionPlan?.[index]?.email)
-                              }
-                              onBlur={formik.handleBlur}
-                              variant="standard"
-                              onChange={formik.handleChange}
-                              helperText={
-                                formik.touched?.actionPlan?.[index]?.email &&
-                                formik.errors?.actionPlan?.[index]?.email
-                              }
-                              placeholder="email penanggung jawab"
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <DatePicker
-                              id={`actionPlan.${index}.targetDate`}
-                              sx={{ width: '200px' }}
-                              error={
-                                formik.touched?.actionPlan?.[index]?.targetDate &&
-                                Boolean(formik.errors?.actionPlan?.[index]?.targetDate)
-                              }
-                              onBlur={formik.handleBlur}
-                              format=" DD - MMM - YYYY"
-                              variant="standard"
-                              onChange={(value) =>
-                                formik.setFieldValue(
-                                  `actionPlan.${index}.targetDate`,
-                                  String(value),
-                                )
-                              }
-                              helperText={
-                                formik.touched?.actionPlan?.[index]?.targetDate &&
-                                formik.errors?.actionPlan?.[index]?.targetDate
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              sx={{ width: '200px' }}
-                              variant="outlined"
-                              component="label"
-                              startIcon={<IconCloudUpload />}
-                            >
-                              <Typography sx={{ width: '100%', textAlign: 'center' }}>
-                                Upload file
-                              </Typography>
+                      {rows.map((row, index) => {
+                        return (
+                          <TableRow
+                            key={index}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell>
+                              <IconButton
+                                color="error"
+                                size="small"
+                                onClick={() => deleteRowHandle(index)}
+                              >
+                                <IconX fontSize="inherit" />
+                              </IconButton>
+                            </TableCell>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>
                               <TextField
-                                id={`actionPlan.${index}.file`}
-                                sx={{
-                                  clip: 'rect(0 0 0 0)',
-                                  left: 0,
-                                  width: 1,
-                                  height: 1,
-                                  bottom: 0,
-                                  overflow: 'hidden',
-                                  position: 'absolute',
-                                  clipPath: 'inset(50%)',
-                                  whiteSpace: 'nowrap',
-                                }}
-                                type="file"
+                                id={`actionPlan.${index}.plan`}
+                                sx={{ width: '400px' }}
+                                rows={4}
+                                value={formik?.values?.actionPlan?.[index]?.plan}
                                 error={
-                                  formik.touched?.actionPlan?.[index]?.file &&
-                                  Boolean(formik.errors?.actionPlan?.[index]?.file)
+                                  formik.touched?.actionPlan?.[index]?.plan &&
+                                  Boolean(formik.errors?.actionPlan?.[index]?.plan)
+                                }
+                                onBlur={formik.handleBlur}
+                                variant="outlined"
+                                onChange={formik.handleChange}
+                                helperText={
+                                  formik.touched?.actionPlan?.[index]?.plan &&
+                                  formik.errors?.actionPlan?.[index]?.plan
+                                }
+                                placeholder="rencana penanggulangan"
+                                multiline
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Autocomplete
+                                disablePortal
+                                id={`actionPlan.${index}.workUnit`}
+                                sx={{ width: '200px' }}
+                                options={createOption(masterData.dropdown.workUnit)}
+                                onChange={(event, newValue) => {
+                                  if (newValue === null) {
+                                    formik.setFieldValue(`actionPlan.${index}.workUnit`, {
+                                      id: 0,
+                                      label: '',
+                                    });
+                                  } else {
+                                    formik.setFieldValue(
+                                      `actionPlan.${index}.workUnit`,
+                                      newValue.id,
+                                    );
+                                  }
+                                }}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    id={`actionPlan.${index}.workUnit`}
+                                    error={
+                                      formik.touched?.actionPlan?.[index]?.workUnit &&
+                                      Boolean(formik.errors?.actionPlan?.[index]?.workUnit)
+                                    }
+                                    onBlur={formik.handleBlur}
+                                    variant="standard"
+                                    helperText={
+                                      formik.touched?.actionPlan?.[index]?.workUnit &&
+                                      formik.errors?.actionPlan?.[index]?.workUnit
+                                    }
+                                    placeholder="pilih kode unit kerja"
+                                  />
+                                )}
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <TextField
+                                id={`actionPlan.${index}.PIC`}
+                                sx={{ width: '200px' }}
+                                value={formik.values?.actionPlan?.[index]?.PIC}
+                                error={
+                                  formik.touched?.actionPlan?.[index]?.PIC &&
+                                  Boolean(formik.errors?.actionPlan?.[index]?.PIC)
                                 }
                                 onBlur={formik.handleBlur}
                                 variant="standard"
-                                onChange={(event) => {
-                                  const files = event.target.files[0];
-                                  formik.setFieldValue(`actionPlan.${index}.file`, files);
-                                }}
+                                onChange={formik.handleChange}
                                 helperText={
-                                  formik.touched?.actionPlan?.[index]?.file &&
-                                  formik.errors?.actionPlan?.[index]?.file
+                                  formik.touched?.actionPlan?.[index]?.PIC &&
+                                  formik.errors?.actionPlan?.[index]?.PIC
                                 }
-                                placeholder="lampiran laporan"
+                                placeholder="penanggung jawab rencana"
                               />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                            </TableCell>
+                            <TableCell>
+                              <TextField
+                                id={`actionPlan.${index}.email`}
+                                sx={{ width: '200px' }}
+                                value={formik.values?.actionPlan?.[index]?.email}
+                                error={
+                                  formik.touched?.actionPlan?.[index]?.email &&
+                                  Boolean(formik.errors?.actionPlan?.[index]?.email)
+                                }
+                                onBlur={formik.handleBlur}
+                                variant="standard"
+                                onChange={formik.handleChange}
+                                helperText={
+                                  formik.touched?.actionPlan?.[index]?.email &&
+                                  formik.errors?.actionPlan?.[index]?.email
+                                }
+                                placeholder="email penanggung jawab"
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <DatePicker
+                                id={`actionPlan.${index}.targetDate`}
+                                sx={{ width: '200px' }}
+                                error={
+                                  formik.touched?.actionPlan?.[index]?.targetDate &&
+                                  Boolean(formik.errors?.actionPlan?.[index]?.targetDate)
+                                }
+                                onBlur={formik.handleBlur}
+                                format=" DD - MMM - YYYY"
+                                variant="standard"
+                                onChange={(value) =>
+                                  formik.setFieldValue(
+                                    `actionPlan.${index}.targetDate`,
+                                    String(value),
+                                  )
+                                }
+                                helperText={
+                                  formik.touched?.actionPlan?.[index]?.targetDate &&
+                                  formik.errors?.actionPlan?.[index]?.targetDate
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                sx={{ width: '200px' }}
+                                variant="outlined"
+                                component="label"
+                                startIcon={<IconCloudUpload />}
+                              >
+                                <Typography sx={{ width: '100%', textAlign: 'center' }}>
+                                  {formik.values?.actionPlan?.[index]?.file !== ''
+                                    ? formik.values?.actionPlan?.[index]?.file.name ||
+                                      formik.values?.actionPlan?.[index]?.file
+                                    : 'Upload file'}
+                                </Typography>
+                                <TextField
+                                  id={`actionPlan.${index}.file`}
+                                  sx={{
+                                    clip: 'rect(0 0 0 0)',
+                                    left: 0,
+                                    width: 1,
+                                    height: 1,
+                                    bottom: 0,
+                                    overflow: 'hidden',
+                                    position: 'absolute',
+                                    clipPath: 'inset(50%)',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                  type="file"
+                                  error={
+                                    formik.touched?.actionPlan?.[index]?.file &&
+                                    Boolean(formik.errors?.actionPlan?.[index]?.file)
+                                  }
+                                  onBlur={formik.handleBlur}
+                                  variant="standard"
+                                  onChange={(event) => {
+                                    const files = event.target.files[0];
+                                    formik.setFieldValue(`actionPlan.${index}.file`, files);
+                                  }}
+                                  helperText={
+                                    formik.touched?.actionPlan?.[index]?.file &&
+                                    formik.errors?.actionPlan?.[index]?.file
+                                  }
+                                  placeholder="lampiran laporan"
+                                />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -847,7 +862,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getDropdown: () => dispatch(getDropdown()),
-    createFormLed: (payload) => dispatch(createFormLed(payload)),
+    createFormLed: (payload, user) => dispatch(createFormLed(payload, user)),
   };
 };
 

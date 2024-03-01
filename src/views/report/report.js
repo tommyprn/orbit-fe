@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Typography } from '@mui/material';
+import { getAllHistory } from 'src/actions/userActions';
+
+// component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
@@ -10,7 +14,15 @@ const BCrumb = [
   },
 ];
 
-const Report = () => {
+const Report = (props) => {
+  const { history, getAllHistory } = props;
+  console.log(history);
+  useEffect(() => {
+    (async () => {
+      await getAllHistory();
+    })();
+  }, []);
+
   return (
     <PageContainer title="Report" description="Report Page">
       <Breadcrumb title="Report" items={BCrumb} />
@@ -22,4 +34,16 @@ const Report = () => {
   );
 };
 
-export default Report;
+const mapStateToProps = (state) => {
+  return {
+    history: state.user.history.data,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllHistory: (id) => dispatch(getAllHistory('20240301023')),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Report);

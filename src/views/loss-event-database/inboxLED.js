@@ -28,7 +28,7 @@ import './inboxLED.css';
 const BCrumb = [
   {
     title:
-      'Pada halaman ini anda dapat melihat semua laporan yang sudah dibuat dan saat ini sedang membutuhkan persetujuan/ perubahan oleh user lain',
+      'Pada halaman ini anda dapat melihat seluruh laporan yang telah dibuat dan membutuhkan persetujuan/ perubahan dari user',
   },
 ];
 
@@ -81,8 +81,8 @@ const InboxLED = (props) => {
 
   const data = LED.LED;
   return (
-    <PageContainer title="List" description="List LED Page">
-      <Breadcrumb title="List" items={BCrumb} />
+    <PageContainer title="Inbox" description="Inbox LED Page">
+      <Breadcrumb title="Inbox" items={BCrumb} />
 
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>

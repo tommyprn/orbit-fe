@@ -95,10 +95,10 @@ const DetailLED = (props) => {
 
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Akar permasalahan
+                  Kronologi singkat
                 </Typography>
                 <Typography variant="body1" sx={{ width: '80%' }}>
-                  {dataLaporan?.rootPenyebabKejadian}
+                  {dataLaporan?.kronologiSingkat}
                 </Typography>
               </div>
 

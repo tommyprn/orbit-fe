@@ -1182,7 +1182,6 @@ export const getWorkUnit = (pagination, keyword) => {
 export const updateWorkUnit = (payload) => {
   return async (dispatch) => {
     dispatch(fetchWorkUnitStart());
-
     const requestBody = {
       isEnable: payload.isEnable,
       idUnitKerja: payload.id,

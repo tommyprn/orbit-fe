@@ -89,7 +89,9 @@ const EditMasterForm = ({
           id="isEnable"
           value={formik.values.isEnable}
           onChange={(e, value) => {
-            formik.setFieldValue('isEnable', value);
+            value === 'true'
+              ? formik.setFieldValue('isEnable', true)
+              : formik.setFieldValue('isEnable', false);
           }}
           sx={{ flexDirection: 'row' }}
         >
@@ -145,7 +147,9 @@ const EditMasterForm = ({
           id="isEnable"
           value={sslFormik.values.isEnable}
           onChange={(e, value) => {
-            sslFormik.setFieldValue('isEnable', value);
+            value === 'true'
+              ? sslFormik.setFieldValue('isEnable', true)
+              : sslFormik.setFieldValue('isEnable', false);
           }}
           sx={{ flexDirection: 'row' }}
         >

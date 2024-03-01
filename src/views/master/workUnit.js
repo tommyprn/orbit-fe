@@ -61,7 +61,7 @@ const WorkUnit = (props) => {
       id: item.idUnitKerja,
       code: item.kodeUnitKerja,
       name: item.namaUnitKerja,
-      isEnable: item.enable,
+      isEnable: item.isEnable,
     });
     setEditModalOpen(true);
   };
@@ -70,8 +70,9 @@ const WorkUnit = (props) => {
       id: selectedCase.id,
       name: data.name,
       code: data.code,
-      isEnable: selectedCase.isEnable,
+      isEnable: data.isEnable,
     };
+
     await updateWorkUnit(dataToSend);
     setEditModalOpen(false);
   };
