@@ -14,7 +14,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { getAllInbox } from 'src/actions/formLEDActions';
+import { getAllList } from 'src/actions/formLEDActions';
 import { IconFileDescription } from '@tabler/icons';
 
 // component
@@ -43,7 +43,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ListLED = (props) => {
-  const { LED, getAllInbox } = props;
+  const { LED, getAllList } = props;
   const navigation = useNavigate();
   const user = JSON.parse(localStorage.getItem('history'));
 
@@ -53,7 +53,7 @@ const ListLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getAllInbox({ page, perPage: rowsPerPage }, keyword, user.role);
+      await getAllList({ page, perPage: rowsPerPage }, keyword, user);
     })();
   }, [page, keyword, rowsPerPage]);
 
@@ -75,9 +75,10 @@ const ListLED = (props) => {
     setKeyword(values);
   };
 
-  const data = LED.LED;
+  const data = LED.list;
+
   return (
-    <PageContainer title="List" description="List LED Page">
+    <PageContainer titdatae="List" description="List LED Page">
       <Breadcrumb title="List" items={BCrumb} />
 
       <DashboardCard>
@@ -98,6 +99,7 @@ const ListLED = (props) => {
                   <TableRow>
                     <TableCell>no</TableCell>
                     <TableCell>ID</TableCell>
+                    <TableCell>Divisi/ Cabang</TableCell>
                     <TableCell>Status Kejadian</TableCell>
                     <TableCell>Tanggal Lapor</TableCell>
                     <TableCell>Status Laporan</TableCell>
@@ -112,6 +114,7 @@ const ListLED = (props) => {
                     >
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{row.id}</TableCell>
+                      <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
                       <TableCell>{row.statusKejadian.nama}</TableCell>
                       <TableCell>
                         {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
@@ -175,7 +178,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllInbox: (pagination, keyword, role) => dispatch(getAllInbox(pagination, keyword, role)),
+    getAllList: (pagination, keyword, role) => dispatch(getAllList(pagination, keyword, role)),
   };
 };
 

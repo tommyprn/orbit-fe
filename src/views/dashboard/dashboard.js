@@ -14,7 +14,7 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { getAllList } from 'src/actions/formLEDActions';
+import { getAllInbox } from 'src/actions/formLEDActions';
 import { IconFileDescription, IconPencil } from '@tabler/icons';
 
 // component
@@ -43,17 +43,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const Dashboard = (props) => {
-  const { LED, getAllList } = props;
+  const { LED, getAllInbox } = props;
   const navigation = useNavigate();
-  const user = JSON.parse(localStorage.getItem('history'));
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
+    const dataToSave = {
+      nip: user?.nikUser,
+      role: 'inputer',
+      codeDiv: user?.divisiUser,
+    };
+    localStorage.setItem('history', JSON.stringify(dataToSave));
+  }, []);
+
+  useEffect(() => {
     (async () => {
-      await getAllList({ page, perPage: rowsPerPage }, keyword, user.role);
+      await getAllInbox({ page, perPage: rowsPerPage }, keyword, user);
     })();
   }, [page, keyword, rowsPerPage]);
 
@@ -191,7 +200,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllList: (pagination, keyword, role) => dispatch(getAllList(pagination, keyword, role)),
+    getAllInbox: (pagination, keyword, role) => dispatch(getAllInbox(pagination, keyword, role)),
   };
 };
 

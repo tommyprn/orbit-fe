@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Menu, Avatar, Typography, Divider, Button, IconButton } from '@mui/material';
+import {
+  Box,
+  Menu,
+  Button,
+  Avatar,
+  Divider,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from '@mui/material';
 
-import { IconMail } from '@tabler/icons';
+import { IconMail, IconLogout } from '@tabler/icons';
 import { Stack } from '@mui/system';
 
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
@@ -88,8 +97,14 @@ const Profile = () => {
         <Divider />
 
         <Box mt={2}>
-          <Button variant="outlined" color="primary" fullWidth onClick={handleBack}>
-            Back To User Apps
+          <Button
+            variant="outlined"
+            color="error"
+            fullWidth
+            onClick={handleBack}
+            startIcon={<IconLogout />}
+          >
+            Log Out
           </Button>
         </Box>
       </Menu>

@@ -113,6 +113,7 @@ const masterDataReducer = (state = initialState, action) => {
             levelThree: action.payload.aktivitas,
           },
           reportStatus: action.payload.statusLaporan,
+          branch: action.payload.cabang,
         },
         isLoading: false,
       };

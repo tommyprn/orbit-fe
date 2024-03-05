@@ -59,7 +59,6 @@ const LevelThree = (props) => {
   };
   const onCreateSave = async (data) => {
     const dataToSend = { name: data.name, parentId: data.idLevelTwo };
-    console.log(dataToSend);
     await createLevelThree(dataToSend);
     setCreateModalOpen(false);
   };

@@ -47,7 +47,6 @@ export const getAllHistory = (id) => {
       const responseJSON = await res.json();
       if (res.status === 200) {
         // dispatch(fetchHistorySuccess(responseJSON));
-        console.log(responseJSON);
       }
 
       return responseJSON;

@@ -25,7 +25,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { getDropdown } from 'src/actions/masterDataActions';
-import { createFormLed } from 'src/actions/formLEDActions';
+import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
 
 import './formLED.css';
 
@@ -35,6 +35,7 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import QuillTextField from 'src/components/quil-text/quill-text';
+import CustomAutoComplete from 'src/components/shared/custom-auto-complete';
 
 const BCrumb = [
   {
@@ -45,7 +46,7 @@ const BCrumb = [
 const EditFormLED = (props) => {
   const user = JSON.parse(localStorage.getItem('history'));
   const navigate = useNavigate();
-  const { masterData, getDropdown, createFormLed } = props;
+  const { masterData, getDropdown, createFormLed, createDraftLed } = props;
 
   const [snackOpen, setsnackOpen] = useState(false);
   const [rows, setRows] = useState([
@@ -94,25 +95,26 @@ const EditFormLED = (props) => {
   }, [getDropdown]);
 
   useEffect(() => {
-    const newData = masterData?.caseCategory?.levelThree?.data?.find((item) => {
+    const newData = masterData?.dropdown?.caseCategory?.levelThree?.find((item) => {
       return item.id === caseCategoryValue.id;
     });
-
     setSelectedCategory(newData);
   }, [caseCategoryValue]);
 
   const formik = useFormik({
     initialValues: {
+      brief: '',
       impact: '',
       caseCause: 0,
-      brief: '',
       actionPlan: [
         {
           PIC: '',
           plan: '',
           file: '',
           email: '',
-          workUnit: { id: 0, label: '' },
+          branch: 0,
+          workUnit: 0,
+          isBranch: false,
           targetDate: '',
         },
       ],
@@ -131,7 +133,7 @@ const EditFormLED = (props) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       createFormLed(values, user);
-      navigate('/LED/inbox');
+      navigate('/LED/List');
     },
   });
 
@@ -140,10 +142,17 @@ const EditFormLED = (props) => {
       return [];
     } else {
       return option?.map((item) => {
-        return { id: item.id || item.idUnitKerja, label: item.nama || item.namaUnitKerja };
+        return {
+          id: item.id || item.idUnitKerja,
+          label: item.nama || item.namaUnitKerja || item.namaCabang,
+        };
       });
     }
   };
+
+  const workUnitOption = createOption(masterData.dropdown.workUnit);
+
+  const branchOption = createOption(masterData.dropdown.branch);
 
   const formatNumber = (value) => {
     const numericValue = parseFloat(value);
@@ -183,6 +192,10 @@ const EditFormLED = (props) => {
 
   const closeSnackBar = () => {
     setsnackOpen(false);
+  };
+
+  const onSaveAsDraft = async () => {
+    await createDraftLed(formik.values, user);
   };
 
   return (
@@ -272,7 +285,7 @@ const EditFormLED = (props) => {
                 variant="outlined"
                 onChange={formik.handleChange}
                 helperText={formik.touched.brief && formik.errors.brief}
-                placeholder="akar masalah dari kejadian tersebut"
+                placeholder="ringkasan dari kronologi kejadian tersebut"
               />
             </div>
 
@@ -611,17 +624,18 @@ const EditFormLED = (props) => {
               <Paper
                 sx={{
                   maxWidth: '100%',
+
                   overflow: 'hidden',
                 }}
               >
-                <TableContainer sx={{ paddingBottom: '20px' }}>
+                <TableContainer sx={{ paddingBottom: '20px', maxHeight: '500px' }}>
                   <Table size="small" aria-label="a dense table">
                     <TableHead>
                       <TableRow>
                         <TableCell>hapus</TableCell>
                         <TableCell>no</TableCell>
                         <TableCell sx={{ width: '400px' }}>Action Plan*</TableCell>
-                        <TableCell sx={{ width: '200px' }}>Unit Kerja*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>Unit Kerja/ cabang*</TableCell>
                         <TableCell sx={{ width: '200px' }}>PIC*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Email PIC*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Tanggal target penyelesaian*</TableCell>
@@ -667,42 +681,11 @@ const EditFormLED = (props) => {
                               />
                             </TableCell>
                             <TableCell>
-                              <Autocomplete
-                                disablePortal
-                                id={`actionPlan.${index}.workUnit`}
-                                sx={{ width: '200px' }}
-                                options={createOption(masterData.dropdown.workUnit)}
-                                onChange={(event, newValue) => {
-                                  if (newValue === null) {
-                                    formik.setFieldValue(`actionPlan.${index}.workUnit`, {
-                                      id: 0,
-                                      label: '',
-                                    });
-                                  } else {
-                                    formik.setFieldValue(
-                                      `actionPlan.${index}.workUnit`,
-                                      newValue.id,
-                                    );
-                                  }
-                                }}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    id={`actionPlan.${index}.workUnit`}
-                                    error={
-                                      formik.touched?.actionPlan?.[index]?.workUnit &&
-                                      Boolean(formik.errors?.actionPlan?.[index]?.workUnit)
-                                    }
-                                    onBlur={formik.handleBlur}
-                                    variant="standard"
-                                    helperText={
-                                      formik.touched?.actionPlan?.[index]?.workUnit &&
-                                      formik.errors?.actionPlan?.[index]?.workUnit
-                                    }
-                                    placeholder="pilih kode unit kerja"
-                                  />
-                                )}
+                              <CustomAutoComplete
+                                index={index}
+                                formik={formik}
+                                branchOption={branchOption}
+                                workUnitOption={workUnitOption}
                               />
                             </TableCell>
                             <TableCell>
@@ -823,7 +806,7 @@ const EditFormLED = (props) => {
               <Button variant="contained" color="error">
                 Batal
               </Button>
-              <Button variant="contained" color="warning">
+              <Button variant="contained" color="warning" onClick={onSaveAsDraft}>
                 Draft
               </Button>
               <Button
@@ -852,6 +835,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getDropdown: () => dispatch(getDropdown()),
     createFormLed: (payload, user) => dispatch(createFormLed(payload, user)),
+    createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),
   };
 };
 

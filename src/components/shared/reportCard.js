@@ -8,7 +8,6 @@ import './reportCard.css';
 
 const ReportCard = ({ LED, list }) => {
   const navigate = useNavigate();
-  console.log(LED);
 
   const onEdit = (id) => {
     navigate(`/LED/editReport/${id}`);

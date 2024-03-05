@@ -41,8 +41,6 @@ function App() {
     try {
       const response = await axiosServices.get(apiUrl, { headers });
 
-      // console.log(response.data);
-
       if (!response.data || response.data !== 'active') {
         navigateTo('http://10.55.54.152/maps-login');
       }

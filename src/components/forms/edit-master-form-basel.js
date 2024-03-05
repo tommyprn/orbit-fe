@@ -73,7 +73,6 @@ const EditMasterFormBasel = ({
     }
   });
 
-  console.log(formikLevelTwo.values);
   const subCategory = (
     <form
       style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}

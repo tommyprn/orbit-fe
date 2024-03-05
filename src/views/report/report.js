@@ -16,7 +16,6 @@ const BCrumb = [
 
 const Report = (props) => {
   const { history, getAllHistory } = props;
-  console.log(history);
   useEffect(() => {
     (async () => {
       await getAllHistory();

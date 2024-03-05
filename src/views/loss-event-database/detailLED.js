@@ -59,17 +59,16 @@ const DetailLED = (props) => {
     navigate(-1);
   };
 
-  const domParser = (htmlString) => {
-    const parser = new DOMParser();
-    if (htmlString) {
-      const html = parser?.parseFromString(htmlString, 'text/html');
-      return html?.body;
-    }
-  };
+  // const domParser = (htmlString) => {
+  //   const parser = new DOMParser();
+  //   if (htmlString) {
+  //     const html = parser?.parseFromString(htmlString, 'text/html');
+  //     return html?.body;
+  //   }
+  // };
 
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
-  console.log(dataLaporan?.kronologi);
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -285,7 +284,7 @@ const DetailLED = (props) => {
                       <TableRow>
                         <TableCell>no</TableCell>
                         <TableCell>Action Plan</TableCell>
-                        <TableCell>Unit Kerja</TableCell>
+                        <TableCell>Unit Kerja/ Cabang</TableCell>
                         <TableCell>PIC</TableCell>
                         <TableCell>Email PIC</TableCell>
                         <TableCell>Target penyelesaian</TableCell>
@@ -302,8 +301,14 @@ const DetailLED = (props) => {
                             </TableCell>
                             <TableCell>
                               <Typography variant="body1">
-                                {row?.unitKerjaEntity?.namaUnitKerja}
-                                {`(${row?.unitKerjaEntity?.kodeUnitKerja})`}
+                                {row?.unitKerjaEntity?.namaUnitKerja ||
+                                  row?.cabangEntity?.namaCabang}
+                                <strong>
+                                  {` (${
+                                    row?.unitKerjaEntity?.kodeUnitKerja ||
+                                    row?.cabangEntity?.kodeCabang
+                                  })`}
+                                </strong>
                               </Typography>
                             </TableCell>
                             <TableCell>
@@ -342,6 +347,15 @@ const DetailLED = (props) => {
             </Card>
 
             <div className="button-wrapper">
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  alert('approver/IRM menolak laporan ini');
+                }}
+              >
+                Tolak Laporan
+              </Button>
               <Button variant="contained" onClick={backHandler}>
                 Kembali
               </Button>

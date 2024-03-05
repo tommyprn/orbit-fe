@@ -7,8 +7,10 @@ import './quill-text.css';
 const QuillTextField = (props) => {
   const { id, value, onChange, isError, helperText } = props;
   const [text, setText] = useState(value);
+  const [isTouched, setIsTouched] = useState(false);
 
   const handleQuillChange = (content) => {
+    setIsTouched(true);
     setText(content);
     if (onChange) {
       onChange(content);
@@ -33,7 +35,7 @@ const QuillTextField = (props) => {
           style={{ width: '100%', height: '100px' }}
         />
       </div>
-      {error ? <p className="helper-text">{helperText}</p> : null}
+      {error && isTouched ? <p className="helper-text">{helperText}</p> : null}
     </div>
   );
 };

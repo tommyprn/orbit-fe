@@ -44,6 +44,7 @@ export const createFormLed = (payload, user) => {
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
     formData.append('tanggalLapor', payload.reportDate);
+    formData.append('kodeUnitKerja', user.codeDiv);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -65,8 +66,11 @@ export const createFormLed = (payload, user) => {
           formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
         } else if (actionKey === 'workUnit') {
           formData.append(`actionPlans[${index}].unitKerja`, actionValue);
-        } else {
+        } else if (actionKey === 'branch') {
+          formData.append(`actionPlans[${index}].cabang`, actionValue);
+        } else if (actionKey === 'PIC') {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
+        } else {
         }
       });
     });
@@ -160,14 +164,9 @@ export const editFormLed = (payload) => {
   };
 };
 
-export const getAllInbox = (pagination, keyword, role) => {
+export const createDraftLed = (payload, user) => {
   const queryString = stringify(
-    {
-      role: role,
-      pageSize: pagination?.perPage,
-      idLaporan: keyword,
-      pageNumber: pagination?.page,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -178,14 +177,55 @@ export const getAllInbox = (pagination, keyword, role) => {
     dispatch(fetchFormLedStart());
 
     const requestHeaders = {
-      'Content-Type': 'application/json',
       Authorization: 'Bearer ac',
     };
 
+    const formData = new FormData();
+    formData.append('ssl', payload.costCentre);
+    formData.append('nip', user.nip);
+    formData.append('dampak', payload.impact);
+    formData.append('kronologi', payload.chronology);
+    formData.append('aktivitas', payload.caseCategory);
+    formData.append('tanggalLapor', payload.reportDate ? payload.reportDate : new Date());
+    formData.append('kodeUnitKerja', user.codeDiv);
+    formData.append('sumberRecovery', payload.recoverySource);
+    formData.append('statusKejadian', payload.caseStatus);
+    formData.append('tanggalKejadian', payload.incidentDate ? payload.incidentDate : new Date());
+    formData.append('potensiKerugian', payload.potentialLoss);
+    formData.append('nominalRecovery', payload.recoveryAmount);
+    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('kronologiSingkat', payload.brief);
+    formData.append(
+      'tanggalIdentifikasi',
+      payload.identifiedDate ? payload.identifiedDate : new Date(),
+    );
+    formData.append('nominalRealisasiKerugian', payload.actualLoss);
+    payload.actionPlan.forEach((action, index) => {
+      Object.entries(action).forEach(([actionKey, actionValue]) => {
+        if (actionKey === 'file' && actionValue !== '') {
+          formData.append(`actionPlans[${index}].multipartFile`, actionValue);
+        } else if (actionKey === 'email') {
+          formData.append(`actionPlans[${index}].email`, actionValue);
+        } else if (actionKey === 'plan') {
+          formData.append(`actionPlans[${index}].actionPlan`, actionValue);
+        } else if (actionKey === 'targetDate') {
+          formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
+        } else if (actionKey === 'workUnit') {
+          formData.append(`actionPlans[${index}].unitKerja`, actionValue);
+        } else if (actionKey === 'branch') {
+          formData.append(`actionPlans[${index}].cabang`, actionValue);
+        } else if (actionKey === 'PIC') {
+          formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
+        } else {
+        }
+      });
+    });
+
     try {
-      const res = await fetch(API_URL + `get-all-form-led?` + queryString, {
-        method: 'GET',
+      const res = await fetch(API_URL + `save-draft?` + queryString, {
+        method: 'POST',
         headers: requestHeaders,
+        body: formData,
       });
       const responseJSON = await res.json();
       if (res.status === 200) {
@@ -200,13 +240,32 @@ export const getAllInbox = (pagination, keyword, role) => {
   };
 };
 
-export const getAllList = (pagination, keyword, role) => {
+export const FETCH_LIST_REQUEST = 'FETCH_LIST_REQUEST';
+export const FETCH_LIST_SUCCESS = 'FETCH_LIST_SUCCESS';
+export const FETCH_LIST_FAILURE = 'FETCH_LIST_FAILURE';
+
+export const fetchListStart = () => ({
+  type: FETCH_LIST_REQUEST,
+});
+
+export const fetchListSuccess = (data) => ({
+  type: FETCH_LIST_SUCCESS,
+  payload: data,
+});
+
+export const fetchListFailure = (error) => ({
+  type: FETCH_LIST_FAILURE,
+  payload: error,
+});
+
+export const getAllList = (pagination, keyword, user) => {
   const queryString = stringify(
     {
-      role: role,
+      role: user.role,
       pageSize: pagination?.perPage,
       idLaporan: keyword,
       pageNumber: pagination?.page,
+      kodeUnitKerja: user.codeDiv,
     },
     {
       arrayFormat: 'comma',
@@ -215,7 +274,66 @@ export const getAllList = (pagination, keyword, role) => {
   );
 
   return async (dispatch) => {
-    dispatch(fetchFormLedStart());
+    dispatch(fetchListStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-form-led?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchListSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchListFailure(err));
+    }
+  };
+};
+
+export const FETCH_INBOX_REQUEST = 'FETCH_INBOX_REQUEST';
+export const FETCH_INBOX_SUCCESS = 'FETCH_INBOX_SUCCESS';
+export const FETCH_INBOX_FAILURE = 'FETCH_INBOX_FAILURE';
+
+export const fetchInboxStart = () => ({
+  type: FETCH_INBOX_REQUEST,
+});
+
+export const fetchInboxSuccess = (data) => ({
+  type: FETCH_INBOX_SUCCESS,
+  payload: data,
+});
+
+export const fetchInboxFailure = (error) => ({
+  type: FETCH_INBOX_FAILURE,
+  payload: error,
+});
+
+export const getAllInbox = (pagination, keyword, user) => {
+  const queryString = stringify(
+    {
+      role: user.role,
+      pageSize: pagination?.perPage,
+      idLaporan: keyword,
+      pageNumber: pagination?.page,
+      kodeUnitKerja: user.codeDiv,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchInboxStart());
 
     const requestHeaders = {
       'Content-Type': 'application/json',
@@ -229,13 +347,13 @@ export const getAllList = (pagination, keyword, role) => {
       });
       const responseJSON = await res.json();
       if (res.status === 200) {
-        dispatch(fetchFormLedSuccess(responseJSON));
+        dispatch(fetchInboxSuccess(responseJSON));
       }
 
       return responseJSON;
     } catch (err) {
       console.log(err);
-      dispatch(fetchFormLedFailure(err));
+      dispatch(fetchInboxFailure(err));
     }
   };
 };

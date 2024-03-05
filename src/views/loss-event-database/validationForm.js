@@ -42,6 +42,7 @@ export const validationSchema = yup.object({
     .typeError('harap pilih cost centre')
     .required(`harap pilih cost centre`),
   recoverySource: yup.string(`masukkan sumber recovery`).required(`sumber recovery wajib diisi`),
+  isBranch: yup.boolean(),
 
   //action plan
   actionPlan: yup.array().of(
@@ -56,10 +57,20 @@ export const validationSchema = yup.object({
         .string(`masukkan email dari PIC yang aktif`)
         .email('mohon masukkan email yang valid')
         .required(`kolom ini wajib diisi`),
+      branch: yup
+        .number(`masukkan opsi dari kejadian`)
+        .typeError('harap pilih kode cabang')
+        .when('isBranch', {
+          is: true,
+          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih kode cabang'),
+        }),
       workUnit: yup
-        .number(`masukkan unit kerja dari kejadian`)
-        .typeError('harap pilih unit kerja yang bersangkutan')
-        .required('harap pilih unit kerja yang bersangkutan'),
+        .number(`masukkan opsi dari kejadian`)
+        .typeError('harap pilih kode unit kerja')
+        .when('isBranch', {
+          is: false,
+          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
+        }),
       targetDate: yup.string(`input tanggal`).required(`kolom ini wajib dipilih`),
     }),
   ),
