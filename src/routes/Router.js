@@ -23,6 +23,7 @@ const ListLED = Loadable(lazy(() => import('../views/loss-event-database/listLED
 const InboxLED = Loadable(lazy(() => import('../views/loss-event-database/inboxLED')));
 const DetailLED = Loadable(lazy(() => import('../views/loss-event-database/detailLED')));
 const EditFormLED = Loadable(lazy(() => import('../views/loss-event-database/editFormLED')));
+const UpdateFormLED = Loadable(lazy(() => import('../views/loss-event-database/updateFormLED')));
 
 /* ****Report Pages***** */
 const ReportPage = Loadable(lazy(() => import('../views/report/report')));
@@ -53,6 +54,7 @@ const Router = [
       { path: '/LED/report', exact: true, element: <FormLED /> },
       { path: '/LED/editReport/:reportId', exact: true, element: <EditFormLED /> },
       { path: '/LED/detailReport/:reportId', exact: true, element: <DetailLED /> },
+      { path: '/LED/updateReport/:reportId', exact: true, element: <UpdateFormLED /> },
 
       // ============================== REPORT ROUTES =====================================
       { path: '/report', exact: true, element: <ReportPage /> },

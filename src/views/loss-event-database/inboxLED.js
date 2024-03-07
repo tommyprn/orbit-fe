@@ -11,15 +11,17 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  Typography,
   TableContainer,
   TablePagination,
 } from '@mui/material';
 import { getAllInbox } from 'src/actions/formLEDActions';
-import { IconFileDescription, IconPencil } from '@tabler/icons';
+import { IconFileDescription, IconHistory, IconPencil } from '@tabler/icons';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import HistoryModal from 'src/components/modal/history-modal';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
@@ -28,7 +30,7 @@ import './inboxLED.css';
 const BCrumb = [
   {
     title:
-      'Pada halaman ini anda dapat melihat seluruh laporan yang telah dibuat dan membutuhkan persetujuan/ perubahan dari user',
+      'Pada halaman ini anda dapat melihat seluruh laporan yang telah dibuat dan membutuhkan persetujuan/ perubahan dari user (anda)',
   },
 ];
 
@@ -49,7 +51,10 @@ const InboxLED = (props) => {
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
+  const [selected, setSelected] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [historyModal, setHistoryModal] = useState(false);
+
   useEffect(() => {
     (async () => {
       await getAllInbox({ page, perPage: rowsPerPage }, keyword, user);
@@ -60,8 +65,27 @@ const InboxLED = (props) => {
     navigation(`/LED/detailReport/${id}`);
   };
 
-  const onEdit = (id) => {
-    navigation(`/LED/editReport/${id}`);
+  const onEdit = (id, status) => {
+    if (user.role === 'inputer') {
+      if (status === 'Draft' || status === 'Need Fix') {
+        navigation(`/LED/editReport/${id}`);
+      } else {
+        navigation(`/LED/updateReport/${id}`);
+      }
+    }
+    if (user.role === 'approver') {
+      navigation(`/LED/detailReport/${id}`);
+    }
+  };
+
+  const openHistory = (id) => {
+    setSelected(id);
+    setHistoryModal(true);
+  };
+
+  const closeHistory = () => {
+    setSelected(0);
+    setHistoryModal(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -84,92 +108,121 @@ const InboxLED = (props) => {
     <PageContainer title="Inbox" description="Inbox LED Page">
       <Breadcrumb title="Inbox" items={BCrumb} />
 
+      {selected > 0 ? (
+        <HistoryModal
+          id={selected}
+          title="History laporan"
+          isOpen={historyModal}
+          onCloseHandler={closeHistory}
+        />
+      ) : null}
+
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
-          <SearchBar onSubmit={(val) => onSearch(val)} />
+          {data?.totalData > 0 ? (
+            <>
+              <SearchBar onSubmit={(val) => onSearch(val)} />
 
-          <Paper
-            sx={{
-              maxWidth: '100%',
-              overflow: 'hidden',
-            }}
-            elevation={0}
-            variant="outlined"
-          >
-            <TableContainer>
-              <Table size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>no</TableCell>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Divisi/ Cabang</TableCell>
-                    <TableCell>Status Kejadian</TableCell>
-                    <TableCell>Tanggal Lapor</TableCell>
-                    <TableCell>Status Laporan</TableCell>
-                    <TableCell>Aksi</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.data?.map((row, index) => (
-                    <StyledTableRow
-                      key={index}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row.id}</TableCell>
-                      <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
-                      <TableCell>{row.statusKejadian.nama}</TableCell>
-                      <TableCell>
-                        {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                      </TableCell>
-                      <TableCell>{row.statusLaporan.nama}</TableCell>
-                      <TableCell>
-                        <Button
-                          sx={{ marginRight: '8px' }}
-                          size="small"
-                          color={'primary'}
-                          variant="contained"
-                          startIcon={<IconFileDescription />}
-                          onClick={() => {
-                            onDetail(row.id);
-                          }}
+              <Paper
+                sx={{
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                }}
+                elevation={0}
+                variant="outlined"
+              >
+                <TableContainer>
+                  <Table size="small" aria-label="a dense table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>no</TableCell>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Divisi/ Cabang</TableCell>
+                        <TableCell>Status Kejadian</TableCell>
+                        <TableCell>Tanggal Lapor</TableCell>
+                        <TableCell>Status Laporan</TableCell>
+                        <TableCell>Aksi</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data?.data?.map((row, index) => (
+                        <StyledTableRow
+                          key={index}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                          {'Detail'}
-                        </Button>
-                        <Button
-                          size="small"
-                          color="warning"
-                          variant="contained"
-                          startIcon={<IconPencil />}
-                          onClick={() => {
-                            onEdit(row.id);
-                          }}
-                        >
-                          {'Edit'}
-                        </Button>
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 1,
-              }}
-              page={page}
-              count={data.totalData ?? 0}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              labelRowsPerPage={'Baris per halaman'}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{row?.idLaporan}</TableCell>
+                          <TableCell>{row?.unitKerja?.namaUnitKerja}</TableCell>
+                          <TableCell>{row?.statusKejadian?.nama}</TableCell>
+                          <TableCell>
+                            {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                          </TableCell>
+                          <TableCell>{row?.statusLaporan?.nama}</TableCell>
+                          <TableCell>
+                            <Button
+                              sx={{ marginRight: '8px' }}
+                              size="small"
+                              color="primary"
+                              variant="contained"
+                              startIcon={<IconFileDescription />}
+                              onClick={() => {
+                                onDetail(row.id);
+                              }}
+                            >
+                              Detail
+                            </Button>
+                            <Button
+                              sx={{ marginRight: '8px' }}
+                              size="small"
+                              color="warning"
+                              variant="contained"
+                              startIcon={<IconPencil />}
+                              onClick={() => {
+                                onEdit(row.id, row.statusLaporan.nama);
+                              }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              size="small"
+                              color="success"
+                              variant="contained"
+                              startIcon={<IconHistory />}
+                              onClick={() => {
+                                openHistory(row.id);
+                              }}
+                            >
+                              History
+                            </Button>
+                          </TableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  sx={{
+                    display: 'flex',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 1,
+                  }}
+                  page={page}
+                  count={data.totalData ?? 0}
+                  component="div"
+                  rowsPerPage={rowsPerPage}
+                  onPageChange={handleChangePage}
+                  labelRowsPerPage={'Baris per halaman'}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            </>
+          ) : (
+            <Typography textAlign={'center'} variant="h2">
+              Belum ada laporan dalam kotak masuk
+            </Typography>
+          )}
 
           {/* {LED.LED?.data?.map((item) => {
             return (

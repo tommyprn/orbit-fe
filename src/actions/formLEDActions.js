@@ -211,9 +211,9 @@ export const createDraftLed = (payload, user) => {
         } else if (actionKey === 'targetDate') {
           formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
         } else if (actionKey === 'workUnit') {
-          formData.append(`actionPlans[${index}].unitKerja`, actionValue);
+          formData.append(`actionPlans[${index}].unitKerja`, actionValue.id);
         } else if (actionKey === 'branch') {
-          formData.append(`actionPlans[${index}].cabang`, actionValue);
+          formData.append(`actionPlans[${index}].cabang`, actionValue.id);
         } else if (actionKey === 'PIC') {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
         } else {
@@ -299,6 +299,89 @@ export const getAllList = (pagination, keyword, user) => {
   };
 };
 
+export const approveLED = (id, user) => {
+  const queryString = stringify(
+    {
+      id,
+      nip: user.nip,
+      role: user.role,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchListStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `approve-form-led?` + queryString, {
+        method: 'PATCH',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchListSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchListFailure(err));
+    }
+  };
+};
+
+export const sendBackLED = (id, user, comment) => {
+  const queryString = stringify(
+    {
+      id,
+      nip: user.nip,
+      role: user.role,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchListStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    const requestBody = {
+      komentar: comment,
+    };
+
+    try {
+      const res = await fetch(API_URL + `sendback-form-led?` + queryString, {
+        method: 'PATCH',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchListSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchListFailure(err));
+    }
+  };
+};
+
 export const FETCH_INBOX_REQUEST = 'FETCH_INBOX_REQUEST';
 export const FETCH_INBOX_SUCCESS = 'FETCH_INBOX_SUCCESS';
 export const FETCH_INBOX_FAILURE = 'FETCH_INBOX_FAILURE';
@@ -331,7 +414,6 @@ export const getAllInbox = (pagination, keyword, user) => {
       encode: false,
     },
   );
-
   return async (dispatch) => {
     dispatch(fetchInboxStart());
 
@@ -360,7 +442,7 @@ export const getAllInbox = (pagination, keyword, user) => {
 
 export const FETCH_ONE_FORM_LED_REQUEST = 'FETCH_ONE_FORM_LED_REQUEST';
 export const FETCH_ONE_FORM_LED_SUCCESS = 'FETCH_ONE_FORM_LED_SUCCESS';
-export const FETCH_ONE_FORM_LED_FAILURE = 'FETCH_FORM_LED_FAILURE';
+export const FETCH_ONE_FORM_LED_FAILURE = 'FETCH_ONE_FORM_LED_FAILURE';
 
 export const fetchOneFormLedStart = () => ({
   type: FETCH_ONE_FORM_LED_REQUEST,
@@ -411,6 +493,63 @@ export const getOneFormLed = (id) => {
     } catch (err) {
       console.log(err);
       dispatch(fetchOneFormLedFailure(err));
+    }
+  };
+};
+
+export const FETCH_HISTORY_LED_REQUEST = 'FETCH_HISTORY_LED_REQUEST';
+export const FETCH_HISTORY_LED_SUCCESS = 'FETCH_HISTORY_LED_SUCCESS';
+export const FETCH_HISTORY_LED_FAILURE = 'FETCH_HISTORY_LED_FAILURE';
+
+export const fetchHistoryLedStart = () => ({
+  type: FETCH_HISTORY_LED_REQUEST,
+});
+
+export const fetchHistoryLedSuccess = (data) => ({
+  type: FETCH_HISTORY_LED_SUCCESS,
+  payload: data,
+});
+
+export const fetchHistoryLedFailure = (error) => ({
+  type: FETCH_HISTORY_LED_FAILURE,
+  payload: error,
+});
+
+export const getHistoryLED = (id) => {
+  const queryString = stringify(
+    {
+      id,
+      // nip: payload?.nip,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchHistoryLedStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-history?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+
+      if (res.status === 200) {
+        dispatch(fetchHistoryLedSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchHistoryLedFailure(err));
     }
   };
 };

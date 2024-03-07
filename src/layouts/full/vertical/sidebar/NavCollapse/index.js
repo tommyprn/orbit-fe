@@ -38,17 +38,14 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
     whiteSpace: 'nowrap',
     '&:hover': {
-      backgroundColor:
-        pathname.includes(menu.href) || open
-          ? theme.palette.primary.main
-          : theme.palette.primary.light,
-      color: pathname.includes(menu.href) || open ? 'white' : theme.palette.primary.main,
+      backgroundColor: 'rgb(85,26,139,0.7)',
+      color: 'white',
     },
     color:
       open && level < 2
-        ? theme.palette.primary.main
+        ? 'rgb(85,26,139)'
         : `inherit` && level > 1 && open
-        ? theme.palette.primary.main
+        ? 'rgb(85,26,139)'
         : theme.palette.text.secondary,
     borderRadius: `${customizer.borderRadius}px`,
   }));

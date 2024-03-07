@@ -11,11 +11,13 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  Typography,
   TableContainer,
   TablePagination,
 } from '@mui/material';
+import { blueGrey, red, purple, blue } from '@mui/material/colors';
 import { getAllList } from 'src/actions/formLEDActions';
-import { IconFileDescription } from '@tabler/icons';
+import { IconFileDescription, IconHistory } from '@tabler/icons';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -61,6 +63,10 @@ const ListLED = (props) => {
     navigation(`/LED/detailReport/${id}`);
   };
 
+  const openHistory = (values) => {
+    // setKeyword(values);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -82,87 +88,106 @@ const ListLED = (props) => {
       <Breadcrumb title="List" items={BCrumb} />
 
       <DashboardCard>
-        <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
-          <SearchBar onSubmit={(val) => onSearch(val)} />
+        <div
+          style={{
+            gap: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+          }}
+        >
+          {data?.totalData > 0 ? (
+            <>
+              <SearchBar onSubmit={(val) => onSearch(val)} />
 
-          <Paper
-            sx={{
-              maxWidth: '100%',
-              overflow: 'hidden',
-            }}
-            elevation={0}
-            variant="outlined"
-          >
-            <TableContainer>
-              <Table size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>no</TableCell>
-                    <TableCell>ID</TableCell>
-                    <TableCell>Divisi/ Cabang</TableCell>
-                    <TableCell>Status Kejadian</TableCell>
-                    <TableCell>Tanggal Lapor</TableCell>
-                    <TableCell>Status Laporan</TableCell>
-                    <TableCell>Aksi</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.data?.map((row, index) => (
-                    <StyledTableRow
-                      key={index}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row.id}</TableCell>
-                      <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
-                      <TableCell>{row.statusKejadian.nama}</TableCell>
-                      <TableCell>
-                        {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                      </TableCell>
-                      <TableCell>{row.statusLaporan.nama}</TableCell>
-                      <TableCell>
-                        <Button
-                          size="small"
-                          color={'primary'}
-                          variant="contained"
-                          startIcon={<IconFileDescription />}
-                          onClick={() => {
-                            onDetail(row.id);
-                          }}
+              <Paper
+                sx={{
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                }}
+                elevation={0}
+                variant="outlined"
+              >
+                <TableContainer>
+                  <Table size="small" aria-label="a dense table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>no</TableCell>
+                        <TableCell>ID</TableCell>
+                        <TableCell>Divisi/ Cabang</TableCell>
+                        <TableCell>Status Kejadian</TableCell>
+                        <TableCell>Tanggal Lapor</TableCell>
+                        <TableCell>Status Laporan</TableCell>
+                        <TableCell>Aksi</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data?.data?.map((row, index) => (
+                        <StyledTableRow
+                          key={index}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                          {'Detail'}
-                        </Button>
-                      </TableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 1,
-              }}
-              page={page}
-              count={data.totalData ?? 0}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              labelRowsPerPage={'Baris per halaman'}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-
-          {/* {LED.LED?.data?.map((item) => {
-            return (
-              <div key={item.id}>
-                <ReportCard LED={item} list />
-              </div>
-            );
-          })} */}
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{row.idLaporan}</TableCell>
+                          <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
+                          <TableCell>{row.statusKejadian.nama}</TableCell>
+                          <TableCell>
+                            {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                          </TableCell>
+                          <TableCell>{row.statusLaporan.nama}</TableCell>
+                          <TableCell>
+                            <Button
+                              sx={{ marginRight: 1 }}
+                              size="small"
+                              color="primary"
+                              variant="contained"
+                              startIcon={<IconFileDescription />}
+                              onClick={() => {
+                                onDetail(row.id);
+                              }}
+                            >
+                              Detail
+                            </Button>
+                            <Button
+                              size="small"
+                              color="success"
+                              variant="contained"
+                              startIcon={<IconHistory />}
+                              onClick={() => {
+                                openHistory(row.id);
+                              }}
+                            >
+                              History
+                            </Button>
+                          </TableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  sx={{
+                    display: 'flex',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 1,
+                  }}
+                  page={page}
+                  count={data.totalData ?? 0}
+                  component="div"
+                  rowsPerPage={rowsPerPage}
+                  onPageChange={handleChangePage}
+                  labelRowsPerPage={'Baris per halaman'}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            </>
+          ) : (
+            <Typography textAlign={'center'} variant="h2">
+              Belum ada laporan pending saat ini
+            </Typography>
+          )}
         </div>
       </DashboardCard>
     </PageContainer>

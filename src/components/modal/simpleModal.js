@@ -9,10 +9,10 @@ const style = {
   p: 3,
 };
 
-const SimpleModal = ({ title, isOpen, children, onCloseHandler }) => {
+const SimpleModal = ({ title, isOpen, children, newStyle, onCloseHandler }) => {
   return (
     <Modal open={isOpen} onClose={onCloseHandler}>
-      <Box sx={style}>
+      <Box sx={newStyle ? newStyle : style}>
         <div
           style={{
             display: 'flex',

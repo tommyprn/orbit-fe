@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -34,7 +35,7 @@ import Spinner from '../spinner/Spinner';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
-import QuillTextField from 'src/components/quil-text/quill-text';
+import QuillTextField from 'src/components/forms/quil-text/quill-text';
 import CustomAutoComplete from 'src/components/shared/custom-auto-complete';
 
 const BCrumb = [
@@ -48,6 +49,7 @@ const EditFormLED = (props) => {
   const navigate = useNavigate();
   const { masterData, getDropdown, createFormLed, createDraftLed } = props;
 
+  const [slaNotif, setSLANotif] = useState('');
   const [snackOpen, setsnackOpen] = useState(false);
   const [rows, setRows] = useState([
     {
@@ -112,8 +114,8 @@ const EditFormLED = (props) => {
           plan: '',
           file: '',
           email: '',
-          branch: 0,
-          workUnit: 0,
+          branch: { id: 0, label: '' },
+          workUnit: { id: 0, label: '' },
           isBranch: false,
           targetDate: '',
         },
@@ -194,8 +196,14 @@ const EditFormLED = (props) => {
     setsnackOpen(false);
   };
 
+  const dateDiff = (start, end) => {
+    const diff = dayjs(start).diff(end, 'day');
+    return diff;
+  };
+
   const onSaveAsDraft = async () => {
     await createDraftLed(formik.values, user);
+    navigate('/LED/Inbox');
   };
 
   return (
@@ -273,7 +281,7 @@ const EditFormLED = (props) => {
 
             <div className="form-input-wrapper">
               <Typography variant="body1" sx={{ width: '20%' }}>
-                Konologi singkat
+                Kronologi singkat
               </Typography>
 
               <TextField
@@ -300,7 +308,13 @@ const EditFormLED = (props) => {
                 format=" DD - MMM - YYYY"
                 error={formik.touched.reportDate && Boolean(formik.errors.reportDate)}
                 onBlur={formik.handleBlur}
-                onChange={(value) => formik.setFieldValue('reportDate', String(value))}
+                onChange={(value) => {
+                  formik.setFieldValue('reportDate', String(value));
+                  const diff = dateDiff(value, formik.values.incidentDate);
+                  if (diff > 5) {
+                    setSLANotif('kejadian ini sudah melewati SLA');
+                  }
+                }}
                 helperText={formik.touched.reportDate && formik.errors.reportDate}
               />
             </div>
@@ -310,15 +324,28 @@ const EditFormLED = (props) => {
                 Tanggal kejadian
               </Typography>
 
-              <DatePicker
-                id="incidentDate"
-                sx={{ width: '80%' }}
-                format=" DD - MMM - YYYY"
-                error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
-                onBlur={formik.handleBlur}
-                onChange={(value) => formik.setFieldValue('incidentDate', String(value))}
-                helperText={formik.touched.incidentDate && formik.errors.incidentDate}
-              />
+              <div style={{ width: '80%' }}>
+                <DatePicker
+                  id="incidentDate"
+                  sx={{ width: '100%' }}
+                  format=" DD - MMM - YYYY"
+                  error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
+                  onBlur={formik.handleBlur}
+                  onChange={(value) => {
+                    formik.setFieldValue('incidentDate', String(value));
+                    const diff = dateDiff(value, formik.values.reportDate);
+                    if (diff > 5) {
+                      setSLANotif('kejadian ini sudah melewati SLA');
+                    }
+                  }}
+                  helperText={formik.touched.incidentDate && formik.errors.incidentDate}
+                />
+                {slaNotif ? (
+                  <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
+                    {slaNotif}
+                  </Typography>
+                ) : null}
+              </div>
             </div>
 
             <div className="form-input-wrapper">
@@ -624,7 +651,6 @@ const EditFormLED = (props) => {
               <Paper
                 sx={{
                   maxWidth: '100%',
-
                   overflow: 'hidden',
                 }}
               >
@@ -806,7 +832,12 @@ const EditFormLED = (props) => {
               <Button variant="contained" color="error">
                 Batal
               </Button>
-              <Button variant="contained" color="warning" onClick={onSaveAsDraft}>
+              <Button
+                variant="contained"
+                color="warning"
+                disabled={!formik.dirty}
+                onClick={onSaveAsDraft}
+              >
                 Draft
               </Button>
               <Button

@@ -10,7 +10,14 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
     formik.setFieldValue(`actionPlan.${index}.isBranch`, !branch);
   };
   return (
-    <>
+    <div
+      style={{
+        gap: '8px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+      }}
+    >
       <FormControlLabel
         control={<Switch defaultChecked onChange={onCheck} />}
         label={branch ? 'Kode Cabang' : 'Kode Unit Kerja'}
@@ -32,7 +39,7 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
           } else {
             formik.setFieldValue(
               branch ? `actionPlan.${index}.branch` : `actionPlan.${index}.workUnit`,
-              newValue.id,
+              newValue,
             );
             formik.setFieldValue(
               branch ? `actionPlan.${index}.workUnit` : `actionPlan.${index}.branch`,
@@ -65,7 +72,7 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
           />
         )}
       />
-    </>
+    </div>
   );
 };
 

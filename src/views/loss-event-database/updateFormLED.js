@@ -1,124 +1,112 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import dayjs from 'dayjs';
-import { useNavigate, useParams } from 'react-router';
 import { connect } from 'react-redux';
+import { useFormik } from 'formik';
+import { IconCloudUpload } from '@tabler/icons';
+import { useNavigate, useParams } from 'react-router';
 import {
   Card,
   Table,
   Paper,
   Button,
   Divider,
+  Checkbox,
   TableRow,
   TableBody,
   TableCell,
   TableHead,
+  TextField,
   Typography,
   TableContainer,
 } from '@mui/material';
-import { IconDownload } from '@tabler/icons';
-import { getOneFormLed, sendBackLED } from 'src/actions/formLEDActions';
+import { getDropdown } from 'src/actions/masterDataActions';
+import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
 
+import './formLED.css';
 import './detailLED.css';
 
 // component
 import Spinner from '../spinner/Spinner';
-import AddComment from 'src/components/forms/add-comment';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import DetailWrapper from 'src/components/shared/detail-wrapper';
-import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
+import DashboardCard from '../../components/shared/DashboardCard';
 
 const BCrumb = [
   {
-    title: 'Silahkan mengisi data dibawah ini untuk membuat laporan LED',
+    title: 'Mohon pastikan data yang telah anda ubah terisi dengan benar',
   },
 ];
 
-const DetailLED = (props) => {
-  const user = JSON.parse(localStorage.getItem('history'));
+const UpdateFormLED = (props) => {
   const params = useParams();
   const navigate = useNavigate();
-  const { detail, isLoading, sendBackLED, getOneFormLed } = props;
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '60vw',
-    bgcolor: 'background.paper',
-    p: 3,
-  };
+  const user = JSON.parse(localStorage.getItem('history'));
+  const { detail, isLoading, approveLED, masterData, getDropdown, editFormLed, getOneFormLed } =
+    props;
 
-  const [rejectModal, setRejectModal] = useState(false);
+  const dataLaporan = detail?.laporanLed;
+  const dataActionPlan = detail?.actionPlans;
 
   useEffect(() => {
     (async () => {
+      await getDropdown();
       await getOneFormLed(params.reportId);
     })();
-  }, [getOneFormLed]);
+  }, [getDropdown, getOneFormLed, params.reportId]);
+
+  const formik = useFormik({
+    initialValues: {
+      id: dataLaporan?.idLaporan,
+      actionPlan:
+        dataActionPlan?.map((item) => {
+          return {
+            id: item.id ?? 0,
+            file: item.namaFile ?? '',
+          };
+        }) ?? [],
+    },
+    enableReinitialize: true,
+    // validationSchema: validationSchema,
+
+    onSubmit: (values) => {
+      editFormLed(values);
+      navigate('/LED/list');
+    },
+  });
 
   const formatNumber = (value) => {
     const numericValue = parseFloat(value);
-    if (!isNaN(numericValue) && numericValue > 0) {
-      return numericValue?.toLocaleString('ID-id');
+    if (!isNaN(numericValue)) {
+      return numericValue.toLocaleString('en-US');
     }
-    return '-';
+    return '0';
   };
 
   const formatDate = (value) => {
     return dayjs(value).format('DD MMMM YYYY');
   };
 
-  const backHandler = () => {
+  const onCancel = () => {
     navigate(-1);
   };
 
-  // reject function
-  const onRejectReport = () => {
-    if (user.role === 'approver') {
-      setRejectModal(true);
-    }
+  const onApprove = async (id) => {
+    await approveLED(id, user);
+    navigate('/LED/List');
   };
-
-  const onRejectConfirm = async (comment) => {
-    await sendBackLED(detail.laporanLed.id, user, comment);
-    navigate('/LED/list');
-  };
-
-  const onCancelReject = () => {
-    setRejectModal(false);
-  };
-
-  // const domParser = (htmlString) => {
-  //   const parser = new DOMParser();
-  //   if (htmlString) {
-  //     const html = parser?.parseFromString(htmlString, 'text/html');
-  //     return html?.body;
-  //   }
-  // };
-
-  const dataLaporan = detail?.laporanLed;
-  const dataActionPlan = detail?.actionPlans;
 
   return (
-    <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
-      <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
-
-      <AddComment
-        title="Alasan Laporan ditolak"
-        isOpen={rejectModal}
-        newStyle={style}
-        onCloseHandler={onCancelReject}
-        onSaveHandler={onRejectConfirm}
-      />
+    <PageContainer title="Edit Laporan Loss Event Database (LED)" description="EditFormLED Page">
+      <Breadcrumb title="Edit Laporan LED" items={BCrumb} />
 
       <DashboardCard>
-        {isLoading ? (
+        {masterData?.isLoading || isLoading || (!dataLaporan && !dataActionPlan) ? (
           <Spinner />
         ) : (
-          <div className="form-sheet">
+          <form onSubmit={formik.handleSubmit} className="form-sheet">
             <div className="form-title">
-              <Typography variant="h4">Nomor Insiden: {dataLaporan?.idLaporan} </Typography>
+              <Typography variant="h4">Incident Number: {dataLaporan?.idLaporan}</Typography>
             </div>
 
             <>
@@ -228,7 +216,9 @@ const DetailLED = (props) => {
                   alignItems: 'flex-start',
                 }}
               >
-                <Typography variant="h6">Tindak Lanjut</Typography>
+                <Typography variant="h6" sx={{ width: '20%' }}>
+                  Tindak Lanjut
+                </Typography>
               </div>
 
               <Paper
@@ -242,19 +232,24 @@ const DetailLED = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell>no</TableCell>
-                        <TableCell>Action Plan</TableCell>
-                        <TableCell>Unit Kerja/ Cabang</TableCell>
-                        <TableCell>PIC</TableCell>
-                        <TableCell>Email PIC</TableCell>
-                        <TableCell>Target penyelesaian</TableCell>
-                        <TableCell>Lampiran</TableCell>
+                        <TableCell sx={{ width: '400px' }}>Action Plan*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>Unit Kerja*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>PIC*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>Email PIC*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>Tanggal target penyelesaian*</TableCell>
+                        <TableCell sx={{ width: '200px' }}>Lampiran</TableCell>
+                        <TableCell>Status Done</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {dataActionPlan?.map((row, index) => {
                         return (
-                          <TableRow key={index}>
+                          <TableRow
+                            key={index}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
                             <TableCell>{index + 1}</TableCell>
+
                             <TableCell>
                               <Typography variant="body1">{row?.actionPlan}</Typography>
                             </TableCell>
@@ -281,19 +276,56 @@ const DetailLED = (props) => {
                                 {formatDate(row?.targetPenyelesaian)}
                               </Typography>
                             </TableCell>
+
                             <TableCell>
-                              {row?.namaFile ? (
-                                <Button startIcon={<IconDownload />}>
-                                  <a
-                                    id={row.id}
-                                    href={`http://10.80.240.45:1933/api/v1/download-lampiran?id=${row.id}`}
-                                  >
-                                    {row.namaFile}
-                                  </a>
+                              {
+                                <Button
+                                  sx={{ width: '200px' }}
+                                  variant="outlined"
+                                  component="label"
+                                  startIcon={<IconCloudUpload />}
+                                >
+                                  <Typography sx={{ width: '100%', textAlign: 'center' }}>
+                                    {formik.values?.actionPlan?.[index]?.file !== ''
+                                      ? formik.values?.actionPlan?.[index]?.file.name ||
+                                        formik.values?.actionPlan?.[index]?.file
+                                      : 'Upload file'}
+                                  </Typography>
+                                  <TextField
+                                    id={`actionPlan.${index}.file`}
+                                    sx={{
+                                      clip: 'rect(0 0 0 0)',
+                                      left: 0,
+                                      width: 1,
+                                      height: 1,
+                                      bottom: 0,
+                                      overflow: 'hidden',
+                                      position: 'absolute',
+                                      clipPath: 'inset(50%)',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                    type="file"
+                                    error={
+                                      formik.touched?.actionPlan?.[index]?.file &&
+                                      Boolean(formik.errors?.actionPlan?.[index]?.file)
+                                    }
+                                    onBlur={formik.handleBlur}
+                                    variant="standard"
+                                    onChange={(event) => {
+                                      const files = event.target.files[0];
+                                      formik.setFieldValue(`actionPlan.${index}.file`, files);
+                                    }}
+                                    helperText={
+                                      formik.touched?.actionPlan?.[index]?.file &&
+                                      formik.errors?.actionPlan?.[index]?.file
+                                    }
+                                    placeholder="lampiran laporan"
+                                  />
                                 </Button>
-                              ) : (
-                                <Typography variant="body1">Tidak ada File</Typography>
-                              )}
+                              }
+                            </TableCell>
+                            <TableCell>
+                              <Checkbox />
                             </TableCell>
                           </TableRow>
                         );
@@ -303,18 +335,32 @@ const DetailLED = (props) => {
                 </TableContainer>
               </Paper>
             </Card>
-
             <div className="button-wrapper">
-              {user?.role === 'inputer' ? null : (
-                <Button variant="contained" color="error" onClick={onRejectReport}>
-                  Tolak Laporan
-                </Button>
-              )}
-              <Button variant="contained" onClick={backHandler}>
+              <Button variant="contained" color="error" onClick={onCancel}>
                 Kembali
               </Button>
+
+              {user.role === 'inputer' ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={!formik.isValid || !formik.dirty}
+                >
+                  Submit
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="button"
+                  onClick={() => onApprove(dataLaporan?.id)}
+                >
+                  Approve LED
+                </Button>
+              )}
             </div>
-          </div>
+          </form>
         )}
       </DashboardCard>
     </PageContainer>
@@ -325,14 +371,17 @@ const mapStateToProps = (state) => {
   return {
     detail: state.LED.detail.data,
     isLoading: state.LED.isLoading,
+    masterData: state.masterData,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    approveLED: (id, user) => dispatch(approveLED(id, user)),
+    getDropdown: () => dispatch(getDropdown()),
+    editFormLed: (payload) => dispatch(editFormLed(payload)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
-    sendBackLED: (id, user) => dispatch(sendBackLED(id, user)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DetailLED);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateFormLED);

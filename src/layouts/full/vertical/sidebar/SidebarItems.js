@@ -17,7 +17,6 @@ const SidebarItems = () => {
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
 
   const Menuitems = JSON.parse(localStorage.getItem('menuItem'));
-
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav">
