@@ -11,6 +11,7 @@ import {
   Alert,
   Table,
   Paper,
+  styled,
   Button,
   Divider,
   Snackbar,
@@ -43,6 +44,19 @@ const BCrumb = [
     title: 'Silahkan mengisi data dibawah ini untuk membuat laporan LED',
   },
 ];
+
+const GroupHeader = styled('div')(({ theme }) => ({
+  position: 'sticky',
+  top: '-8px',
+  padding: '4px 8px',
+  color: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.light,
+}));
+
+const GroupItems = styled('ul')({
+  padding: '0',
+  backgroundColor: '#ffffff',
+});
 
 const EditFormLED = (props) => {
   const user = JSON.parse(localStorage.getItem('history'));
@@ -204,6 +218,23 @@ const EditFormLED = (props) => {
   const onSaveAsDraft = async () => {
     await createDraftLed(formik.values, user);
     navigate('/LED/Inbox');
+  };
+
+  const createGroupedOption = (option) => {
+    if (option === undefined) {
+      return [];
+    } else {
+      return option?.map((item) => {
+        return {
+          id: item.id,
+          label: item.nama,
+          idSubCategory: item.subKategori.id,
+          labelSubCategory: item.subKategori.nama,
+          idCategory: item.subKategori.kategoriKejadian.id,
+          labelCategory: item.subKategori.kategoriKejadian.nama,
+        };
+      });
+    }
   };
 
   return (
@@ -427,7 +458,10 @@ const EditFormLED = (props) => {
                 id={'caseCategory'}
                 sx={{ width: '80%' }}
                 value={caseCategoryValue}
-                options={createOption(masterData.dropdown.caseCategory.levelThree)}
+                options={createGroupedOption(masterData.dropdown.caseCategory.levelThree).sort(
+                  (a, b) => a.idCategory - b.idCategory,
+                )}
+                groupBy={(option) => option.labelCategory}
                 onChange={(event, newValue) => {
                   if (newValue === null) {
                     setCaseCategoryValue({ id: 0, label: '' });
@@ -448,6 +482,14 @@ const EditFormLED = (props) => {
                     placeholder="pilih kategori"
                   />
                 )}
+                renderGroup={(params) => {
+                  return (
+                    <li key={params.key}>
+                      <GroupHeader>{params.group}</GroupHeader>
+                      <GroupItems>{params.children}</GroupItems>
+                    </li>
+                  );
+                }}
               />
             </div>
 

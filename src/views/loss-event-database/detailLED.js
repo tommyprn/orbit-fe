@@ -16,7 +16,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import { IconDownload } from '@tabler/icons';
-import { getOneFormLed, sendBackLED } from 'src/actions/formLEDActions';
+import { getOneFormLed, sendBackLED, approveLED } from 'src/actions/formLEDActions';
 
 import './detailLED.css';
 
@@ -24,6 +24,7 @@ import './detailLED.css';
 import Spinner from '../spinner/Spinner';
 import AddComment from 'src/components/forms/add-comment';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import SimpleModal from 'src/components/modal/simpleModal';
 import DetailWrapper from 'src/components/shared/detail-wrapper';
 import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
@@ -38,7 +39,7 @@ const DetailLED = (props) => {
   const user = JSON.parse(localStorage.getItem('history'));
   const params = useParams();
   const navigate = useNavigate();
-  const { detail, isLoading, sendBackLED, getOneFormLed } = props;
+  const { detail, isLoading, approveLED, sendBackLED, getOneFormLed } = props;
   const style = {
     position: 'absolute',
     top: '50%',
@@ -50,6 +51,7 @@ const DetailLED = (props) => {
   };
 
   const [rejectModal, setRejectModal] = useState(false);
+  const [approveModal, setApproveModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -96,9 +98,26 @@ const DetailLED = (props) => {
   //     return html?.body;
   //   }
   // };
+  const onApproveReport = () => {
+    if (user.role === 'approver') {
+      setApproveModal(true);
+    }
+  };
+
+  const onApproveConfirm = async () => {
+    await approveLED(detail.laporanLed.id, user);
+    navigate('/LED/list');
+  };
+
+  const onCancelApprove = () => {
+    setApproveModal(false);
+  };
 
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
+
+  const hideButton =
+    user?.role === 'inputer' || dataLaporan?.statusLaporanEntity?.nama !== 'Recorded';
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -109,8 +128,22 @@ const DetailLED = (props) => {
         isOpen={rejectModal}
         newStyle={style}
         onCloseHandler={onCancelReject}
-        onSaveHandler={onRejectConfirm}
+        onSaveHandler={(value) => onRejectConfirm(value)}
       />
+
+      <SimpleModal isOpen={approveModal} title="Konfirmasi" onCloseHandler={onCancelApprove} on>
+        Apakah kamu yakin ingin menyetujui laporan ini, dan meneruskan ke IRM?
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
+        >
+          <Button variant="contained" color="error" onClick={onCancelApprove}>
+            Batal
+          </Button>
+          <Button variant="contained" onClick={onApproveConfirm}>
+            Simpan
+          </Button>
+        </div>
+      </SimpleModal>
 
       <DashboardCard>
         {isLoading ? (
@@ -305,14 +338,21 @@ const DetailLED = (props) => {
             </Card>
 
             <div className="button-wrapper">
-              {user?.role === 'inputer' ? null : (
-                <Button variant="contained" color="error" onClick={onRejectReport}>
-                  Tolak Laporan
-                </Button>
-              )}
-              <Button variant="contained" onClick={backHandler}>
+              <Button variant="contained" color="warning" onClick={backHandler}>
                 Kembali
               </Button>
+
+              {hideButton ? null : (
+                <>
+                  <Button variant="contained" color="error" onClick={onRejectReport}>
+                    Tolak Laporan
+                  </Button>
+
+                  <Button variant="contained" onClick={onApproveReport}>
+                    Approve Laporan
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -330,8 +370,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    approveLED: (id, user) => dispatch(approveLED(id, user)),
+    sendBackLED: (id, user, comment) => dispatch(sendBackLED(id, user, comment)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
-    sendBackLED: (id, user) => dispatch(sendBackLED(id, user)),
   };
 };
 

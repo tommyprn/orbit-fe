@@ -15,7 +15,6 @@ import {
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { blueGrey, red, purple, blue } from '@mui/material/colors';
 import { getAllList } from 'src/actions/formLEDActions';
 import { IconFileDescription, IconHistory } from '@tabler/icons';
 
@@ -24,6 +23,7 @@ import SearchBar from 'src/components/search-bar/SearchBar';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import HistoryModal from 'src/components/modal/history-modal';
 
 import './inboxLED.css';
 
@@ -51,7 +51,9 @@ const ListLED = (props) => {
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
+  const [selected, setSelected] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [historyModal, setHistoryModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -63,8 +65,14 @@ const ListLED = (props) => {
     navigation(`/LED/detailReport/${id}`);
   };
 
-  const openHistory = (values) => {
-    // setKeyword(values);
+  const openHistory = (id, reportId) => {
+    setSelected({ id: id, reportId: reportId });
+    setHistoryModal(true);
+  };
+
+  const closeHistory = () => {
+    setSelected(0);
+    setHistoryModal(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -86,6 +94,14 @@ const ListLED = (props) => {
   return (
     <PageContainer titdatae="List" description="List LED Page">
       <Breadcrumb title="List" items={BCrumb} />
+
+      <HistoryModal
+        id={selected.id}
+        reportId={selected.reportId}
+        title="History laporan"
+        isOpen={historyModal}
+        onCloseHandler={closeHistory}
+      />
 
       <DashboardCard>
         <div
@@ -154,7 +170,7 @@ const ListLED = (props) => {
                               variant="contained"
                               startIcon={<IconHistory />}
                               onClick={() => {
-                                openHistory(row.id);
+                                openHistory(row.id, row.idLaporan);
                               }}
                             >
                               History

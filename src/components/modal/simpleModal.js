@@ -1,4 +1,6 @@
-import { Modal, Box, Typography } from '@mui/material';
+import { IconX } from '@tabler/icons';
+import { Modal, Box, Typography, IconButton } from '@mui/material';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -24,6 +26,10 @@ const SimpleModal = ({ title, isOpen, children, newStyle, onCloseHandler }) => {
           <Typography id="modal-title" variant="h6" component="h2">
             {title}
           </Typography>
+
+          <IconButton color="inherit" onClick={onCloseHandler}>
+            <IconX size="1rem" />
+          </IconButton>
         </div>
 
         {children}

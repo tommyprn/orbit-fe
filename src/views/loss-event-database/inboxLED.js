@@ -171,18 +171,20 @@ const InboxLED = (props) => {
                             >
                               Detail
                             </Button>
-                            <Button
-                              sx={{ marginRight: '8px' }}
-                              size="small"
-                              color="warning"
-                              variant="contained"
-                              startIcon={<IconPencil />}
-                              onClick={() => {
-                                onEdit(row.id, row.statusLaporan.nama);
-                              }}
-                            >
-                              Edit
-                            </Button>
+                            {user.role === 'inputer' ? (
+                              <Button
+                                sx={{ marginRight: '8px' }}
+                                size="small"
+                                color="warning"
+                                variant="contained"
+                                startIcon={<IconPencil />}
+                                onClick={() => {
+                                  onEdit(row.id, row.statusLaporan.nama);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                            ) : null}
                             <Button
                               size="small"
                               color="success"

@@ -57,20 +57,27 @@ export const validationSchema = yup.object({
         .string(`masukkan email dari PIC yang aktif`)
         .email('mohon masukkan email yang valid')
         .required(`kolom ini wajib diisi`),
-      branch: yup
-        .number(`masukkan opsi dari kejadian`)
-        .typeError('harap pilih kode cabang')
-        .when('isBranch', {
+      branch: yup.object().shape({
+        id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
           is: true,
-          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih kode cabang'),
+          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
         }),
-      workUnit: yup
-        .number(`masukkan opsi dari kejadian`)
-        .typeError('harap pilih kode unit kerja')
-        .when('isBranch', {
+        label: yup.string('opsi tidak ditemukan').when('isBranch', {
+          is: true,
+          then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
+        }),
+      }),
+      workUnit: yup.object().shape({
+        id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
           is: false,
           then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
         }),
+        label: yup.string('opsi tidak ditemukan').when('isBranch', {
+          is: false,
+          then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
+        }),
+      }),
+
       targetDate: yup.string(`input tanggal`).required(`kolom ini wajib dipilih`),
     }),
   ),

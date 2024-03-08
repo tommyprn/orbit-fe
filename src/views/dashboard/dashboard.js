@@ -150,19 +150,22 @@ const Dashboard = (props) => {
                                 onDetail(row.id);
                               }}
                             >
-                              {'Detail'}
+                              Detail
                             </Button>
-                            <Button
-                              size="small"
-                              color="warning"
-                              variant="contained"
-                              startIcon={<IconPencil />}
-                              onClick={() => {
-                                onEdit(row.id);
-                              }}
-                            >
-                              {'Edit'}
-                            </Button>
+                            {user.role === 'inputer' ? (
+                              <Button
+                                sx={{ marginRight: '8px' }}
+                                size="small"
+                                color="warning"
+                                variant="contained"
+                                startIcon={<IconPencil />}
+                                onClick={() => {
+                                  onEdit(row.id, row.statusLaporan.nama);
+                                }}
+                              >
+                                Edit
+                              </Button>
+                            ) : null}
                           </TableCell>
                         </StyledTableRow>
                       ))}

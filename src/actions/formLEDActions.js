@@ -65,9 +65,9 @@ export const createFormLed = (payload, user) => {
         } else if (actionKey === 'targetDate') {
           formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
         } else if (actionKey === 'workUnit') {
-          formData.append(`actionPlans[${index}].unitKerja`, actionValue);
+          formData.append(`actionPlans[${index}].unitKerja`, actionValue.id);
         } else if (actionKey === 'branch') {
-          formData.append(`actionPlans[${index}].cabang`, actionValue);
+          formData.append(`actionPlans[${index}].cabang`, actionValue.id);
         } else if (actionKey === 'PIC') {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
         } else {
@@ -111,9 +111,10 @@ export const editFormLed = (payload) => {
     };
 
     const formData = new FormData();
+    formData.append('id', payload.id);
     formData.append('ssl', payload.costCentre);
     formData.append('dampak', payload.impact);
-    formData.append('idLaporan', payload.id);
+    formData.append('idLaporan', payload.reportId);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
     formData.append('tanggalLapor', payload.reportDate);
@@ -138,6 +139,8 @@ export const editFormLed = (payload) => {
           formData.append(`actionPlans[${index}].targetPenyelesaian`, actionValue);
         } else if (actionKey === 'workUnit') {
           formData.append(`actionPlans[${index}].unitKerja`, actionValue.id);
+        } else if (actionKey === 'branch') {
+          formData.append(`actionPlans[${index}].cabang`, actionValue.id);
         } else if (actionKey === 'PIC') {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
         } else if (actionKey === 'id') {
@@ -181,6 +184,9 @@ export const createDraftLed = (payload, user) => {
     };
 
     const formData = new FormData();
+    if (payload.id) {
+      formData.append('id', payload.id);
+    }
     formData.append('ssl', payload.costCentre);
     formData.append('nip', user.nip);
     formData.append('dampak', payload.impact);
@@ -216,6 +222,8 @@ export const createDraftLed = (payload, user) => {
           formData.append(`actionPlans[${index}].cabang`, actionValue.id);
         } else if (actionKey === 'PIC') {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
+        } else if (actionKey === 'id') {
+          formData.append(`actionPlans[${index}].idActionPlan`, actionValue);
         } else {
         }
       });
@@ -301,11 +309,7 @@ export const getAllList = (pagination, keyword, user) => {
 
 export const approveLED = (id, user) => {
   const queryString = stringify(
-    {
-      id,
-      nip: user.nip,
-      role: user.role,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -320,10 +324,16 @@ export const approveLED = (id, user) => {
       Authorization: 'Bearer ac',
     };
 
+    const requestBody = {
+      id,
+      nip: user.nip,
+    };
+
     try {
       const res = await fetch(API_URL + `approve-form-led?` + queryString, {
         method: 'PATCH',
         headers: requestHeaders,
+        body: JSON.stringify(requestBody),
       });
       const responseJSON = await res.json();
       if (res.status === 200) {
@@ -340,11 +350,7 @@ export const approveLED = (id, user) => {
 
 export const sendBackLED = (id, user, comment) => {
   const queryString = stringify(
-    {
-      id,
-      nip: user.nip,
-      role: user.role,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -360,7 +366,10 @@ export const sendBackLED = (id, user, comment) => {
     };
 
     const requestBody = {
-      komentar: comment,
+      id: id,
+      nip: user.nip,
+      keterangan: comment,
+      // role: user.role,
     };
 
     try {

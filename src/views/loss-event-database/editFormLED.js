@@ -140,7 +140,8 @@ const EditFormLED = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      id: dataLaporan?.idLaporan,
+      id: dataLaporan?.id,
+      reportId: dataLaporan?.idLaporan,
       brief: dataLaporan?.kronologiSingkat ?? '',
       impact: dataLaporan?.dampak ?? '',
       isBranch: false,

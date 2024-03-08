@@ -43,7 +43,10 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
             );
             formik.setFieldValue(
               branch ? `actionPlan.${index}.workUnit` : `actionPlan.${index}.branch`,
-              0,
+              {
+                id: 0,
+                label: '',
+              },
             );
           }
         }}

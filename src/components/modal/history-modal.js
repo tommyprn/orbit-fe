@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { connect } from 'react-redux';
 import dayjs from 'dayjs';
+import { connect } from 'react-redux';
 import {
   Paper,
   Table,
@@ -11,9 +11,9 @@ import {
   TableBody,
   TableContainer,
 } from '@mui/material';
-
 import { getHistoryLED } from 'src/actions/formLEDActions';
 
+// component
 import SimpleModal from './simpleModal';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -37,55 +37,18 @@ const newStyle = {
   transform: 'translate(-50%, -50%)',
 };
 
-const HistoryModal = ({ id, LED, title, isOpen, getHistoryLED, onCloseHandler }) => {
+const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onCloseHandler }) => {
   useEffect(() => {
     (async () => {
       await getHistoryLED(id);
     })();
   }, [id]);
 
-  const data = [
-    {
-      reportId: null,
-      createdBy: 21193342,
-      role: 'Inputer',
-      status: 'D',
-      startDate: new Date(),
-      endDate: new Date(),
-      comment: 'tidak ada',
-      reportStatus: 'draft',
-    },
-    {
-      reportId: 2000302,
-      createdBy: 21193342,
-      role: 'Inputer',
-      status: 'D',
-      startDate: new Date(),
-      endDate: new Date(),
-      comment: 'tidak ada',
-      reportStatus: 'draft',
-    },
-    {
-      reportId: 2000302,
-      createdBy: 21193342,
-      role: 'Inputer',
-      status: 'D',
-      startDate: new Date(),
-      endDate: new Date(),
-      comment: 'tidak ada',
-      reportStatus: 'draft',
-    },
-    {
-      reportId: 2000302,
-      createdBy: 21193342,
-      role: 'Inputer',
-      status: 'D',
-      startDate: new Date(),
-      endDate: new Date(),
-      comment: 'tidak ada',
-      reportStatus: 'draft',
-    },
-  ];
+  const role = {
+    1: 'Inputer',
+    2: 'Approver',
+    3: 'IRM',
+  };
 
   return (
     <SimpleModal title={title} isOpen={isOpen} newStyle={newStyle} onCloseHandler={onCloseHandler}>
@@ -108,25 +71,25 @@ const HistoryModal = ({ id, LED, title, isOpen, getHistoryLED, onCloseHandler })
                 <TableCell>Status</TableCell>
                 <TableCell>Tanggal mulai</TableCell>
                 <TableCell>Tanggal berakhir</TableCell>
-                <TableCell>Keterangan</TableCell>
                 <TableCell>Status laporan</TableCell>
+                <TableCell>Keterangan</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.map((row, index) => (
+              {LED?.data?.map((row, index) => (
                 <StyledTableRow
                   key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{row?.reportId || 'DRAFT'}</TableCell>
+                  <TableCell>{reportId || 'DRAFT'}</TableCell>
                   <TableCell>{row.createdBy}</TableCell>
-                  <TableCell>{row.role}</TableCell>
+                  <TableCell>{role[row.idFlow]}</TableCell>
                   <TableCell>{row.status}</TableCell>
-                  <TableCell>{dayjs(row.startDate).format('DD-MMM-YY')}</TableCell>
-                  <TableCell>{dayjs(row.endDate).format('DD-MMM-YY')}</TableCell>
-                  <TableCell>{row.comment}</TableCell>
-                  <TableCell>{row.reportStatus}</TableCell>
+                  <TableCell>{dayjs(row.tglStart).format('DD-MMM-YY')}</TableCell>
+                  <TableCell>{row.tglEnd ? dayjs(row.tglEnd).format('DD-MMM-YY') : '-'}</TableCell>
+                  <TableCell>{row.statusLaporanEntity?.nama}</TableCell>
+                  <TableCell>{row.keterangan}</TableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
