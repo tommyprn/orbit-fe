@@ -144,7 +144,6 @@ const EditFormLED = (props) => {
       reportId: dataLaporan?.idLaporan,
       brief: dataLaporan?.kronologiSingkat ?? '',
       impact: dataLaporan?.dampak ?? '',
-      isBranch: false,
       caseCause: dataLaporan?.penyebabKejadianEntity?.id ?? 0,
       actionPlan:
         dataActionPlan?.map((item) => {
@@ -154,6 +153,7 @@ const EditFormLED = (props) => {
             file: item.namaFile ?? '',
             plan: item.actionPlan ?? '',
             email: item.email ?? '',
+            isBranch: item.cabangEntity ? true : false,
             branch: item.cabangEntity
               ? { id: item.cabangEntity.id, label: item.cabangEntity.namaCabang }
               : { id: 0, label: '' },
@@ -179,7 +179,7 @@ const EditFormLED = (props) => {
     // validationSchema: validationSchema,
 
     onSubmit: (values) => {
-      editFormLed(values);
+      editFormLed(values, user);
       navigate('/LED/list');
     },
   });
@@ -873,7 +873,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     approveLED: (id, user) => dispatch(approveLED(id, user)),
     getDropdown: () => dispatch(getDropdown()),
-    editFormLed: (payload) => dispatch(editFormLed(payload)),
+    editFormLed: (payload, user) => dispatch(editFormLed(payload, user)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
     createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),
   };

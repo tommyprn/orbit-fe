@@ -16,7 +16,13 @@ import {
   TableContainer,
 } from '@mui/material';
 import { IconDownload } from '@tabler/icons';
-import { getOneFormLed, sendBackLED, approveLED } from 'src/actions/formLEDActions';
+import {
+  rejectIRM,
+  approveLED,
+  approveIRM,
+  sendBackLED,
+  getOneFormLed,
+} from 'src/actions/formLEDActions';
 
 import './detailLED.css';
 
@@ -39,7 +45,9 @@ const DetailLED = (props) => {
   const user = JSON.parse(localStorage.getItem('history'));
   const params = useParams();
   const navigate = useNavigate();
-  const { detail, isLoading, approveLED, sendBackLED, getOneFormLed } = props;
+  const { detail, isLoading, approveIRM, rejectIRM, approveLED, sendBackLED, getOneFormLed } =
+    props;
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -77,36 +85,42 @@ const DetailLED = (props) => {
 
   // reject function
   const onRejectReport = () => {
-    if (user.role === 'approver') {
-      setRejectModal(true);
-    }
+    setRejectModal(true);
   };
 
   const onRejectConfirm = async (comment) => {
-    await sendBackLED(detail.laporanLed.id, user, comment);
-    navigate('/LED/list');
+    let res;
+    if (user.role === 'approver') {
+      res = await sendBackLED(detail.laporanLed.id, user, comment);
+    } else if (user.role === 'IRM') {
+      res = await approveLED(detail.laporanLed.id, user);
+    }
+
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
+    }
   };
 
   const onCancelReject = () => {
     setRejectModal(false);
   };
 
-  // const domParser = (htmlString) => {
-  //   const parser = new DOMParser();
-  //   if (htmlString) {
-  //     const html = parser?.parseFromString(htmlString, 'text/html');
-  //     return html?.body;
-  //   }
-  // };
+  // approve function
   const onApproveReport = () => {
-    if (user.role === 'approver') {
-      setApproveModal(true);
-    }
+    setApproveModal(true);
   };
 
   const onApproveConfirm = async () => {
-    await approveLED(detail.laporanLed.id, user);
-    navigate('/LED/list');
+    let res;
+    if (user.role === 'approver') {
+      res = await approveLED(detail.laporanLed.id, user);
+    } else if (user.role === 'IRM') {
+      res = await approveLED(detail.laporanLed.id, user);
+    }
+
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
+    }
   };
 
   const onCancelApprove = () => {
@@ -345,11 +359,11 @@ const DetailLED = (props) => {
               {hideButton ? null : (
                 <>
                   <Button variant="contained" color="error" onClick={onRejectReport}>
-                    Tolak Laporan
+                    {user.role === 'IRM' ? 'Void' : 'Tolak'} Laporan
                   </Button>
 
                   <Button variant="contained" onClick={onApproveReport}>
-                    Approve Laporan
+                    {user.role === 'IRM' ? 'Terima' : 'Setujui'} Laporan
                   </Button>
                 </>
               )}
@@ -370,7 +384,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    approveIRM: (id, user) => dispatch(approveIRM(id, user)),
     approveLED: (id, user) => dispatch(approveLED(id, user)),
+    rejectIRM: (id, user, comment) => dispatch(rejectIRM(id, user, comment)),
     sendBackLED: (id, user, comment) => dispatch(sendBackLED(id, user, comment)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
   };

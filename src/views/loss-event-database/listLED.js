@@ -138,46 +138,48 @@ const ListLED = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {data?.data?.map((row, index) => (
-                        <StyledTableRow
-                          key={index}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{row.idLaporan}</TableCell>
-                          <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
-                          <TableCell>{row.statusKejadian.nama}</TableCell>
-                          <TableCell>
-                            {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                          </TableCell>
-                          <TableCell>{row.statusLaporan.nama}</TableCell>
-                          <TableCell>
-                            <Button
-                              sx={{ marginRight: 1 }}
-                              size="small"
-                              color="primary"
-                              variant="contained"
-                              startIcon={<IconFileDescription />}
-                              onClick={() => {
-                                onDetail(row.id);
-                              }}
-                            >
-                              Detail
-                            </Button>
-                            <Button
-                              size="small"
-                              color="success"
-                              variant="contained"
-                              startIcon={<IconHistory />}
-                              onClick={() => {
-                                openHistory(row.id, row.idLaporan);
-                              }}
-                            >
-                              History
-                            </Button>
-                          </TableCell>
-                        </StyledTableRow>
-                      ))}
+                      {data?.data?.map((row, index) => {
+                        return (
+                          <StyledTableRow
+                            key={index}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{row.idLaporan}</TableCell>
+                            <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
+                            <TableCell>{row.statusKejadian.nama}</TableCell>
+                            <TableCell>
+                              {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                            </TableCell>
+                            <TableCell>{row.statusLaporan.nama}</TableCell>
+                            <TableCell>
+                              <Button
+                                sx={{ marginRight: 1 }}
+                                size="small"
+                                color="primary"
+                                variant="contained"
+                                startIcon={<IconFileDescription />}
+                                onClick={() => {
+                                  onDetail(row.id);
+                                }}
+                              >
+                                Detail
+                              </Button>
+                              <Button
+                                size="small"
+                                color="success"
+                                variant="contained"
+                                startIcon={<IconHistory />}
+                                onClick={() => {
+                                  openHistory(row.id, row.idLaporan);
+                                }}
+                              >
+                                History
+                              </Button>
+                            </TableCell>
+                          </StyledTableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </TableContainer>

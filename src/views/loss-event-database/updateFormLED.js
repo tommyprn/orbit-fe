@@ -57,20 +57,45 @@ const UpdateFormLED = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      id: dataLaporan?.idLaporan,
-      actionPlan:
-        dataActionPlan?.map((item) => {
-          return {
-            id: item.id ?? 0,
-            file: item.namaFile ?? '',
-          };
-        }) ?? [],
+      id: dataLaporan?.id,
+      brief: dataLaporan?.kronologiSingkat,
+      impact: dataLaporan?.dampak,
+      reportId: dataLaporan?.idLaporan,
+      caseCause: dataLaporan?.penyebabKejadianEntity?.id,
+      caseStatus: dataLaporan?.statusKejadian?.id,
+      costCentre: dataLaporan?.sslEntity?.id,
+      chronology: dataLaporan?.kronologi,
+      reportDate: dayjs(dataLaporan?.tanggalLapor),
+      actualLoss: String(dataLaporan?.nominalRealisasiKerugian),
+      incidentDate: dayjs(dataLaporan?.tanggalKejadian),
+      caseCategory: dataLaporan?.aktivitasEntity?.id,
+      potentialLoss: String(dataLaporan?.potensiKerugian),
+      identifiedDate: dayjs(dataLaporan?.tanggalIdentifikasi),
+      recoveryAmount: String(dataLaporan?.nominalRecovery),
+      recoverySource: dataLaporan?.sumberRecovery,
+      actionPlan: dataActionPlan?.map((item) => {
+        return {
+          id: item.id ?? 0,
+          PIC: item.penanggungJawab,
+          plan: item.actionPlan,
+          file: item.namaFile ?? '',
+          email: item.email,
+          isBranch: item.cabangEntity ? true : false,
+          branch: item.cabangEntity
+            ? { id: item.cabangEntity.id, label: item.cabangEntity.namaCabang }
+            : { id: 0, label: '' },
+          workUnit: item.unitKerjaEntity
+            ? { id: item.unitKerjaEntity.idUnitKerja, label: item.unitKerjaEntity.namaUnitKerja }
+            : { id: 0, label: '' },
+          targetDate: item.targetPenyelesaian,
+        };
+      }),
     },
     enableReinitialize: true,
     // validationSchema: validationSchema,
 
     onSubmit: (values) => {
-      editFormLed(values);
+      editFormLed(values, user);
       navigate('/LED/list');
     },
   });
@@ -379,7 +404,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     approveLED: (id, user) => dispatch(approveLED(id, user)),
     getDropdown: () => dispatch(getDropdown()),
-    editFormLed: (payload) => dispatch(editFormLed(payload)),
+    editFormLed: (payload, user) => dispatch(editFormLed(payload, user)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
   };
 };

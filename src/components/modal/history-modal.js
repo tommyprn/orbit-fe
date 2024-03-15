@@ -40,7 +40,9 @@ const newStyle = {
 const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onCloseHandler }) => {
   useEffect(() => {
     (async () => {
-      await getHistoryLED(id);
+      if (id) {
+        await getHistoryLED(id);
+      }
     })();
   }, [id]);
 
@@ -66,7 +68,7 @@ const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onClose
               <TableRow>
                 <TableCell>no</TableCell>
                 <TableCell>ID laporan</TableCell>
-                <TableCell>NIP</TableCell>
+                <TableCell>NIK</TableCell>
                 <TableCell>Posisi</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Tanggal mulai</TableCell>
@@ -86,8 +88,10 @@ const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onClose
                   <TableCell>{row.createdBy}</TableCell>
                   <TableCell>{role[row.idFlow]}</TableCell>
                   <TableCell>{row.status}</TableCell>
-                  <TableCell>{dayjs(row.tglStart).format('DD-MMM-YY')}</TableCell>
-                  <TableCell>{row.tglEnd ? dayjs(row.tglEnd).format('DD-MMM-YY') : '-'}</TableCell>
+                  <TableCell>{dayjs(row.tglStart).format('DD-MMM-YY | HH:mm:ss')}</TableCell>
+                  <TableCell>
+                    {row.tglEnd ? dayjs(row.tglEnd).format('DD-MMM-YY | HH:mm:ss') : '-'}
+                  </TableCell>
                   <TableCell>{row.statusLaporanEntity?.nama}</TableCell>
                   <TableCell>{row.keterangan}</TableCell>
                 </StyledTableRow>

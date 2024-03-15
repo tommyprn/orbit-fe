@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { IconPoint, IconReport, IconHistory } from '@tabler/icons';
+import { IconPoint, IconReport, IconHistory, IconChartHistogram } from '@tabler/icons';
 
 // mui imports
 import {
@@ -25,6 +25,7 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
     IconPoint: IconPoint,
     IconReport: IconReport,
     IconHistory: IconHistory,
+    IconChartHistogram: IconChartHistogram,
   };
   const Icon = iconConvert[item.icon];
   const itemIcon =
@@ -47,8 +48,8 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
       color: level > 1 ? 'rgb(85,26,139)' : 'white',
     },
     '&.Mui-selected': {
-      color: 'white',
       backgroundColor: 'rgb(85,26,139)',
+      color: 'white',
       '&:hover': {
         backgroundColor: 'rgb(85,26,139,0.7)',
         color: 'white',

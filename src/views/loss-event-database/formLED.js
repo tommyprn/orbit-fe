@@ -8,13 +8,11 @@ import { validationSchema } from './validationForm';
 import { IconX, IconCloudUpload } from '@tabler/icons';
 import {
   Card,
-  Alert,
   Table,
   Paper,
   styled,
   Button,
   Divider,
-  Snackbar,
   TableRow,
   TableBody,
   TableCell,
@@ -29,8 +27,6 @@ import {
 import { getDropdown } from 'src/actions/masterDataActions';
 import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
 
-import './formLED.css';
-
 // component
 import Spinner from '../spinner/Spinner';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
@@ -38,6 +34,8 @@ import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import QuillTextField from 'src/components/forms/quil-text/quill-text';
 import CustomAutoComplete from 'src/components/shared/custom-auto-complete';
+
+import './formLED.css';
 
 const BCrumb = [
   {
@@ -64,7 +62,7 @@ const EditFormLED = (props) => {
   const { masterData, getDropdown, createFormLed, createDraftLed } = props;
 
   const [slaNotif, setSLANotif] = useState('');
-  const [snackOpen, setsnackOpen] = useState(false);
+
   const [rows, setRows] = useState([
     {
       PIC: '',
@@ -106,7 +104,7 @@ const EditFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getDropdown();
+      // await getDropdown();
     })();
   }, [getDropdown]);
 
@@ -147,12 +145,18 @@ const EditFormLED = (props) => {
       recoverySource: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      createFormLed(values, user);
-      navigate('/LED/List');
+    onSubmit: async (values) => {
+      const res = await createFormLed(values, user);
+      if (res.responseCode === 200) {
+        navigate('/LED/List');
+        // setSuccessSnack(true);
+      } else {
+        // setErrorSnack(true);
+      }
     },
   });
 
+  // create option
   const createOption = (option) => {
     if (option === undefined) {
       return [];
@@ -165,18 +169,24 @@ const EditFormLED = (props) => {
       });
     }
   };
-
-  const workUnitOption = createOption(masterData.dropdown.workUnit);
-
-  const branchOption = createOption(masterData.dropdown.branch);
-
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue.toLocaleString('en-US');
+  const createGroupedOption = (option) => {
+    if (option === undefined) {
+      return [];
+    } else {
+      return option?.map((item) => {
+        return {
+          id: item.id,
+          label: item.nama,
+          idSubCategory: item.subKategori.id,
+          labelSubCategory: item.subKategori.nama,
+          idCategory: item.subKategori.kategoriKejadian.id,
+          labelCategory: item.subKategori.kategoriKejadian.nama,
+        };
+      });
     }
-    return '0';
   };
+  const workUnitOption = createOption(masterData.dropdown.workUnit);
+  const branchOption = createOption(masterData.dropdown.branch);
 
   const addRow = () => {
     const actionPlan = [
@@ -202,56 +212,42 @@ const EditFormLED = (props) => {
       setRows(newRows);
       formik.setFieldValue('actionPlan', newForm);
     } else {
-      setsnackOpen(true);
+      // showSnackbar('setiap laporan setidaknya memiliki 1 action plan', 'error');
     }
   };
 
-  const closeSnackBar = () => {
-    setsnackOpen(false);
+  const onSaveAsDraft = async () => {
+    const res = await createDraftLed(formik.values, user);
+    if (res.responseCode === 200) {
+      navigate('/LED/Inbox');
+      // setSuccessSnack(true);
+    } else {
+      // setErrorSnack(true);
+    }
   };
 
+  const backHandler = () => {
+    // showSnackbar('testing snack bro', 'success');
+    navigate(-1);
+  };
+
+  //utils
   const dateDiff = (start, end) => {
     const diff = dayjs(start).diff(end, 'day');
     return diff;
   };
 
-  const onSaveAsDraft = async () => {
-    await createDraftLed(formik.values, user);
-    navigate('/LED/Inbox');
-  };
-
-  const createGroupedOption = (option) => {
-    if (option === undefined) {
-      return [];
-    } else {
-      return option?.map((item) => {
-        return {
-          id: item.id,
-          label: item.nama,
-          idSubCategory: item.subKategori.id,
-          labelSubCategory: item.subKategori.nama,
-          idCategory: item.subKategori.kategoriKejadian.id,
-          labelCategory: item.subKategori.kategoriKejadian.nama,
-        };
-      });
+  const formatNumber = (value) => {
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue)) {
+      return numericValue.toLocaleString('en-US');
     }
+    return '0';
   };
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
       <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
-      <Snackbar
-        key="top center"
-        open={snackOpen}
-        onClose={closeSnackBar}
-        message="Setiap laporan harus memiliki setidaknya 1 action plan"
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={4000}
-      >
-        <Alert severity="error" variant="filled">
-          Setiap laporan harus memiliki Action Plan!
-        </Alert>
-      </Snackbar>
 
       <DashboardCard>
         {masterData?.isLoading ? (
@@ -261,410 +257,416 @@ const EditFormLED = (props) => {
             {/* <div className="form-title">
               <Typography variant="h4">Incident Number: IN-ITY-00001</Typography>
             </div> */}
+            <>
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Status kejadian
+                </Typography>
 
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Status kejadian
-              </Typography>
-
-              <Autocomplete
-                disablePortal
-                id={'caseStatus'}
-                sx={{ width: '80%' }}
-                value={caseStatusValue}
-                options={createOption(masterData.dropdown.caseStatus)}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setCaseStatusValue({ id: 0, label: '' });
-                  } else {
-                    setCaseStatusValue(newValue);
-                    formik.setFieldValue('caseStatus', newValue.id);
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    id="caseStatus"
-                    value={formik.values.caseStatus}
-                    error={formik.touched.caseStatus && Boolean(formik.errors.caseStatus)}
-                    onBlur={formik.handleBlur}
-                    helperText={formik.touched.caseStatus && formik.errors.caseStatus}
-                    placeholder="pilih status kejadian"
-                  />
-                )}
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Kronologi
-              </Typography>
-
-              <QuillTextField
-                id="chronology"
-                value={formik.values.chronology}
-                isError={formik.errors}
-                onChange={(val) => formik.setFieldValue('chronology', val)}
-                helperText="kronologi kejadian wajib diisi"
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Kronologi singkat
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="brief"
-                value={formik.values.brief}
-                error={formik.touched.brief && Boolean(formik.errors.brief)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                onChange={formik.handleChange}
-                helperText={formik.touched.brief && formik.errors.brief}
-                placeholder="ringkasan dari kronologi kejadian tersebut"
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Tanggal lapor
-              </Typography>
-
-              <DatePicker
-                id="reportDate"
-                sx={{ width: '80%' }}
-                format=" DD - MMM - YYYY"
-                error={formik.touched.reportDate && Boolean(formik.errors.reportDate)}
-                onBlur={formik.handleBlur}
-                onChange={(value) => {
-                  formik.setFieldValue('reportDate', String(value));
-                  const diff = dateDiff(value, formik.values.incidentDate);
-                  if (diff > 5) {
-                    setSLANotif('kejadian ini sudah melewati SLA');
-                  }
-                }}
-                helperText={formik.touched.reportDate && formik.errors.reportDate}
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Tanggal kejadian
-              </Typography>
-
-              <div style={{ width: '80%' }}>
-                <DatePicker
-                  id="incidentDate"
-                  sx={{ width: '100%' }}
-                  format=" DD - MMM - YYYY"
-                  error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
-                  onBlur={formik.handleBlur}
-                  onChange={(value) => {
-                    formik.setFieldValue('incidentDate', String(value));
-                    const diff = dateDiff(value, formik.values.reportDate);
-                    if (diff > 5) {
-                      setSLANotif('kejadian ini sudah melewati SLA');
+                <Autocomplete
+                  disablePortal
+                  id={'caseStatus'}
+                  sx={{ width: '80%' }}
+                  value={caseStatusValue}
+                  options={createOption(masterData.dropdown.caseStatus)}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      setCaseStatusValue({ id: 0, label: '' });
+                    } else {
+                      setCaseStatusValue(newValue);
+                      formik.setFieldValue('caseStatus', newValue.id);
                     }
                   }}
-                  helperText={formik.touched.incidentDate && formik.errors.incidentDate}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="caseStatus"
+                      value={formik.values.caseStatus}
+                      error={formik.touched.caseStatus && Boolean(formik.errors.caseStatus)}
+                      onBlur={formik.handleBlur}
+                      helperText={formik.touched.caseStatus && formik.errors.caseStatus}
+                      placeholder="pilih status kejadian"
+                    />
+                  )}
                 />
-                {slaNotif ? (
-                  <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
-                    {slaNotif}
-                  </Typography>
-                ) : null}
               </div>
-            </div>
 
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Tanggal identifikasi
-              </Typography>
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Kronologi
+                </Typography>
 
-              <DatePicker
-                id="identifiedDate"
-                sx={{ width: '80%' }}
-                format=" DD - MMM - YYYY"
-                error={formik.touched.identifiedDate && Boolean(formik.errors.identifiedDate)}
-                onBlur={formik.handleBlur}
-                onChange={(value) => formik.setFieldValue('identifiedDate', String(value))}
-                helperText={formik.touched.identifiedDate && formik.errors.identifiedDate}
-              />
-            </div>
+                <QuillTextField
+                  id="chronology"
+                  value={formik.values.chronology}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('chronology', val)}
+                  helperText="kronologi kejadian wajib diisi"
+                />
+              </div>
 
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Dampak
-              </Typography>
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Kronologi singkat
+                </Typography>
 
-              <QuillTextField
-                id="impact"
-                value={formik.values.impact}
-                isError={formik.errors}
-                onChange={(val) => formik.setFieldValue('impact', val)}
-                helperText="dampak kejadian wajib diisi"
-              />
-            </div>
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="brief"
+                  value={formik.values.brief}
+                  error={formik.touched.brief && Boolean(formik.errors.brief)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  onChange={formik.handleChange}
+                  helperText={formik.touched.brief && formik.errors.brief}
+                  placeholder="ringkasan dari kronologi kejadian tersebut"
+                />
+              </div>
 
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Penyebab kejadian
-              </Typography>
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Tanggal lapor
+                </Typography>
 
-              <Autocomplete
-                disablePortal
-                id={'caseCause'}
-                sx={{ width: '80%' }}
-                value={caseCauseValue}
-                options={createOption(masterData.dropdown.caseCause)}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setCaseCauseValue({ id: 0, label: '' });
-                  } else {
-                    setCaseCauseValue(newValue);
-                    formik.setFieldValue('caseCause', newValue.id);
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    id="caseCause"
-                    value={formik.values.caseCause}
-                    error={formik.touched.caseCause && Boolean(formik.errors.caseCause)}
+                <DatePicker
+                  id="reportDate"
+                  sx={{ width: '80%' }}
+                  format=" DD - MMM - YYYY"
+                  error={formik.touched.reportDate && Boolean(formik.errors.reportDate)}
+                  onBlur={formik.handleBlur}
+                  onChange={(value) => {
+                    formik.setFieldValue('reportDate', String(value));
+                    const diff = dateDiff(value, formik.values.incidentDate);
+                    if (diff > 5) {
+                      setSLANotif('kejadian ini sudah melewati SLA');
+                    } else {
+                      setSLANotif('');
+                    }
+                  }}
+                  helperText={formik.touched.reportDate && formik.errors.reportDate}
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Tanggal kejadian
+                </Typography>
+
+                <div style={{ width: '80%' }}>
+                  <DatePicker
+                    id="incidentDate"
+                    sx={{ width: '100%' }}
+                    format=" DD - MMM - YYYY"
+                    error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
                     onBlur={formik.handleBlur}
-                    helperText={formik.touched.caseCause && formik.errors.caseCause}
-                    placeholder="pilih penyebab kejadian"
+                    onChange={(value) => {
+                      formik.setFieldValue('incidentDate', String(value));
+                      const diff = dateDiff(value, formik.values.reportDate);
+                      if (diff > 5) {
+                        setSLANotif('kejadian ini sudah melewati SLA');
+                      } else {
+                        setSLANotif('');
+                      }
+                    }}
+                    helperText={formik.touched.incidentDate && formik.errors.incidentDate}
                   />
-                )}
-              />
-            </div>
+                  {slaNotif ? (
+                    <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
+                      {slaNotif}
+                    </Typography>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Tanggal identifikasi
+                </Typography>
+
+                <DatePicker
+                  id="identifiedDate"
+                  sx={{ width: '80%' }}
+                  format=" DD - MMM - YYYY"
+                  error={formik.touched.identifiedDate && Boolean(formik.errors.identifiedDate)}
+                  onBlur={formik.handleBlur}
+                  onChange={(value) => formik.setFieldValue('identifiedDate', String(value))}
+                  helperText={formik.touched.identifiedDate && formik.errors.identifiedDate}
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Dampak
+                </Typography>
+
+                <QuillTextField
+                  id="impact"
+                  value={formik.values.impact}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('impact', val)}
+                  helperText="dampak kejadian wajib diisi"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Penyebab kejadian
+                </Typography>
+
+                <Autocomplete
+                  disablePortal
+                  id={'caseCause'}
+                  sx={{ width: '80%' }}
+                  value={caseCauseValue}
+                  options={createOption(masterData.dropdown.caseCause)}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      setCaseCauseValue({ id: 0, label: '' });
+                    } else {
+                      setCaseCauseValue(newValue);
+                      formik.setFieldValue('caseCause', newValue.id);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="caseCause"
+                      value={formik.values.caseCause}
+                      error={formik.touched.caseCause && Boolean(formik.errors.caseCause)}
+                      onBlur={formik.handleBlur}
+                      helperText={formik.touched.caseCause && formik.errors.caseCause}
+                      placeholder="pilih penyebab kejadian"
+                    />
+                  )}
+                />
+              </div>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6" sx={{ width: '20%' }}>
+                Kategori kejadian
+              </Typography>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Aktivitas (level 3)
+                </Typography>
+
+                <Autocomplete
+                  disablePortal
+                  id={'caseCategory'}
+                  sx={{ width: '80%' }}
+                  value={caseCategoryValue}
+                  options={createGroupedOption(masterData.dropdown.caseCategory.levelThree).sort(
+                    (a, b) => a.idCategory - b.idCategory,
+                  )}
+                  groupBy={(option) => option.labelCategory}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      setCaseCategoryValue({ id: 0, label: '' });
+                    } else {
+                      setCaseCategoryValue(newValue);
+                      formik.setFieldValue('caseCategory', newValue.id);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="caseCategory"
+                      value={formik.values.caseCategory}
+                      error={formik.touched.caseCategory && Boolean(formik.errors.caseCategory)}
+                      onBlur={formik.handleBlur}
+                      helperText={formik.touched.caseCategory && formik.errors.caseCategory}
+                      placeholder="pilih kategori"
+                    />
+                  )}
+                  renderGroup={(params) => {
+                    return (
+                      <li key={params.key}>
+                        <GroupHeader>{params.group}</GroupHeader>
+                        <GroupItems>{params.children}</GroupItems>
+                      </li>
+                    );
+                  }}
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Sub kategori (level 2)
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%', color: 'black' }}
+                  id="subCategory"
+                  value={selectedCategory?.subKategori?.nama}
+                  variant="outlined"
+                  placeholder="sub kategori akan terpilih secara otomatis"
+                  disabled
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Kategori (level 1)
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="category"
+                  value={selectedCategory?.subKategori?.kategoriKejadian?.nama}
+                  variant="outlined"
+                  placeholder="kategori akan terpilih secara otomatis"
+                  disabled
+                />
+              </div>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6" sx={{ width: '20%' }}>
+                Kerugian finansial
+              </Typography>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Nominal potensi kerugian
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="potentialLoss"
+                  type="text"
+                  value={formatNumber(formik.values.potentialLoss)}
+                  error={formik.touched.potentialLoss && Boolean(formik.errors.potentialLoss)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  disabled={
+                    caseStatusValue.label === 'Loss Event' || caseStatusValue.label === 'Near Miss'
+                  }
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                    formik.setFieldValue('potentialLoss', newValue);
+                  }}
+                  helperText={formik.touched.potentialLoss && formik.errors.potentialLoss}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                  }}
+                  placeholder="nominal potensi kerugian finansial"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Nominal recovery
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="recoveryAmount"
+                  type="text"
+                  value={formatNumber(formik.values.recoveryAmount)}
+                  error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  disabled={
+                    caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
+                  }
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                    formik.setFieldValue('recoveryAmount', newValue);
+                  }}
+                  helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
+                  placeholder="nominal jumlah pemulihan"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                  }}
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Nominal realisasi kerugian
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="actualLoss"
+                  type="text"
+                  value={formatNumber(formik.values.actualLoss)}
+                  error={formik.touched.actualLoss && Boolean(formik.errors.actualLoss)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  disabled={
+                    caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
+                  }
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                    formik.setFieldValue('actualLoss', newValue);
+                  }}
+                  helperText={formik.touched.actualLoss && formik.errors.actualLoss}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                  }}
+                  placeholder="nominal kerugian aktual"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Detail NO.GL/SSL/Cost Centre
+                </Typography>
+
+                <Autocomplete
+                  disablePortal
+                  id={'costCentre'}
+                  sx={{ width: '80%' }}
+                  value={costCentreValue}
+                  options={createOption(masterData.dropdown.costCentre)}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      setCostCentreValue({ id: 0, label: '' });
+                    } else {
+                      setCostCentreValue(newValue);
+                      formik.setFieldValue('costCentre', newValue.id);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="costCentre"
+                      value={formik.values.costCentre}
+                      error={formik.touched.costCentre && Boolean(formik.errors.costCentre)}
+                      onBlur={formik.handleBlur}
+                      helperText={formik.touched.costCentre && formik.errors.costCentre}
+                      placeholder="pilih kode cost centre"
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Sumber recovery
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="recoverySource"
+                  value={formik.values.recoverySource}
+                  error={formik.touched.recoverySource && Boolean(formik.errors.recoverySource)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  onChange={formik.handleChange}
+                  helperText={formik.touched.recoverySource && formik.errors.recoverySource}
+                  placeholder="tuliskan sumber disini"
+                />
+              </div>
+            </>
 
             <Divider sx={{ marginTop: 'px' }} />
-            <Typography variant="h6" sx={{ width: '20%' }}>
-              Kategori kejadian
-            </Typography>
 
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Aktivitas (level 3)
-              </Typography>
-
-              <Autocomplete
-                disablePortal
-                id={'caseCategory'}
-                sx={{ width: '80%' }}
-                value={caseCategoryValue}
-                options={createGroupedOption(masterData.dropdown.caseCategory.levelThree).sort(
-                  (a, b) => a.idCategory - b.idCategory,
-                )}
-                groupBy={(option) => option.labelCategory}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setCaseCategoryValue({ id: 0, label: '' });
-                  } else {
-                    setCaseCategoryValue(newValue);
-                    formik.setFieldValue('caseCategory', newValue.id);
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    id="caseCategory"
-                    value={formik.values.caseCategory}
-                    error={formik.touched.caseCategory && Boolean(formik.errors.caseCategory)}
-                    onBlur={formik.handleBlur}
-                    helperText={formik.touched.caseCategory && formik.errors.caseCategory}
-                    placeholder="pilih kategori"
-                  />
-                )}
-                renderGroup={(params) => {
-                  return (
-                    <li key={params.key}>
-                      <GroupHeader>{params.group}</GroupHeader>
-                      <GroupItems>{params.children}</GroupItems>
-                    </li>
-                  );
-                }}
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Sub kategori (level 2)
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%', color: 'black' }}
-                id="subCategory"
-                value={selectedCategory?.subKategori?.nama}
-                variant="outlined"
-                placeholder="sub kategori akan terpilih secara otomatis"
-                disabled
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Kategori (level 1)
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="category"
-                value={selectedCategory?.subKategori?.kategoriKejadian?.nama}
-                variant="outlined"
-                placeholder="kategori akan terpilih secara otomatis"
-                disabled
-              />
-            </div>
-
-            <Divider sx={{ marginTop: 'px' }} />
-            <Typography variant="h6" sx={{ width: '20%' }}>
-              Kerugian finansial
-            </Typography>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Nominal potensi kerugian
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="potentialLoss"
-                type="text"
-                value={formatNumber(formik.values.potentialLoss)}
-                error={formik.touched.potentialLoss && Boolean(formik.errors.potentialLoss)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                disabled={
-                  caseStatusValue.label === 'Loss Event' || caseStatusValue.label === 'Near Miss'
-                }
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                  formik.setFieldValue('potentialLoss', newValue);
-                }}
-                helperText={formik.touched.potentialLoss && formik.errors.potentialLoss}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
-                }}
-                placeholder="nominal potensi kerugian finansial"
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Nominal recovery
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="recoveryAmount"
-                type="text"
-                value={formatNumber(formik.values.recoveryAmount)}
-                error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                disabled={
-                  caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
-                }
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                  formik.setFieldValue('recoveryAmount', newValue);
-                }}
-                helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
-                placeholder="nominal jumlah pemulihan"
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
-                }}
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Nominal realisasi kerugian
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="actualLoss"
-                type="text"
-                value={formatNumber(formik.values.actualLoss)}
-                error={formik.touched.actualLoss && Boolean(formik.errors.actualLoss)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                disabled={
-                  caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
-                }
-                onChange={(e) => {
-                  const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                  formik.setFieldValue('actualLoss', newValue);
-                }}
-                helperText={formik.touched.actualLoss && formik.errors.actualLoss}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
-                }}
-                placeholder="nominal kerugian aktual"
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Detail NO.GL/SSL/Cost Centre
-              </Typography>
-
-              <Autocomplete
-                disablePortal
-                id={'costCentre'}
-                sx={{ width: '80%' }}
-                value={costCentreValue}
-                options={createOption(masterData.dropdown.costCentre)}
-                onChange={(event, newValue) => {
-                  if (newValue === null) {
-                    setCostCentreValue({ id: 0, label: '' });
-                  } else {
-                    setCostCentreValue(newValue);
-                    formik.setFieldValue('costCentre', newValue.id);
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    id="costCentre"
-                    value={formik.values.costCentre}
-                    error={formik.touched.costCentre && Boolean(formik.errors.costCentre)}
-                    onBlur={formik.handleBlur}
-                    helperText={formik.touched.costCentre && formik.errors.costCentre}
-                    placeholder="pilih kode cost centre"
-                  />
-                )}
-              />
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Sumber recovery
-              </Typography>
-
-              <TextField
-                sx={{ width: '80%' }}
-                id="recoverySource"
-                value={formik.values.recoverySource}
-                error={formik.touched.recoverySource && Boolean(formik.errors.recoverySource)}
-                onBlur={formik.handleBlur}
-                variant="outlined"
-                onChange={formik.handleChange}
-                helperText={formik.touched.recoverySource && formik.errors.recoverySource}
-                placeholder="tuliskan sumber disini"
-              />
-            </div>
-
-            <Divider sx={{ marginTop: 'px' }} />
             <Card
               elevation={0}
               sx={{
@@ -871,14 +873,15 @@ const EditFormLED = (props) => {
               </Paper>
             </Card>
             <div className="button-wrapper">
-              <Button variant="contained" color="error">
+              <Button variant="contained" type="button" color="error" onClick={backHandler}>
                 Batal
               </Button>
               <Button
-                variant="contained"
+                type="button"
                 color="warning"
-                disabled={!formik.dirty}
+                variant="contained"
                 onClick={onSaveAsDraft}
+                disabled={!formik.dirty}
               >
                 Draft
               </Button>

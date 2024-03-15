@@ -51,7 +51,7 @@ const InboxLED = (props) => {
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState({});
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [historyModal, setHistoryModal] = useState(false);
 
@@ -78,8 +78,8 @@ const InboxLED = (props) => {
     }
   };
 
-  const openHistory = (id) => {
-    setSelected(id);
+  const openHistory = (id, reportId) => {
+    setSelected({ id: id, reportId: reportId });
     setHistoryModal(true);
   };
 
@@ -108,14 +108,13 @@ const InboxLED = (props) => {
     <PageContainer title="Inbox" description="Inbox LED Page">
       <Breadcrumb title="Inbox" items={BCrumb} />
 
-      {selected > 0 ? (
-        <HistoryModal
-          id={selected}
-          title="History laporan"
-          isOpen={historyModal}
-          onCloseHandler={closeHistory}
-        />
-      ) : null}
+      <HistoryModal
+        id={selected.id}
+        reportId={selected.reportId}
+        title="History laporan"
+        isOpen={historyModal}
+        onCloseHandler={closeHistory}
+      />
 
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
@@ -145,60 +144,62 @@ const InboxLED = (props) => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {data?.data?.map((row, index) => (
-                        <StyledTableRow
-                          key={index}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell>{row?.idLaporan}</TableCell>
-                          <TableCell>{row?.unitKerja?.namaUnitKerja}</TableCell>
-                          <TableCell>{row?.statusKejadian?.nama}</TableCell>
-                          <TableCell>
-                            {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                          </TableCell>
-                          <TableCell>{row?.statusLaporan?.nama}</TableCell>
-                          <TableCell>
-                            <Button
-                              sx={{ marginRight: '8px' }}
-                              size="small"
-                              color="primary"
-                              variant="contained"
-                              startIcon={<IconFileDescription />}
-                              onClick={() => {
-                                onDetail(row.id);
-                              }}
-                            >
-                              Detail
-                            </Button>
-                            {user.role === 'inputer' ? (
+                      {data?.data?.map((row, index) => {
+                        return (
+                          <StyledTableRow
+                            key={index}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{row?.idLaporan}</TableCell>
+                            <TableCell>{row?.unitKerja?.namaUnitKerja}</TableCell>
+                            <TableCell>{row?.statusKejadian?.nama}</TableCell>
+                            <TableCell>
+                              {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                            </TableCell>
+                            <TableCell>{row?.statusLaporan?.nama}</TableCell>
+                            <TableCell>
                               <Button
                                 sx={{ marginRight: '8px' }}
                                 size="small"
-                                color="warning"
+                                color="primary"
                                 variant="contained"
-                                startIcon={<IconPencil />}
+                                startIcon={<IconFileDescription />}
                                 onClick={() => {
-                                  onEdit(row.id, row.statusLaporan.nama);
+                                  onDetail(row.id);
                                 }}
                               >
-                                Edit
+                                Detail
                               </Button>
-                            ) : null}
-                            <Button
-                              size="small"
-                              color="success"
-                              variant="contained"
-                              startIcon={<IconHistory />}
-                              onClick={() => {
-                                openHistory(row.id);
-                              }}
-                            >
-                              History
-                            </Button>
-                          </TableCell>
-                        </StyledTableRow>
-                      ))}
+                              {user.role === 'inputer' ? (
+                                <Button
+                                  sx={{ marginRight: '8px' }}
+                                  size="small"
+                                  color="warning"
+                                  variant="contained"
+                                  startIcon={<IconPencil />}
+                                  onClick={() => {
+                                    onEdit(row.id, row.statusLaporan.nama);
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                              ) : null}
+                              <Button
+                                size="small"
+                                color="success"
+                                variant="contained"
+                                startIcon={<IconHistory />}
+                                onClick={() => {
+                                  openHistory(row.id, row.idLaporan);
+                                }}
+                              >
+                                History
+                              </Button>
+                            </TableCell>
+                          </StyledTableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </TableContainer>

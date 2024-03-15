@@ -1,6 +1,6 @@
-import { styled, Container, Box, useTheme } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { styled, Container, Box, useTheme } from '@mui/material';
 
 import Header from './vertical/header/Header';
 import Sidebar from './vertical/sidebar/Sidebar';
@@ -23,8 +23,9 @@ const PageWrapper = styled('div')(() => ({
 
 const FullLayout = () => {
   const customizer = useSelector((state) => state.customizer);
-
   const theme = useTheme();
+
+  // Using the snackbar hook
 
   return (
     <MainWrapper
@@ -52,7 +53,9 @@ const FullLayout = () => {
         {/* ------------------------------------------- */}
         {/* PageContent */}
         {/* ------------------------------------------- */}
-        {''}
+
+        {/* Render the snackbar using CustomSnackBar component */}
+
         <Container
           sx={{
             maxWidth: customizer.isLayout === 'boxed' ? 'lg' : '100%!important',

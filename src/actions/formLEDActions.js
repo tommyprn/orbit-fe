@@ -94,7 +94,7 @@ export const createFormLed = (payload, user) => {
   };
 };
 
-export const editFormLed = (payload) => {
+export const editFormLed = (payload, user) => {
   const queryString = stringify(
     {},
     {
@@ -112,12 +112,16 @@ export const editFormLed = (payload) => {
 
     const formData = new FormData();
     formData.append('id', payload.id);
+    formData.append('nip', user.nip);
     formData.append('ssl', payload.costCentre);
     formData.append('dampak', payload.impact);
-    formData.append('idLaporan', payload.reportId);
+    if (payload.reportId) {
+      formData.append('idLaporan', payload.reportId);
+    }
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
     formData.append('tanggalLapor', payload.reportDate);
+    formData.append('kodeUnitKerja', user.codeDiv);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -374,6 +378,90 @@ export const sendBackLED = (id, user, comment) => {
 
     try {
       const res = await fetch(API_URL + `sendback-form-led?` + queryString, {
+        method: 'PATCH',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchListSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchListFailure(err));
+    }
+  };
+};
+
+export const approveIRM = (id, user) => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchListStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    const requestBody = {
+      id,
+      nip: user.nip,
+    };
+
+    try {
+      const res = await fetch(API_URL + `closed-form-led?` + queryString, {
+        method: 'PATCH',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchListSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchListFailure(err));
+    }
+  };
+};
+
+export const rejectIRM = (id, user, comment) => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchListStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    const requestBody = {
+      id: id,
+      nip: user.nip,
+      keterangan: comment,
+      // role: user.role,
+    };
+
+    try {
+      const res = await fetch(API_URL + `void-form-led?` + queryString, {
         method: 'PATCH',
         headers: requestHeaders,
         body: JSON.stringify(requestBody),
