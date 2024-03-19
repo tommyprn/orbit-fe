@@ -23,8 +23,7 @@ import {
   sendBackLED,
   getOneFormLed,
 } from 'src/actions/formLEDActions';
-
-import './detailLED.css';
+import { showToast } from 'src/utils/use-snackbar';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -34,6 +33,8 @@ import SimpleModal from 'src/components/modal/simpleModal';
 import DetailWrapper from 'src/components/shared/detail-wrapper';
 import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
+
+import './detailLED.css';
 
 const BCrumb = [
   {
@@ -93,11 +94,14 @@ const DetailLED = (props) => {
     if (user.role === 'approver') {
       res = await sendBackLED(detail.laporanLed.id, user, comment);
     } else if (user.role === 'IRM') {
-      res = await approveLED(detail.laporanLed.id, user);
+      res = await rejectIRM(detail.laporanLed.id, user, comment);
     }
 
-    if (res?.responseCode === 200) {
-      navigate('/LED/list');
+    if (res.responseCode === 200) {
+      navigate('/LED/List');
+      showToast('success', 'Laporan dikirim kembali ke RTU');
+    } else {
+      showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');
     }
   };
 
@@ -115,11 +119,14 @@ const DetailLED = (props) => {
     if (user.role === 'approver') {
       res = await approveLED(detail.laporanLed.id, user);
     } else if (user.role === 'IRM') {
-      res = await approveLED(detail.laporanLed.id, user);
+      res = await approveIRM(detail.laporanLed.id, user);
     }
 
-    if (res?.responseCode === 200) {
-      navigate('/LED/list');
+    if (res.responseCode === 200) {
+      navigate('/LED/List');
+      showToast('success', 'berhasil mengubah status laporan');
+    } else {
+      showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');
     }
   };
 
@@ -131,7 +138,9 @@ const DetailLED = (props) => {
   const dataActionPlan = detail?.actionPlans;
 
   const hideButton =
-    user?.role === 'inputer' || dataLaporan?.statusLaporanEntity?.nama !== 'Recorded';
+    user?.role === 'inputer' ||
+    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver') ||
+    (dataLaporan?.statusLaporanEntity?.nama !== 'On Progress' && user?.role === 'IRM');
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -216,7 +225,11 @@ const DetailLED = (props) => {
             <>
               <DetailWrapper
                 title="Aktivitas (level 3)"
-                content={dataLaporan?.aktivitasEntity?.nama}
+                content={
+                  dataLaporan?.aktivitasEntity?.nama +
+                  ' - ' +
+                  dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.kode
+                }
               />
               <DetailWrapper
                 title="Sub kategori (level 2)"
@@ -359,7 +372,7 @@ const DetailLED = (props) => {
               {hideButton ? null : (
                 <>
                   <Button variant="contained" color="error" onClick={onRejectReport}>
-                    {user.role === 'IRM' ? 'Void' : 'Tolak'} Laporan
+                    {user.role === 'IRM' ? 'Void' : 'Revisi'} Laporan
                   </Button>
 
                   <Button variant="contained" onClick={onApproveReport}>

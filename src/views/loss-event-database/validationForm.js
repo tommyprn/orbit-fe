@@ -42,7 +42,6 @@ export const validationSchema = yup.object({
     .typeError('harap pilih cost centre')
     .required(`harap pilih cost centre`),
   recoverySource: yup.string(`masukkan sumber recovery`).required(`sumber recovery wajib diisi`),
-  isBranch: yup.boolean(),
 
   //action plan
   actionPlan: yup.array().of(
@@ -57,27 +56,32 @@ export const validationSchema = yup.object({
         .string(`masukkan email dari PIC yang aktif`)
         .email('mohon masukkan email yang valid')
         .required(`kolom ini wajib diisi`),
-      branch: yup.object().shape({
-        id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
-          is: true,
-          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
-        }),
-        label: yup.string('opsi tidak ditemukan').when('isBranch', {
-          is: true,
-          then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
-        }),
-      }),
-      workUnit: yup.object().shape({
-        id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
-          is: false,
-          then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
-        }),
-        label: yup.string('opsi tidak ditemukan').when('isBranch', {
-          is: false,
-          then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
-        }),
-      }),
-
+      branch: yup
+        .object()
+        .shape({
+          id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
+            is: true,
+            then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
+          }),
+          label: yup.string('opsi tidak ditemukan').when('isBranch', {
+            is: true,
+            then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih cabang'),
+          }),
+        })
+        .default({}),
+      workUnit: yup
+        .object()
+        .shape({
+          id: yup.number(`masukkan opsi dari kejadian`).when('isBranch', {
+            is: false,
+            then: yup.number(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
+          }),
+          label: yup.string('opsi tidak ditemukan').when('isBranch', {
+            is: false,
+            then: yup.string(`masukkan opsi dari kejadian`).required('harap pilih unit kerja'),
+          }),
+        })
+        .default({}),
       targetDate: yup.string(`input tanggal`).required(`kolom ini wajib dipilih`),
     }),
   ),

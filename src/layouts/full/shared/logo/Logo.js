@@ -11,6 +11,7 @@ const Logo = () => {
     width: 'auto',
     overflow: 'hidden',
     display: 'block',
+    marginBottom: '16px',
   }));
 
   return (

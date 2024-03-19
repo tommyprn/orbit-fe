@@ -23,6 +23,7 @@ import {
   TableContainer,
   InputAdornment,
 } from '@mui/material';
+import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { editFormLed, getOneFormLed, approveLED, createDraftLed } from 'src/actions/formLEDActions';
 
@@ -36,6 +37,7 @@ import FormTextField from 'src/components/forms/form-input-textfield/form-input-
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import QuillTextField from 'src/components/forms/quil-text/quill-text';
+import CustomAutoComplete from 'src/components/shared/custom-auto-complete';
 
 const BCrumb = [
   {
@@ -109,28 +111,28 @@ const EditFormLED = (props) => {
   useEffect(() => {
     if (dataLaporan) {
       setCostCentreValue({
-        id: dataLaporan?.sslEntity?.id,
-        label: dataLaporan?.sslEntity?.nama,
+        id: dataLaporan?.sslEntity?.id ?? 0,
+        label: dataLaporan?.sslEntity?.nama ?? '',
       });
       setCaseCauseValue({
-        id: dataLaporan?.penyebabKejadianEntity?.id,
-        label: dataLaporan?.penyebabKejadianEntity?.nama,
+        id: dataLaporan?.penyebabKejadianEntity?.id ?? 0,
+        label: dataLaporan?.penyebabKejadianEntity?.nama ?? '',
       });
       setCaseStatusValue({
-        id: dataLaporan?.statusKejadian?.id,
-        label: dataLaporan?.statusKejadian?.nama,
+        id: dataLaporan?.statusKejadian?.id ?? 0,
+        label: dataLaporan?.statusKejadian?.nama ?? '',
       });
       setCaseCategoryValue({
-        id: dataLaporan?.aktivitasEntity?.id,
-        label: dataLaporan?.aktivitasEntity?.nama,
+        id: dataLaporan?.aktivitasEntity?.id ?? 0,
+        label: dataLaporan?.aktivitasEntity?.nama ?? '',
       });
     }
 
     if (dataActionPlan) {
       const newData = dataActionPlan?.map((item) => {
         return {
-          id: item?.unitKerjaEntity?.idUnitKerja,
-          label: item?.unitKerjaEntity?.namaUnitKerja,
+          id: (item?.unitKerjaEntity?.idUnitKerja || item?.cabangEntity?.id) ?? 0,
+          label: (item?.unitKerjaEntity?.namaUnitKerja || item?.cabangEntity?.namaCabang) ?? '',
         };
       });
 
@@ -176,11 +178,19 @@ const EditFormLED = (props) => {
       recoverySource: dataLaporan?.sumberRecovery ?? '',
     },
     enableReinitialize: true,
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
 
-    onSubmit: (values) => {
-      editFormLed(values, user);
-      navigate('/LED/list');
+    onSubmit: async (values) => {
+      const res = await editFormLed(values, user);
+      if (res.responseCode === 200) {
+        navigate('/LED/List');
+        showToast('success', 'berhasil submit laporan');
+      } else {
+        showToast(
+          'error',
+          'terjadi kesalahan saat mensubmit laporan, mohon periksa kembali input anda',
+        );
+      }
     },
   });
 
@@ -189,7 +199,10 @@ const EditFormLED = (props) => {
       return [];
     } else {
       return option?.map((item) => {
-        return { id: item.id || item.idUnitKerja, label: item.nama || item.namaUnitKerja };
+        return {
+          id: item.id || item.idUnitKerja,
+          label: item.nama || item.namaUnitKerja || item.namaCabang,
+        };
       });
     }
   };
@@ -205,13 +218,23 @@ const EditFormLED = (props) => {
   };
 
   const onSaveAsDraft = async () => {
-    await createDraftLed(formik.values, user);
-    navigate('/LED/Inbox');
+    const res = await createDraftLed(formik.values, user);
+    if (res.responseCode === 200) {
+      navigate('/LED/List');
+      showToast('success', 'laporan berhasil disimpan');
+    } else {
+      showToast('error', 'terjadi kesalahan saat menyimpan laporan, mohon cek kembali input anda');
+    }
   };
 
   const onApprove = async (id) => {
-    await approveLED(id, user);
-    navigate('/LED/List');
+    const res = await approveLED(id, user);
+    if (res.responseCode === 200) {
+      navigate('/LED/List');
+      showToast('success', 'laporan berhasil di approve');
+    } else {
+      showToast('error', 'gagal approve laporan, mohon coba beberapa saat lagi');
+    }
   };
 
   const recordedView = () => {
@@ -224,7 +247,7 @@ const EditFormLED = (props) => {
 
           <Autocomplete
             disablePortal
-            id={'caseStatus'}
+            id="caseStatus"
             sx={{ width: '80%' }}
             value={caseStatusValue}
             options={createOption(masterData.dropdown.caseStatus)}
@@ -346,7 +369,7 @@ const EditFormLED = (props) => {
 
           <Autocomplete
             disablePortal
-            id={'caseCause'}
+            id="caseCause"
             sx={{ width: '80%' }}
             value={caseCauseValue}
             options={createOption(masterData.dropdown.caseCause)}
@@ -586,6 +609,9 @@ const EditFormLED = (props) => {
     );
   };
 
+  const workUnitOption = createOption(masterData.dropdown.workUnit);
+  const branchOption = createOption(masterData.dropdown.branch);
+
   const recordPlanView = (index) => {
     return (
       <>
@@ -610,33 +636,11 @@ const EditFormLED = (props) => {
           />
         </TableCell>
         <TableCell>
-          <Autocomplete
-            id={`actionPlan.${index}.workUnit`}
-            sx={{ width: '200px' }}
-            value={workUnitValue[index]}
-            options={createOption(masterData.dropdown.workUnit)}
-            onChange={(event, newValue) => {
-              formik.setFieldValue(`actionPlan.${index}.workUnit`, newValue);
-            }}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                id={`actionPlan.${index}.workUnit`}
-                value={formik.values?.actionPlan?.[index]?.workUnit}
-                error={
-                  formik.touched?.actionPlan?.[index]?.workUnit &&
-                  Boolean(formik.errors?.actionPlan?.[index]?.workUnit)
-                }
-                onBlur={formik.handleBlur}
-                variant="standard"
-                helperText={
-                  formik.touched?.actionPlan?.[index]?.workUnit &&
-                  formik.errors?.actionPlan?.[index]?.workUnit
-                }
-                placeholder="pilih kode unit kerja"
-              />
-            )}
+          <CustomAutoComplete
+            index={index}
+            formik={formik}
+            branchOption={branchOption}
+            workUnitOption={workUnitOption}
           />
         </TableCell>
         <TableCell>

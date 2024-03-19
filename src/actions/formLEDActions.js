@@ -149,6 +149,8 @@ export const editFormLed = (payload, user) => {
           formData.append(`actionPlans[${index}].penanggungJawab`, actionValue);
         } else if (actionKey === 'id') {
           formData.append(`actionPlans[${index}].idActionPlan`, actionValue);
+        } else if (actionKey === 'isEnable') {
+          formData.append(`actionPlans[${index}].isDone`, actionValue);
         }
       });
     });

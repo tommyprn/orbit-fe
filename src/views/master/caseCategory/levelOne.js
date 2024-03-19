@@ -29,7 +29,7 @@ const LevelOne = (props) => {
     nama: '',
   });
 
-  const header = ['No', 'Kategori', '', 'Aksi'];
+  const header = ['No', 'Kategori', 'Kode', 'Aksi'];
 
   const BCrumb = [
     {

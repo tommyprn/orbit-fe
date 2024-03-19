@@ -19,7 +19,9 @@ import {
   Typography,
   TableContainer,
 } from '@mui/material';
+import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
+import { validationSchema } from './validationForm';
 import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
 
 import './formLED.css';
@@ -88,15 +90,24 @@ const UpdateFormLED = (props) => {
             ? { id: item.unitKerjaEntity.idUnitKerja, label: item.unitKerjaEntity.namaUnitKerja }
             : { id: 0, label: '' },
           targetDate: item.targetPenyelesaian,
+          isEnable: item.isDone ? item.isDone : false,
         };
       }),
     },
     enableReinitialize: true,
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
 
-    onSubmit: (values) => {
-      editFormLed(values, user);
-      navigate('/LED/list');
+    onSubmit: async (values) => {
+      const res = await editFormLed(values, user);
+      if (res.responseCode === 200) {
+        navigate('/LED/List');
+        showToast('success', 'berhasil submit laporan');
+      } else {
+        showToast(
+          'error',
+          'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda',
+        );
+      }
     },
   });
 
@@ -117,8 +128,17 @@ const UpdateFormLED = (props) => {
   };
 
   const onApprove = async (id) => {
-    await approveLED(id, user);
-    navigate('/LED/List');
+    const res = await approveLED(id, user);
+    if (res.responseCode === 200) {
+      navigate('/LED/List');
+      showToast('success', 'berhasil submit laporan');
+    } else {
+      showToast('error', 'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda');
+    }
+  };
+
+  const onCheck = (e, index) => {
+    formik.setFieldValue(`actionPlan.${index}.isEnable`, e.target.checked);
   };
 
   return (
@@ -350,7 +370,10 @@ const UpdateFormLED = (props) => {
                               }
                             </TableCell>
                             <TableCell>
-                              <Checkbox />
+                              <Checkbox
+                                onClick={(e) => onCheck(e, index)}
+                                defaultChecked={row.isDone}
+                              />
                             </TableCell>
                           </TableRow>
                         );
@@ -366,12 +389,7 @@ const UpdateFormLED = (props) => {
               </Button>
 
               {user.role === 'inputer' ? (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  disabled={!formik.isValid || !formik.dirty}
-                >
+                <Button variant="contained" color="primary" type="submit" disabled={!formik.dirty}>
                   Submit
                 </Button>
               ) : (

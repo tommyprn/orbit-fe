@@ -12,8 +12,8 @@ import {
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
+import WorkUnitTable from 'src/components/table/workUnitTable';
 import EditMasterForm from 'src/components/forms/edit-master-form';
-import CaseMasterTable from 'src/components/table/CaseMasterTable';
 import CreateMasterForm from 'src/components/forms/create-master-form';
 
 const WorkUnit = (props) => {
@@ -24,14 +24,16 @@ const WorkUnit = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteMOdalOpen] = useState(false);
-  const [selectedCase, setSelecetedCase] = useState({
+  const [selectedUnit, setSelecetedUnit] = useState({
     id: 0,
+    pic: '',
     code: '',
     name: '',
+    email: '',
     isEnable: true,
   });
 
-  const header = ['No', 'Kode Unit Kerja', 'Nama Unit Kerja', 'Aksi'];
+  const header = ['No', 'Kode Unit Kerja', 'Nama Unit Kerja', 'PIC', 'email', 'Aksi'];
 
   const BCrumb = [
     {
@@ -50,26 +52,30 @@ const WorkUnit = (props) => {
     setCreateModalOpen(true);
   };
   const onCreateSave = async (data) => {
-    const dataToSend = { name: data.name, code: data.code };
+    const dataToSend = { name: data.name, code: data.code, pic: data.pic, email: data.email };
     await createWorkUnit(dataToSend);
     setCreateModalOpen(false);
   };
 
   // Update Controller
   const onEditHandler = (item) => {
-    setSelecetedCase({
+    setSelecetedUnit({
       id: item.idUnitKerja,
+      pic: item.namaPic,
       code: item.kodeUnitKerja,
       name: item.namaUnitKerja,
+      email: item.emailPic,
       isEnable: item.isEnable,
     });
     setEditModalOpen(true);
   };
   const onEditSave = async (data) => {
     const dataToSend = {
-      id: selectedCase.id,
+      id: selectedUnit.id,
+      pic: data.pic,
       name: data.name,
       code: data.code,
+      email: data.email,
       isEnable: data.isEnable,
     };
 
@@ -79,20 +85,22 @@ const WorkUnit = (props) => {
 
   // Delete Controller
   const onDeleteHandler = (item) => {
-    setSelecetedCase({
+    setSelecetedUnit({
       id: item.idUnitKerja,
+      PIC: item.namaPic,
+      email: item.emailPic,
       code: item.kodeUnitKerja,
       name: item.namaUnitKerja,
     });
     setDeleteMOdalOpen(true);
   };
   const onConfirmDelete = async () => {
-    const dataToSend = selectedCase.id;
+    const dataToSend = selectedUnit.id;
     await deleteWorkUnit(dataToSend);
     setDeleteMOdalOpen(false);
   };
   const onCloseHandler = () => {
-    setSelecetedCase({});
+    setSelecetedUnit({});
     setEditModalOpen(false);
     setCreateModalOpen(false);
     setDeleteMOdalOpen(false);
@@ -108,7 +116,7 @@ const WorkUnit = (props) => {
         <Breadcrumb title="Unit Kerja/ Business Lines" items={BCrumb} />
       ) : null}
 
-      <CaseMasterTable
+      <WorkUnitTable
         title={'Data Master Unit Kerja/ Business Lines'}
         master={masterData?.workUnit}
         header={header}
@@ -139,7 +147,7 @@ const WorkUnit = (props) => {
         <EditMasterForm
           workUnit
           masterTitle="unit kerja"
-          selected={selectedCase}
+          selected={selectedUnit}
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
         />

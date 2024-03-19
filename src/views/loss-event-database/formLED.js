@@ -24,6 +24,7 @@ import {
   TableContainer,
   InputAdornment,
 } from '@mui/material';
+import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
 
@@ -104,7 +105,7 @@ const EditFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      // await getDropdown();
+      await getDropdown();
     })();
   }, [getDropdown]);
 
@@ -149,9 +150,12 @@ const EditFormLED = (props) => {
       const res = await createFormLed(values, user);
       if (res.responseCode === 200) {
         navigate('/LED/List');
-        // setSuccessSnack(true);
+        showToast('success', 'berhasil submit laporan');
       } else {
-        // setErrorSnack(true);
+        showToast(
+          'error',
+          'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda',
+        );
       }
     },
   });
@@ -165,6 +169,8 @@ const EditFormLED = (props) => {
         return {
           id: item.id || item.idUnitKerja,
           label: item.nama || item.namaUnitKerja || item.namaCabang,
+          pic: item.namaPic || '',
+          email: item.emailPic || '',
         };
       });
     }
@@ -177,10 +183,11 @@ const EditFormLED = (props) => {
         return {
           id: item.id,
           label: item.nama,
+          idCategory: item.subKategori.kategoriKejadian.id,
+          labelCategory:
+            item.subKategori.kategoriKejadian.nama + ' - ' + item.subKategori.kategoriKejadian.kode,
           idSubCategory: item.subKategori.id,
           labelSubCategory: item.subKategori.nama,
-          idCategory: item.subKategori.kategoriKejadian.id,
-          labelCategory: item.subKategori.kategoriKejadian.nama,
         };
       });
     }
@@ -190,7 +197,7 @@ const EditFormLED = (props) => {
 
   const addRow = () => {
     const actionPlan = [
-      ...formik.values?.actionPlan,
+      ...formik?.values?.actionPlan,
       {
         PIC: '',
         plan: '',
@@ -212,22 +219,24 @@ const EditFormLED = (props) => {
       setRows(newRows);
       formik.setFieldValue('actionPlan', newForm);
     } else {
-      // showSnackbar('setiap laporan setidaknya memiliki 1 action plan', 'error');
+      showToast('error', 'setiap laporan harus memiliki setidaknya 1 action plan');
     }
   };
 
   const onSaveAsDraft = async () => {
     const res = await createDraftLed(formik.values, user);
-    if (res.responseCode === 200) {
+    if (res?.responseCode === 200) {
       navigate('/LED/Inbox');
-      // setSuccessSnack(true);
+      showToast('success', 'laporan disimpan sebagai draft');
     } else {
-      // setErrorSnack(true);
+      showToast(
+        'error',
+        'terjadi kesalahan laporan tidak dapat disimpan, mohon mencoba beberapa saat lagi',
+      );
     }
   };
 
   const backHandler = () => {
-    // showSnackbar('testing snack bro', 'success');
     navigate(-1);
   };
 
@@ -754,6 +763,7 @@ const EditFormLED = (props) => {
                               <CustomAutoComplete
                                 index={index}
                                 formik={formik}
+                                unitValue={formik.values.actionPlan[index]?.workUnit}
                                 branchOption={branchOption}
                                 workUnitOption={workUnitOption}
                               />

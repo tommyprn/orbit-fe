@@ -25,19 +25,12 @@ const FullLayout = () => {
   const customizer = useSelector((state) => state.customizer);
   const theme = useTheme();
 
-  // Using the snackbar hook
-
   return (
     <MainWrapper
       className={customizer.activeMode === 'dark' ? 'darkbg mainwrapper' : 'mainwrapper'}
     >
-      {/* ------------------------------------------- */}
-      {/* Sidebar */}
-      {/* ------------------------------------------- */}
       {<Sidebar />}
-      {/* ------------------------------------------- */}
-      {/* Main Wrapper */}
-      {/* ------------------------------------------- */}
+
       <PageWrapper
         className="page-wrapper"
         sx={{
@@ -46,30 +39,16 @@ const FullLayout = () => {
           }),
         }}
       >
-        {/* ------------------------------------------- */}
-        {/* Header */}
-        {/* ------------------------------------------- */}
         {<Header />}
-        {/* ------------------------------------------- */}
-        {/* PageContent */}
-        {/* ------------------------------------------- */}
-
-        {/* Render the snackbar using CustomSnackBar component */}
 
         <Container
           sx={{
             maxWidth: customizer.isLayout === 'boxed' ? 'lg' : '100%!important',
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Page Route */}
-          {/* ------------------------------------------- */}
           <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>
             <Outlet />
           </Box>
-          {/* ------------------------------------------- */}
-          {/* End Page */}
-          {/* ------------------------------------------- */}
         </Container>
       </PageWrapper>
     </MainWrapper>

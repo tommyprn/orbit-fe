@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, TextField, Autocomplete, FormControlLabel } from '@mui/material';
 import './BaseCard.css';
 
 const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => {
+  const [value, setValue] = useState('');
   const [branch, setBranch] = useState(false);
 
   const onCheck = () => {
     setBranch(!branch);
     formik.setFieldValue(`actionPlan.${index}.isBranch`, !branch);
   };
+
+  useEffect(() => {
+    setBranch(formik.values.actionPlan[index]?.isBranch);
+  }, [formik.values.actionPlan[index]?.isBranch]);
+
+  useEffect(() => {
+    if (formik.values.actionPlan[index]?.branch?.id > 0) {
+      setValue(formik.values.actionPlan[index]?.branch);
+    }
+    if (formik.values.actionPlan[index]?.workUnit?.id > 0) {
+      setValue(formik.values.actionPlan[index]?.workUnit);
+    }
+  }, [formik.values.actionPlan[index]?.branch, formik.values.actionPlan[index]?.workUnit]);
+
   return (
     <div
       style={{
@@ -19,13 +34,15 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
       }}
     >
       <FormControlLabel
-        control={<Switch defaultChecked onChange={onCheck} />}
+        control={<Switch checked={!branch} onChange={onCheck} />}
         label={branch ? 'Kode Cabang' : 'Kode Unit Kerja'}
       />
+
       <Autocomplete
         disablePortal
         id={branch ? `actionPlan.${index}.branch` : `actionPlan.${index}.workUnit`}
         sx={{ width: '200px' }}
+        value={value}
         options={branch ? branchOption : workUnitOption}
         onChange={(event, newValue) => {
           if (newValue === null) {

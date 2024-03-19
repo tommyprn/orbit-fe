@@ -1183,6 +1183,8 @@ export const updateWorkUnit = (payload) => {
   return async (dispatch) => {
     dispatch(fetchWorkUnitStart());
     const requestBody = {
+      namaPic: payload.pic,
+      emailPic: payload.email,
       isEnable: payload.isEnable,
       idUnitKerja: payload.id,
       kodeUnitKerja: payload.code,
@@ -1245,6 +1247,8 @@ export const createWorkUnit = (payload) => {
   return async (dispatch) => {
     dispatch(fetchWorkUnitStart());
     const requestBody = {
+      namaPic: payload.pic,
+      emailPic: payload.email,
       namaUnitKerja: payload.name,
       kodeUnitKerja: payload.code,
     };

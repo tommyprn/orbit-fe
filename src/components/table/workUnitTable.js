@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-expressions */
 import { useState } from 'react';
 import { IconTrash, IconEdit, IconPlus } from '@tabler/icons';
-import { Button, Typography, IconButton, TablePagination } from '@mui/material';
+import { Typography, IconButton, Button, TablePagination } from '@mui/material';
 
 // component
 import BaseCard from '../shared/BaseCard';
 import AntSwitch from '../shared/AntSwitch';
 import SearchBar from 'src/components/search-bar/SearchBar';
 
-export const CaseMasterTable = ({
+export const WorkUnitTable = ({
   ssl,
   title,
   master,
@@ -69,6 +69,7 @@ export const CaseMasterTable = ({
       </div>
     </>
   );
+
   return (
     <BaseCard title={title} CustomHeader={CardHeader}>
       <table
@@ -90,8 +91,7 @@ export const CaseMasterTable = ({
                 <td
                   key={index}
                   style={{
-                    width: index === 0 ? '3%' : index === 1 ? '25%' : index === 2 ? '50%' : '15%',
-                    paddingLeft: index === 3 ? 10 : 0,
+                    width: index === 0 ? '3%' : index < header.length - 1 ? '20%' : '15%',
                   }}
                 >
                   <Typography>{item}</Typography>
@@ -117,23 +117,22 @@ export const CaseMasterTable = ({
                 <td style={{ width: '3%' }}>
                   <Typography>{page * 10 + index + 1}</Typography>
                 </td>
-                <td style={{ width: '25%' }}>
-                  <Typography>
-                    {ssl ? item?.kode : item?.nama || item?.id_divisi || item.kodeUnitKerja}
-                  </Typography>
+                <td style={{ width: '20%' }}>
+                  <Typography> {item?.kodeUnitKerja}</Typography>
                 </td>
-                <td style={{ width: '50%' }}>
-                  <Typography>
-                    {ssl
-                      ? item.nama
-                      : item.deskripsi || item.divisi || item.namaUnitKerja || item.kode}
-                  </Typography>
+                <td style={{ width: '20%' }}>
+                  <Typography>{item?.namaUnitKerja}</Typography>
                 </td>
-
+                <td style={{ width: '20%' }}>
+                  <Typography>{item?.namaPic || '-'}</Typography>
+                </td>
+                <td style={{ width: '20%' }}>
+                  <Typography>{item?.emailPic || '-'}</Typography>
+                </td>
                 <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
                   <IconButton aria-label="edit" onClick={() => onUpdate(item)} disabled={disabled}>
                     <IconEdit />
-                  </IconButton>{' '}
+                  </IconButton>
                   <IconButton
                     aria-label="delete"
                     color="error"
@@ -141,7 +140,7 @@ export const CaseMasterTable = ({
                     disabled={disabled}
                   >
                     <IconTrash />
-                  </IconButton>{' '}
+                  </IconButton>
                   <AntSwitch checked={item.isEnable} disabled />
                 </td>
               </tr>
@@ -170,4 +169,4 @@ export const CaseMasterTable = ({
   );
 };
 
-export default CaseMasterTable;
+export default WorkUnitTable;

@@ -16,6 +16,16 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
     name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
   });
 
+  const workUnitValidationSchema = yup.object({
+    pic: yup.string(`masukkan PIC ${masterTitle}`).required('nama PIC wajib diisi'),
+    code: yup
+      .string(`masukkan kode ${masterTitle}`)
+      .required('Kode wajib diisi')
+      .max(3, 'maksimal 3 karakter'),
+    name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
+    email: yup.string(`masukkan email PIC ${masterTitle}`).required('email PIC wajib diisi'),
+  });
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -33,6 +43,19 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
       name: '',
     },
     validationSchema: sslValidationSchema,
+    onSubmit: (values) => {
+      onSaveHandler(values);
+    },
+  });
+
+  const workUnitFormik = useFormik({
+    initialValues: {
+      pic: '',
+      code: '',
+      name: '',
+      email: '',
+    },
+    validationSchema: workUnitValidationSchema,
     onSubmit: (values) => {
       onSaveHandler(values);
     },
@@ -68,6 +91,73 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
         onBlur={sslFormik.handleBlur}
         onChange={sslFormik.handleChange}
         helperText={sslFormik.touched.name && sslFormik.errors.name}
+      />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+        <Button variant="contained" color="error" onClick={onCloseHandler}>
+          Batal
+        </Button>
+        <Button variant="contained" type="submit">
+          Simpan
+        </Button>
+      </div>
+    </form>
+  );
+
+  const workUnitForm = (
+    <form
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      onSubmit={workUnitFormik.handleSubmit}
+    >
+      <TextField
+        sx={{ width: '100%' }}
+        id="code"
+        label={`kode ${masterTitle} baru`}
+        variant="outlined"
+        required
+        value={workUnitFormik.values.code}
+        error={workUnitFormik.touched.code && Boolean(workUnitFormik.errors.code)}
+        onBlur={workUnitFormik.handleBlur}
+        onChange={workUnitFormik.handleChange}
+        helperText={workUnitFormik.touched.code && workUnitFormik.errors.code}
+      />
+      <TextField
+        id="name"
+        sx={{ width: '100%' }}
+        label={`nama ${masterTitle}`}
+        variant="outlined"
+        required
+        error={workUnitFormik.touched.name && Boolean(workUnitFormik.errors.name)}
+        value={workUnitFormik.values.name}
+        onBlur={workUnitFormik.handleBlur}
+        onChange={workUnitFormik.handleChange}
+        helperText={workUnitFormik.touched.name && workUnitFormik.errors.name}
+      />
+
+      <TextField
+        sx={{ width: '100%' }}
+        id="pic"
+        label="PIC unit kerja"
+        variant="outlined"
+        required
+        value={workUnitFormik.values.pic}
+        error={workUnitFormik.touched.pic && Boolean(workUnitFormik.errors.pic)}
+        onBlur={workUnitFormik.handleBlur}
+        onChange={workUnitFormik.handleChange}
+        helperText={workUnitFormik.touched.pic && workUnitFormik.errors.pic}
+      />
+
+      <TextField
+        sx={{ width: '100%' }}
+        id="email"
+        label="email PIC"
+        variant="outlined"
+        required
+        value={workUnitFormik.values.email}
+        error={workUnitFormik.touched.email && Boolean(workUnitFormik.errors.email)}
+        onBlur={workUnitFormik.handleBlur}
+        onChange={workUnitFormik.handleChange}
+        helperText={workUnitFormik.touched.email && workUnitFormik.errors.email}
       />
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
@@ -124,7 +214,7 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
     </form>
   );
 
-  return ssl ? sslForm : workUnit ? sslForm : basicForm;
+  return ssl ? sslForm : workUnit ? workUnitForm : basicForm;
 };
 
 export default CreateMasterForm;
