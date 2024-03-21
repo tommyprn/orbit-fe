@@ -62,19 +62,19 @@ const InboxLED = (props) => {
   }, [page, keyword, rowsPerPage]);
 
   const onDetail = (id) => {
-    navigation(`/LED/detailReport/${id}`);
+    navigation(`/LED/detail-report/${id}`);
   };
 
   const onEdit = (id, status) => {
     if (user.role === 'inputer') {
       if (status === 'Draft' || status === 'Need Fix') {
-        navigation(`/LED/editReport/${id}`);
+        navigation(`/LED/edit-report/${id}`);
       } else {
-        navigation(`/LED/updateReport/${id}`);
+        navigation(`/LED/update-report/${id}`);
       }
     }
     if (user.role === 'approver') {
-      navigation(`/LED/detailReport/${id}`);
+      navigation(`/LED/detail-report/${id}`);
     }
   };
 

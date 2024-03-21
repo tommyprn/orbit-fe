@@ -100,7 +100,7 @@ const UpdateFormLED = (props) => {
     onSubmit: async (values) => {
       const res = await editFormLed(values, user);
       if (res.responseCode === 200) {
-        navigate('/LED/List');
+        navigate('/LED/list');
         showToast('success', 'berhasil submit laporan');
       } else {
         showToast(
@@ -130,7 +130,7 @@ const UpdateFormLED = (props) => {
   const onApprove = async (id) => {
     const res = await approveLED(id, user);
     if (res.responseCode === 200) {
-      navigate('/LED/List');
+      navigate('/LED/list');
       showToast('success', 'berhasil submit laporan');
     } else {
       showToast('error', 'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda');

@@ -72,11 +72,11 @@ const Dashboard = (props) => {
   }, [page, keyword, history, rowsPerPage]);
 
   const onDetail = (id) => {
-    navigation(`/LED/detailReport/${id}`);
+    navigation(`/LED/detail-report/${id}`);
   };
 
   const onEdit = (id) => {
-    navigation(`/LED/editReport/${id}`);
+    navigation(`/LED/edit-report/${id}`);
   };
 
   const handleChangePage = (event, newPage) => {

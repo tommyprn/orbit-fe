@@ -62,7 +62,7 @@ const ListLED = (props) => {
   }, [page, keyword, rowsPerPage]);
 
   const onDetail = (id) => {
-    navigation(`/LED/detailReport/${id}`);
+    navigation(`/LED/detail-report/${id}`);
   };
 
   const openHistory = (id, reportId) => {

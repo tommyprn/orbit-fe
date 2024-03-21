@@ -183,7 +183,7 @@ const EditFormLED = (props) => {
     onSubmit: async (values) => {
       const res = await editFormLed(values, user);
       if (res.responseCode === 200) {
-        navigate('/LED/List');
+        navigate('/LED/list');
         showToast('success', 'berhasil submit laporan');
       } else {
         showToast(
@@ -219,8 +219,8 @@ const EditFormLED = (props) => {
 
   const onSaveAsDraft = async () => {
     const res = await createDraftLed(formik.values, user);
-    if (res.responseCode === 200) {
-      navigate('/LED/List');
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
       showToast('success', 'laporan berhasil disimpan');
     } else {
       showToast('error', 'terjadi kesalahan saat menyimpan laporan, mohon cek kembali input anda');
@@ -229,8 +229,8 @@ const EditFormLED = (props) => {
 
   const onApprove = async (id) => {
     const res = await approveLED(id, user);
-    if (res.responseCode === 200) {
-      navigate('/LED/List');
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
       showToast('success', 'laporan berhasil di approve');
     } else {
       showToast('error', 'gagal approve laporan, mohon coba beberapa saat lagi');

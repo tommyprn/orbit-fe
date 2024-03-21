@@ -148,8 +148,8 @@ const EditFormLED = (props) => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       const res = await createFormLed(values, user);
-      if (res.responseCode === 200) {
-        navigate('/LED/List');
+      if (res?.responseCode === 200) {
+        navigate('/LED/list');
         showToast('success', 'berhasil submit laporan');
       } else {
         showToast(
@@ -226,7 +226,7 @@ const EditFormLED = (props) => {
   const onSaveAsDraft = async () => {
     const res = await createDraftLed(formik.values, user);
     if (res?.responseCode === 200) {
-      navigate('/LED/Inbox');
+      navigate('/LED/inbox');
       showToast('success', 'laporan disimpan sebagai draft');
     } else {
       showToast(

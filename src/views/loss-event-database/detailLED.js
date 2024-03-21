@@ -97,8 +97,8 @@ const DetailLED = (props) => {
       res = await rejectIRM(detail.laporanLed.id, user, comment);
     }
 
-    if (res.responseCode === 200) {
-      navigate('/LED/List');
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
       showToast('success', 'Laporan dikirim kembali ke RTU');
     } else {
       showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');
@@ -122,8 +122,8 @@ const DetailLED = (props) => {
       res = await approveIRM(detail.laporanLed.id, user);
     }
 
-    if (res.responseCode === 200) {
-      navigate('/LED/List');
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
       showToast('success', 'berhasil mengubah status laporan');
     } else {
       showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');

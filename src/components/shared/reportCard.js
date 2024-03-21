@@ -2,7 +2,7 @@ import React from 'react';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router';
 import { Card, Chip, Button, Divider, Typography } from '@mui/material';
-import { IconPencilMinus, IconBan } from '@tabler/icons';
+import { IconPencilMinus } from '@tabler/icons';
 
 import './reportCard.css';
 
@@ -10,11 +10,11 @@ const ReportCard = ({ LED, list }) => {
   const navigate = useNavigate();
 
   const onEdit = (id) => {
-    navigate(`/LED/editReport/${id}`);
+    navigate(`/LED/edit-report/${id}`);
   };
 
   const onDetail = (id) => {
-    navigate(`/LED/detailReport/${id}`);
+    navigate(`/LED/detail-report/${id}`);
   };
 
   return (

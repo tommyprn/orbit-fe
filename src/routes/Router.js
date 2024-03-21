@@ -39,22 +39,23 @@ const Router = [
       { path: '/', exact: true, element: <Dashboard /> },
 
       // ============================== MASTER ROUTES =====================================
-      { path: '/master/workUnit', exact: true, element: <WorkUnitPage /> },
-      { path: '/master/caseCause', exact: true, element: <CaseCausePage /> },
-      { path: '/master/costCentre', exact: true, element: <GLNumberPage /> },
-      { path: '/master/caseStatus', exact: true, element: <CaseStatusPage /> },
+      { path: '/master/work-unit', exact: true, element: <WorkUnitPage /> },
+      { path: '/master/case-cause', exact: true, element: <CaseCausePage /> },
+      { path: '/master/cost-centre', exact: true, element: <GLNumberPage /> },
+      { path: '/master/case-status', exact: true, element: <CaseStatusPage /> },
       { path: '/master/reportStatus', exact: true, element: <ReportStatusPage /> },
-      { path: '/master/caseCategory/levelOne', exact: true, element: <BaselOnePage /> },
-      { path: '/master/caseCategory/levelTwo', exact: true, element: <BaselTwoPage /> },
-      { path: '/master/caseCategory/levelThree', exact: true, element: <BaselThreePage /> },
+      { path: '/master/case-category/level-one', exact: true, element: <BaselOnePage /> },
+      { path: '/master/case-category/level-two', exact: true, element: <BaselTwoPage /> },
+      { path: '/master/case-category/level-three', exact: true, element: <BaselThreePage /> },
 
       // ============================== LED ROUTES =====================================
       { path: '/LED/list', exact: true, element: <ListLED /> },
       { path: '/LED/inbox', exact: true, element: <InboxLED /> },
       { path: '/LED/report', exact: true, element: <FormLED /> },
-      { path: '/LED/editReport/:reportId', exact: true, element: <EditFormLED /> },
-      { path: '/LED/detailReport/:reportId', exact: true, element: <DetailLED /> },
-      { path: '/LED/updateReport/:reportId', exact: true, element: <UpdateFormLED /> },
+      { path: '/LED/zero-report', exact: true, element: <>laporan nihil</> },
+      { path: '/LED/edit-report/:reportId', exact: true, element: <EditFormLED /> },
+      { path: '/LED/detail-report/:reportId', exact: true, element: <DetailLED /> },
+      { path: '/LED/update-report/:reportId', exact: true, element: <UpdateFormLED /> },
 
       // ============================== REPORT ROUTES =====================================
       { path: '/report', exact: true, element: <ReportPage /> },
