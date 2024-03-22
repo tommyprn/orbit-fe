@@ -19,6 +19,7 @@ const ReportStatusPage = Loadable(lazy(() => import('../views/master/reportStatu
 
 /* ****LED Pages***** */
 const FormLED = Loadable(lazy(() => import('../views/loss-event-database/formLED')));
+const NilPage = Loadable(lazy(() => import('../views/loss-event-database/nilPage')));
 const ListLED = Loadable(lazy(() => import('../views/loss-event-database/listLED')));
 const InboxLED = Loadable(lazy(() => import('../views/loss-event-database/inboxLED')));
 const DetailLED = Loadable(lazy(() => import('../views/loss-event-database/detailLED')));
@@ -43,7 +44,7 @@ const Router = [
       { path: '/master/case-cause', exact: true, element: <CaseCausePage /> },
       { path: '/master/cost-centre', exact: true, element: <GLNumberPage /> },
       { path: '/master/case-status', exact: true, element: <CaseStatusPage /> },
-      { path: '/master/reportStatus', exact: true, element: <ReportStatusPage /> },
+      { path: '/master/report-status', exact: true, element: <ReportStatusPage /> },
       { path: '/master/case-category/level-one', exact: true, element: <BaselOnePage /> },
       { path: '/master/case-category/level-two', exact: true, element: <BaselTwoPage /> },
       { path: '/master/case-category/level-three', exact: true, element: <BaselThreePage /> },
@@ -52,7 +53,7 @@ const Router = [
       { path: '/LED/list', exact: true, element: <ListLED /> },
       { path: '/LED/inbox', exact: true, element: <InboxLED /> },
       { path: '/LED/report', exact: true, element: <FormLED /> },
-      { path: '/LED/zero-report', exact: true, element: <>laporan nihil</> },
+      { path: '/LED/zero-report', exact: true, element: <NilPage /> },
       { path: '/LED/edit-report/:reportId', exact: true, element: <EditFormLED /> },
       { path: '/LED/detail-report/:reportId', exact: true, element: <DetailLED /> },
       { path: '/LED/update-report/:reportId', exact: true, element: <UpdateFormLED /> },

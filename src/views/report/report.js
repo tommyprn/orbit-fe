@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Typography } from '@mui/material';
-import { getAllHistory } from 'src/actions/userActions';
+// import { getAllHistory } from 'src/actions/userActions';
 
 // component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
@@ -15,10 +15,10 @@ const BCrumb = [
 ];
 
 const Report = (props) => {
-  const { history, getAllHistory } = props;
+  // const { history, getAllHistory } = props;
   useEffect(() => {
     (async () => {
-      await getAllHistory();
+      // await getAllHistory();
     })();
   }, []);
 
@@ -41,7 +41,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllHistory: (id) => dispatch(getAllHistory('20240301023')),
+    // getAllHistory: (id) => dispatch(getAllHistory('20240301023')),
   };
 };
 

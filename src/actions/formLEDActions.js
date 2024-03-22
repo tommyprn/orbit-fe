@@ -1,6 +1,7 @@
 import { stringify } from 'qs';
 
 const API_URL = 'http://10.80.240.45:1933/api/v1/';
+// const API_URL = 'http://10.55.54.161:30090/api/v1/';
 
 export const FETCH_FORM_LED_REQUEST = 'FETCH_FORM_LED_REQUEST';
 export const FETCH_FORM_LED_SUCCESS = 'FETCH_FORM_LED_SUCCESS';
@@ -649,6 +650,105 @@ export const getHistoryLED = (id) => {
     } catch (err) {
       console.log(err);
       dispatch(fetchHistoryLedFailure(err));
+    }
+  };
+};
+
+export const FETCH_ZERO_REPORT_REQUEST = 'FETCH_ZERO_REPORT_REQUEST';
+export const FETCH_ZERO_REPORT_SUCCESS = 'FETCH_ZERO_REPORT_SUCCESS';
+export const FETCH_ZERO_REPORT_FAILURE = 'FETCH_ZERO_REPORT_FAILURE';
+
+export const fetchZeroReportStart = () => ({
+  type: FETCH_ZERO_REPORT_REQUEST,
+});
+
+export const fetchZeroReportSuccess = (data) => ({
+  type: FETCH_ZERO_REPORT_SUCCESS,
+  payload: data,
+});
+
+export const fetchZeroReportFailure = (error) => ({
+  type: FETCH_ZERO_REPORT_FAILURE,
+  payload: error,
+});
+
+export const getZeroReport = (pagination, keyword, user) => {
+  const queryString = stringify(
+    {
+      pageSize: pagination?.perPage,
+      pageNumber: pagination?.page,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchZeroReportStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-laporan-nihil?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+
+      if (res.status === 200) {
+        dispatch(fetchZeroReportSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchZeroReportFailure(err));
+    }
+  };
+};
+
+export const createZeroReport = (user) => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  const requestBody = {
+    kodeUnitKerja: user.workUnit,
+    kodeCabang: Number(user.branch),
+  };
+
+  return async (dispatch) => {
+    dispatch(fetchZeroReportStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `save-laporan-nihil?` + queryString, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+
+      if (res.status === 200) {
+        dispatch(fetchZeroReportSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchZeroReportFailure(err));
     }
   };
 };

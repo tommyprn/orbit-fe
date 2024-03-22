@@ -26,7 +26,7 @@ const Profile = () => {
     setAnchorEl2(null);
   };
   const handleBack = () => {
-    localStorage.removeItem('menuItem');
+    // localStorage.removeItem('menuItem');
     window.location.href = 'http://10.55.54.152/maps-login';
   };
 

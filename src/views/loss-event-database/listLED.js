@@ -129,7 +129,7 @@ const ListLED = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell>no</TableCell>
-                        <TableCell>ID</TableCell>
+                        <TableCell>Nomor Insiden</TableCell>
                         <TableCell>Divisi/ Cabang</TableCell>
                         <TableCell>Status Kejadian</TableCell>
                         <TableCell>Tanggal Lapor</TableCell>

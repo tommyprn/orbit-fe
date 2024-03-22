@@ -41,11 +41,7 @@ const FullLayout = () => {
       >
         {<Header />}
 
-        <Container
-          sx={{
-            maxWidth: customizer.isLayout === 'boxed' ? 'lg' : '100%!important',
-          }}
-        >
+        <Container maxWidth={false}>
           <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>
             <Outlet />
           </Box>
