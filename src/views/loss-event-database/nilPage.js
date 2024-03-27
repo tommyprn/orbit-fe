@@ -16,6 +16,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import { getZeroReport, createZeroReport } from 'src/actions/formLEDActions';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -45,7 +46,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const NilPage = (props) => {
   const { LED, getZeroReport, createZeroReport } = props;
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -82,8 +83,8 @@ const NilPage = (props) => {
 
   const onGenerateNil = async () => {
     const dataToSend = {
-      branch: user.kodeCabang,
-      workUnit: user.divisiUser,
+      branch: user.branchCode,
+      workUnit: user.division,
     };
     const res = await createZeroReport(dataToSend);
     setConfirmationModal(false);
@@ -187,7 +188,7 @@ const NilPage = (props) => {
               component="div"
               rowsPerPage={rowsPerPage}
               onPageChange={handleChangePage}
-              labelRowsPerPage={'Baris per halaman'}
+              labelRowsPerPage="Baris per halaman"
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>

@@ -80,7 +80,7 @@ const EditMasterFormBasel = ({
     >
       <Autocomplete
         disablePortal
-        id={'idLevelOne'}
+        id="idLevelOne"
         options={newOption}
         value={value}
         onChange={(event, newValue) => {
@@ -152,7 +152,7 @@ const EditMasterFormBasel = ({
     >
       <Autocomplete
         disablePortal
-        id={'idLevelTwo'}
+        id="idLevelTwo"
         options={newOption}
         value={value}
         onChange={(event, newValue) => {

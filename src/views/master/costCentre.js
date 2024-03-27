@@ -108,7 +108,7 @@ const CostCentre = (props) => {
 
       <CaseMasterTable
         ssl={true}
-        title={'Data Master Kode SSL'}
+        title="Data Master Kode SSL"
         header={header}
         master={masterData?.costCentre}
         onSearch={onSearch}
@@ -121,11 +121,7 @@ const CostCentre = (props) => {
         onOpenHandler={onCreateHandler}
       />
 
-      <SimpleModal
-        title={'Tambah Kode SSL'}
-        isOpen={createModalOpen}
-        onCloseHandler={onCloseHandler}
-      >
+      <SimpleModal title="Tambah Kode SSL" isOpen={createModalOpen} onCloseHandler={onCloseHandler}>
         <CreateMasterForm
           ssl={true}
           masterTitle="kode SSL"
@@ -134,7 +130,7 @@ const CostCentre = (props) => {
         />
       </SimpleModal>
 
-      <SimpleModal title={'Ubah Kode SSL'} isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
+      <SimpleModal title="Ubah Kode SSL" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
         <EditMasterForm
           ssl={true}
           masterTitle="kode SSL"
@@ -145,7 +141,7 @@ const CostCentre = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Kode SSL'}
+        title="Hapus Kode SSL"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

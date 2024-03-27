@@ -23,12 +23,7 @@ const Breadcrumb = ({ subtitle, items, title, children }) => (
       </Typography>
       <Breadcrumbs
         separator={
-          <IconCircle
-            size="5"
-            fill="textSecondary"
-            fillOpacity={'0.6'}
-            style={{ margin: '0 5px' }}
-          />
+          <IconCircle size="5" fill="textSecondary" fillOpacity="0.6" style={{ margin: '0 5px' }} />
         }
         sx={{ alignItems: 'center', mt: items ? '10px' : '' }}
         aria-label="breadcrumb"

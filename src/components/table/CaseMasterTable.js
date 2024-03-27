@@ -133,7 +133,7 @@ export const CaseMasterTable = ({
                 <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
                   <IconButton aria-label="edit" onClick={() => onUpdate(item)} disabled={disabled}>
                     <IconEdit />
-                  </IconButton>{' '}
+                  </IconButton>
                   <IconButton
                     aria-label="delete"
                     color="error"
@@ -141,7 +141,7 @@ export const CaseMasterTable = ({
                     disabled={disabled}
                   >
                     <IconTrash />
-                  </IconButton>{' '}
+                  </IconButton>
                   <AntSwitch checked={item.isEnable} disabled />
                 </td>
               </tr>
@@ -163,7 +163,7 @@ export const CaseMasterTable = ({
         component="div"
         rowsPerPage={master?.perPage ?? rowsPerPage}
         onPageChange={handleChangePage}
-        labelRowsPerPage={'Baris per halaman'}
+        labelRowsPerPage="Baris per halaman"
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </BaseCard>

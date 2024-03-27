@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { getAllList } from 'src/actions/formLEDActions';
 import { IconFileDescription, IconHistory } from '@tabler/icons';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -47,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const ListLED = (props) => {
   const { LED, getAllList } = props;
   const navigation = useNavigate();
-  const user = JSON.parse(localStorage.getItem('history'));
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -196,13 +197,13 @@ const ListLED = (props) => {
                   component="div"
                   rowsPerPage={rowsPerPage}
                   onPageChange={handleChangePage}
-                  labelRowsPerPage={'Baris per halaman'}
+                  labelRowsPerPage="Baris per halaman"
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
             </>
           ) : (
-            <Typography textAlign={'center'} variant="h2">
+            <Typography textAlign="center" variant="h2">
               Belum ada laporan pending saat ini
             </Typography>
           )}

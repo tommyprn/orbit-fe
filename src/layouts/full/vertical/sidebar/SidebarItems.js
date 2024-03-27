@@ -1,8 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router';
+import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
 import { Box, List, useMediaQuery } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
+import secureLocalStorage from 'react-secure-storage';
+
 import NavItem from './NavItem';
 import NavGroup from './NavGroup/NavGroup';
 import NavCollapse from './NavCollapse';
@@ -16,44 +18,57 @@ const SidebarItems = () => {
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
 
-  const Menuitems = JSON.parse(localStorage.getItem('menuItem'));
+  const Menuitems = JSON.parse(secureLocalStorage?.getItem('menuItem'));
+  // const Menuitems = secureLocalStorage?.getItem('menuItem');
+
   return (
     <Box sx={{ px: 3 }}>
-      <List sx={{ pt: 0 }} className="sidebarNav">
-        {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
-          if (item.subheader) {
-            return <NavGroup item={item} hideMenu={hideMenu} key={item.subheader} />;
+      {Menuitems ? (
+        <List sx={{ pt: 0 }} className="sidebarNav">
+          {Menuitems.map((item, index) => {
+            // {/********SubHeader**********/}
+            if (item.subheader) {
+              return <NavGroup item={item} hideMenu={hideMenu} key={index} />;
 
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
-          } else if (item.children) {
-            return (
-              <NavCollapse
-                menu={item}
-                pathDirect={pathDirect}
-                hideMenu={hideMenu}
-                pathWithoutLastPart={pathWithoutLastPart}
-                level={1}
-                key={item.id}
-                onClick={() => dispatch(toggleMobileSidebar())}
-              />
-            );
+              // {/********If Sub Menu**********/}
+              /* eslint no-else-return: "off" */
+            } else if (item.children) {
+              return (
+                <NavCollapse
+                  menu={item}
+                  pathDirect={pathDirect}
+                  hideMenu={hideMenu}
+                  pathWithoutLastPart={pathWithoutLastPart}
+                  level={1}
+                  key={index}
+                  onClick={() => dispatch(toggleMobileSidebar())}
+                />
+              );
 
-            // {/********If Sub No Menu**********/}
-          } else {
-            return (
-              <NavItem
-                item={item}
-                key={item.id}
-                pathDirect={pathDirect}
-                hideMenu={hideMenu}
-                onClick={() => dispatch(toggleMobileSidebar())}
-              />
-            );
-          }
-        })}
-      </List>
+              // {/********If Sub No Menu**********/}
+            } else {
+              return (
+                <NavItem
+                  item={item}
+                  key={index}
+                  pathDirect={pathDirect}
+                  hideMenu={hideMenu}
+                  onClick={() => dispatch(toggleMobileSidebar())}
+                />
+              );
+            }
+          })}
+        </List>
+      ) : !customizer.isCollapse ? (
+        <p style={{ color: 'black', wordSpacing: '5px' }}>
+          <em>
+            <strong style={{ color: '#551a8b', fontSize: '18px' }}>Role </strong>
+          </em>
+          tidak terdeteksi,
+          <br />
+          mohon laklukan koneksi ulang
+        </p>
+      ) : null}
     </Box>
   );
 };

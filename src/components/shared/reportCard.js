@@ -53,12 +53,12 @@ const ReportCard = ({ LED, list }) => {
         <div className="report-card-footer">
           <div className="section-wrapper">
             <Typography>
-              <span style={{ fontWeight: 'bold' }}> tgl lapor:</span>{' '}
+              <span style={{ fontWeight: 'bold' }}> tgl lapor: </span>
               {dayjs(LED?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
             </Typography>
 
             <Typography>
-              <span style={{ fontWeight: 'bold' }}>tgl kejadian:</span>{' '}
+              <span style={{ fontWeight: 'bold' }}>tgl kejadian: </span>
               {dayjs(LED?.tanggalKejadian, 'DD-MM-YYYY').format('DD-MMM-YY')}
             </Typography>
 
@@ -76,12 +76,12 @@ const ReportCard = ({ LED, list }) => {
 
           <div className="section-wrapper">
             <Typography>
-              <span style={{ fontWeight: 'bold' }}>Kategori:</span>{' '}
+              <span style={{ fontWeight: 'bold' }}>Kategori: </span>
               {LED?.aktivitas?.subKategori?.kategoriKejadian?.nama}
             </Typography>
 
             <Typography>
-              <span style={{ fontWeight: 'bold' }}>Sub Kategori:</span>{' '}
+              <span style={{ fontWeight: 'bold' }}>Sub Kategori: </span>
               {LED?.aktivitas?.subKategori?.nama}
             </Typography>
 

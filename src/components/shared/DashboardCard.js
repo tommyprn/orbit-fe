@@ -44,7 +44,7 @@ const DashboardCard = ({
               direction="row"
               spacing={2}
               justifyContent="space-between"
-              alignItems={'center'}
+              alignItems="center"
               mb={3}
             >
               <Box>

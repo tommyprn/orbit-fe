@@ -33,7 +33,7 @@ const WorkUnit = (props) => {
     isEnable: true,
   });
 
-  const header = ['No', 'Kode Unit Kerja', 'Nama Unit Kerja', 'PIC', 'email', 'Aksi'];
+  const header = ['No', 'Kode Unit Kerja', 'Nama Unit Kerja', 'PIC', 'Approver', 'Aksi'];
 
   const BCrumb = [
     {
@@ -117,7 +117,7 @@ const WorkUnit = (props) => {
       ) : null}
 
       <WorkUnitTable
-        title={'Data Master Unit Kerja/ Business Lines'}
+        title="Data Master Unit Kerja/ Business Lines"
         master={masterData?.workUnit}
         header={header}
         onSearch={onSearch}
@@ -131,7 +131,7 @@ const WorkUnit = (props) => {
       />
 
       <SimpleModal
-        title={'Tambah Unit Kerja'}
+        title="Tambah Unit Kerja"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -143,7 +143,7 @@ const WorkUnit = (props) => {
         />
       </SimpleModal>
 
-      <SimpleModal title={'Ubah Unit Kerja'} isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
+      <SimpleModal title="Ubah Unit Kerja" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
         <EditMasterForm
           workUnit
           masterTitle="unit kerja"
@@ -154,7 +154,7 @@ const WorkUnit = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Unit Kerja'}
+        title="Hapus Unit Kerja"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}
@@ -169,7 +169,7 @@ const WorkUnit = (props) => {
           <Button variant="contained" onClick={onConfirmDelete}>
             Lanjutkan
           </Button>
-        </div>{' '}
+        </div>
       </SimpleModal>
     </PageContainer>
   );

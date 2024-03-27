@@ -110,7 +110,7 @@ const CaseStatus = (props) => {
       {process.env.HEADER_SHOW ? <Breadcrumb title="Status Kejadian" items={BCrumb} /> : null}
 
       <CaseMasterTable
-        title={'Data Master Status Kejadian'}
+        title="Data Master Status Kejadian"
         master={masterData?.caseStatus}
         header={header}
         onSearch={onSearch}
@@ -124,7 +124,7 @@ const CaseStatus = (props) => {
       />
 
       <SimpleModal
-        title={'Tambah Status Kejadian'}
+        title="Tambah Status Kejadian"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -136,7 +136,7 @@ const CaseStatus = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Ubah Status Kejadian'}
+        title="Ubah Status Kejadian"
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -149,7 +149,7 @@ const CaseStatus = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Status Kejadian'}
+        title="Hapus Status Kejadian"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

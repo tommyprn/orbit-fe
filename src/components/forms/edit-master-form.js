@@ -81,7 +81,7 @@ const EditMasterForm = ({
     >
       <TextField
         sx={{ width: '100%' }}
-        id={'name'}
+        id="name"
         label={`Nama ${masterTitle}`}
         variant="outlined"
         value={formik.values.name}
@@ -91,7 +91,7 @@ const EditMasterForm = ({
         helperText={formik.touched.name && formik.errors.name}
       />
       <TextField
-        id={'description'}
+        id="description"
         sx={{ width: '100%' }}
         rows={4}
         label="Deskripsi"
@@ -206,7 +206,7 @@ const EditMasterForm = ({
     >
       <TextField
         sx={{ width: '100%' }}
-        id={'code'}
+        id="code"
         label={`Kode ${masterTitle}`}
         variant="outlined"
         value={sslFormik.values.code}
@@ -216,7 +216,7 @@ const EditMasterForm = ({
         helperText={sslFormik.touched.code && sslFormik.errors.code}
       />
       <TextField
-        id={'name'}
+        id="name"
         sx={{ width: '100%' }}
         rows={4}
         label={`Nama ${masterTitle}`}

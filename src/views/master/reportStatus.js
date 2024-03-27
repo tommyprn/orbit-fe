@@ -113,7 +113,7 @@ const ReportStatus = (props) => {
       {process.env.HEADER_SHOW ? <Breadcrumb title="Status Laporan" items={BCrumb} /> : null}
 
       <CaseMasterTable
-        title={'Data Master Status Laporan'}
+        title="Data Master Status Laporan"
         master={masterData?.reportStatus}
         header={header}
         onSearch={onSearch}
@@ -127,7 +127,7 @@ const ReportStatus = (props) => {
       />
 
       <SimpleModal
-        title={'Tambah Status Laporan'}
+        title="Tambah Status Laporan"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -139,7 +139,7 @@ const ReportStatus = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Ubah Status Laporan'}
+        title="Ubah Status Laporan"
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -152,7 +152,7 @@ const ReportStatus = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Status Laporan'}
+        title="Hapus Status Laporan"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

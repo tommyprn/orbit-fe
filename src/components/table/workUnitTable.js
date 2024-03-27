@@ -125,9 +125,11 @@ export const WorkUnitTable = ({
                 </td>
                 <td style={{ width: '20%' }}>
                   <Typography>{item?.namaPic || '-'}</Typography>
+                  <Typography>{item?.emailPic || '-'}</Typography>
                 </td>
                 <td style={{ width: '20%' }}>
-                  <Typography>{item?.emailPic || '-'}</Typography>
+                  <Typography>{item?.namaApproverUnit || '-'}</Typography>
+                  <Typography>{item?.emailApproverUnit || '-'}</Typography>
                 </td>
                 <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
                   <IconButton aria-label="edit" onClick={() => onUpdate(item)} disabled={disabled}>
@@ -162,7 +164,7 @@ export const WorkUnitTable = ({
         component="div"
         rowsPerPage={master?.perPage ?? rowsPerPage}
         onPageChange={handleChangePage}
-        labelRowsPerPage={'Baris per halaman'}
+        labelRowsPerPage="Baris per halaman"
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </BaseCard>

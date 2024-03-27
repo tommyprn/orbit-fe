@@ -1,7 +1,9 @@
 import { stringify } from 'qs';
 
-const API_URL = 'http://10.80.240.45:1933/api/v1/';
-// const API_URL = 'http://10.55.54.161:30090/api/v1/';
+const API_URL =
+  process.env.REACT_APP_DEPLOY_STATE === 'true'
+    ? 'http://10.55.54.161:30090/api/v1/'
+    : 'http://10.80.240.45:1933/api/v1/';
 
 //============================== CASE STATUS =================================
 export const FETCH_DROPDOWN_REQUEST = 'FETCH_DROPDOWN_REQUEST';

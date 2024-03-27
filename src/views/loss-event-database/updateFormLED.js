@@ -23,9 +23,7 @@ import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { validationSchema } from './validationForm';
 import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
-
-import './formLED.css';
-import './detailLED.css';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -33,6 +31,9 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import DetailWrapper from 'src/components/shared/detail-wrapper';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+
+import './formLED.css';
+import './detailLED.css';
 
 const BCrumb = [
   {
@@ -43,7 +44,8 @@ const BCrumb = [
 const UpdateFormLED = (props) => {
   const params = useParams();
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('history'));
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
+
   const { detail, isLoading, approveLED, masterData, getDropdown, editFormLed, getOneFormLed } =
     props;
 
@@ -158,7 +160,7 @@ const UpdateFormLED = (props) => {
               <DetailWrapper title="Status kejadian" content={dataLaporan?.statusKejadian?.nama} />
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Kronologi{' '}
+                  Kronologi
                 </Typography>
 
                 <Typography

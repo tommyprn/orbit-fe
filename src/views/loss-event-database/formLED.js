@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router';
 import { validationSchema } from './validationForm';
+import { useSelector, connect } from 'react-redux';
 import { IconX, IconCloudUpload } from '@tabler/icons';
 import {
   Card,
@@ -27,6 +27,8 @@ import {
 import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
+import { createOption, createGroupedOption } from 'src/utils/use-options';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -57,9 +59,10 @@ const GroupItems = styled('ul')({
   backgroundColor: '#ffffff',
 });
 
-const EditFormLED = (props) => {
-  const user = JSON.parse(localStorage.getItem('history'));
+const CreateFormLED = (props) => {
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
   const navigate = useNavigate();
+  const customizer = useSelector((state) => state.customizer);
   const { masterData, getDropdown, createFormLed, createDraftLed } = props;
 
   const [slaNotif, setSLANotif] = useState('');
@@ -74,11 +77,11 @@ const EditFormLED = (props) => {
       targetDate: '',
     },
   ]);
-  const [costCentreValue, setCostCentreValue] = useState({
+  const [caseCauseValue, setCaseCauseValue] = useState({
     id: 0,
     label: '',
   });
-  const [caseCauseValue, setCaseCauseValue] = useState({
+  const [costCentreValue, setCostCentreValue] = useState({
     id: 0,
     label: '',
   });
@@ -160,38 +163,6 @@ const EditFormLED = (props) => {
     },
   });
 
-  // create option
-  const createOption = (option) => {
-    if (option === undefined) {
-      return [];
-    } else {
-      return option?.map((item) => {
-        return {
-          id: item.id || item.idUnitKerja,
-          label: item.nama || item.namaUnitKerja || item.namaCabang,
-          pic: item.namaPic || '',
-          email: item.emailPic || '',
-        };
-      });
-    }
-  };
-  const createGroupedOption = (option) => {
-    if (option === undefined) {
-      return [];
-    } else {
-      return option?.map((item) => {
-        return {
-          id: item.id,
-          label: item.nama,
-          idCategory: item.subKategori.kategoriKejadian.id,
-          labelCategory:
-            item.subKategori.kategoriKejadian.nama + ' - ' + item.subKategori.kategoriKejadian.kode,
-          idSubCategory: item.subKategori.id,
-          labelSubCategory: item.subKategori.nama,
-        };
-      });
-    }
-  };
   const workUnitOption = createOption(masterData.dropdown.workUnit);
   const branchOption = createOption(masterData.dropdown.branch);
 
@@ -255,7 +226,13 @@ const EditFormLED = (props) => {
   };
 
   return (
-    <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
+    <PageContainer
+      customStyle={{
+        maxWidth: customizer.isCollapse ? `calc(100vw - 152px)` : `calc(100vw - 335px)`,
+      }}
+      title="Buat Laporan Loss Event Database (LED)"
+      description="CreateFormLED Page"
+    >
       <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
 
       <DashboardCard>
@@ -274,7 +251,7 @@ const EditFormLED = (props) => {
 
                 <Autocomplete
                   disablePortal
-                  id={'caseStatus'}
+                  id="caseStatus"
                   sx={{ width: '80%' }}
                   value={caseStatusValue}
                   options={createOption(masterData.dropdown.caseStatus)}
@@ -425,7 +402,7 @@ const EditFormLED = (props) => {
 
                 <Autocomplete
                   disablePortal
-                  id={'caseCause'}
+                  id="caseCause"
                   sx={{ width: '80%' }}
                   value={caseCauseValue}
                   options={createOption(masterData.dropdown.caseCause)}
@@ -464,7 +441,7 @@ const EditFormLED = (props) => {
 
                 <Autocomplete
                   disablePortal
-                  id={'caseCategory'}
+                  id="caseCategory"
                   sx={{ width: '80%' }}
                   value={caseCategoryValue}
                   options={createGroupedOption(masterData.dropdown.caseCategory.levelThree).sort(
@@ -628,7 +605,7 @@ const EditFormLED = (props) => {
 
                 <Autocomplete
                   disablePortal
-                  id={'costCentre'}
+                  id="costCentre"
                   sx={{ width: '80%' }}
                   value={costCentreValue}
                   options={createOption(masterData.dropdown.costCentre)}
@@ -925,4 +902,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditFormLED);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFormLED);

@@ -1,7 +1,9 @@
 import { stringify } from 'qs';
 
-const API_URL = 'http://10.80.240.45:1933/api/v1/';
-// const API_URL = 'http://10.55.54.161:30090/api/v1/';
+const API_URL =
+  process.env.REACT_APP_DEPLOY_STATE === 'true'
+    ? 'http://10.55.54.161:30090/api/v1/'
+    : 'http://10.80.240.45:1933/api/v1/';
 
 export const FETCH_FORM_LED_REQUEST = 'FETCH_FORM_LED_REQUEST';
 export const FETCH_FORM_LED_SUCCESS = 'FETCH_FORM_LED_SUCCESS';
@@ -44,8 +46,11 @@ export const createFormLed = (payload, user) => {
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
+    formData.append('kodeCabang', user.branchCode);
+    formData.append('namaInputer', user.name);
+    formData.append('emailInputer', user.email);
     formData.append('tanggalLapor', payload.reportDate);
-    formData.append('kodeUnitKerja', user.codeDiv);
+    formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -121,8 +126,11 @@ export const editFormLed = (payload, user) => {
     }
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
+    formData.append('namaInputer', user.name);
+    formData.append('kodeCabang', user.branchCode);
+    formData.append('emailInputer', user.email);
     formData.append('tanggalLapor', payload.reportDate);
-    formData.append('kodeUnitKerja', user.codeDiv);
+    formData.append('kodeUnitKerja', user.division);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -199,8 +207,11 @@ export const createDraftLed = (payload, user) => {
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
+    formData.append('kodeCabang', user.branchCode);
+    formData.append('namaInputer', user.name);
+    formData.append('emailInputer', user.email);
     formData.append('tanggalLapor', payload.reportDate ? payload.reportDate : new Date());
-    formData.append('kodeUnitKerja', user.codeDiv);
+    formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('tanggalKejadian', payload.incidentDate ? payload.incidentDate : new Date());
@@ -280,7 +291,7 @@ export const getAllList = (pagination, keyword, user) => {
       pageSize: pagination?.perPage,
       idLaporan: keyword,
       pageNumber: pagination?.page,
-      kodeUnitKerja: user.codeDiv,
+      kodeUnitKerja: user.division,
     },
     {
       arrayFormat: 'comma',
@@ -507,7 +518,7 @@ export const getAllInbox = (pagination, keyword, user) => {
       pageSize: pagination?.perPage,
       idLaporan: keyword,
       pageNumber: pagination?.page,
-      kodeUnitKerja: user.codeDiv,
+      kodeUnitKerja: user.division,
     },
     {
       arrayFormat: 'comma',

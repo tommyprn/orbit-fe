@@ -98,7 +98,7 @@ const LevelOne = (props) => {
       {process.env.HEADER_SHOW ? <Breadcrumb title="Kategori Kejadian" items={BCrumb} /> : null}
 
       <CaseMasterTable
-        title={'Kategori Kejadian'}
+        title="Kategori Kejadian"
         master={masterData?.caseCategory?.levelOne}
         header={header}
         onSearch={onSearch}
@@ -112,7 +112,7 @@ const LevelOne = (props) => {
       />
 
       <SimpleModal
-        title={'Tambah Kategori Kejadian'}
+        title="Tambah Kategori Kejadian"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -124,7 +124,7 @@ const LevelOne = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Ubah Kategori Kejadian'}
+        title="Ubah Kategori Kejadian"
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -137,7 +137,7 @@ const LevelOne = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Kategori Kejadian'}
+        title="Hapus Kategori Kejadian"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

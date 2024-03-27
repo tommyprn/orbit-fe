@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { getAllInbox } from 'src/actions/formLEDActions';
 import { IconFileDescription, IconPencil } from '@tabler/icons';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -33,6 +34,182 @@ const BCrumb = [
   },
 ];
 
+const menuDev = [
+  {
+    navlabel: true,
+    subheader: 'Menu',
+  },
+  {
+    id: '22',
+    title: 'Master Data',
+    icon: 'IconBoxMultiple',
+    href: '/master-data/',
+    children: [
+      {
+        id: '20',
+        title: 'Status Kejadian',
+        icon: 'IconPoint',
+        href: '/master/case-status',
+      },
+      {
+        id: '21',
+        title: 'Penyebab kejadian',
+        icon: 'IconPoint',
+        href: '/master/case-cause',
+      },
+      {
+        id: '221',
+        title: 'Kategori',
+        icon: 'IconPoint',
+        href: '/master/case-category/level-one',
+      },
+      {
+        id: '222',
+        title: 'Sub Kategori',
+        icon: 'IconPoint',
+        href: '/master/case-category/level-two',
+      },
+      {
+        id: '223',
+        title: 'Aktivitas',
+        icon: 'IconPoint',
+        href: '/master/case-category/level-three',
+      },
+      {
+        id: '23',
+        title: 'No GL/SSL/cost centre',
+        icon: 'IconPoint',
+        href: '/master/cost-centre',
+      },
+      {
+        id: '24',
+        title: 'Unit kerja',
+        icon: 'IconPoint',
+        href: '/master/work-unit',
+      },
+      {
+        id: '25',
+        title: 'Status laporan',
+        icon: 'IconPoint',
+        href: '/master/report-utatus',
+      },
+    ],
+  },
+  {
+    id: '26',
+    title: 'Loss Event Database',
+    icon: 'IconReport',
+    href: '/LED',
+    children: [
+      {
+        id: '261',
+        title: 'Inbox',
+        icon: 'IconPoint',
+        href: '/LED/inbox',
+      },
+      {
+        id: '262',
+        title: 'List',
+        icon: 'IconPoint',
+        href: '/LED/list',
+      },
+      {
+        id: '263',
+        title: 'Input LED',
+        icon: 'IconPoint',
+        href: '/LED/report',
+      },
+      {
+        id: '263',
+        title: 'Laporan nihil',
+        icon: 'IconPoint',
+        href: '/LED/zero-report',
+      },
+    ],
+  },
+  {
+    id: '27',
+    title: 'Report',
+    icon: 'IconHistory',
+    href: '/report',
+  },
+];
+
+const userDev = {
+  isMcb: true,
+  isLdap: false,
+  idUser: '2',
+  nikUser: '20150213',
+  idDivisi: '21',
+  nameUser: 'CS-IN',
+  emailUser: 'test@mail.com',
+  divisiUser: 'CABANG',
+  kodeCabangUser: '512',
+  kodeRegionUser: '004',
+  namaCabangUser: 'TEGAL',
+  departementUser: 'CABANG',
+  statusCabangUser: 'KCP',
+  idDepartementUser: '4',
+  kodeCabangKcuUser: '511',
+  namaCabangKcuUser: 'PEKALONGAN',
+  apps: [
+    {
+      id: 1,
+      url: 'http://10.55.54.152/maps-admin',
+      name: 'MAPS',
+      logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
+      isActive: true,
+      loginType: null,
+      roles: [
+        {
+          id: 1,
+          name: 'Administrators',
+        },
+        {
+          id: 2,
+          name: 'Customer Care',
+        },
+      ],
+    },
+    {
+      id: 2,
+      url: 'https://smartops.bankmuamalat.co.id/appn/session/signin',
+      name: 'APPN',
+      logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
+      isActive: true,
+      loginType: null,
+      roles: [
+        {
+          id: 1,
+          name: 'Administrators',
+        },
+      ],
+    },
+    {
+      id: 6,
+      url: 'https://google.co.id',
+      logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
+      name: 'Google Indonesia',
+      loginType: null,
+      isActive: true,
+      roles: [
+        {
+          id: 3,
+          name: 'Customer Service',
+        },
+        {
+          id: 4,
+          name: 'Approver',
+        },
+        {
+          id: 5,
+          name: 'Checker',
+        },
+      ],
+    },
+  ],
+};
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -46,21 +223,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const Dashboard = (props) => {
   const { LED, getAllInbox } = props;
   const navigation = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user'));
+  const user = JSON.parse(secureLocalStorage.getItem('user'));
+  const role = secureLocalStorage.getItem('selectedRoleName');
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
   const [history, setHistory] = useState({});
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
+  if (process.env.REACT_APP_DEPLOY_STATE === 'false') {
+    secureLocalStorage.setItem('user', JSON.stringify(userDev));
+    secureLocalStorage.setItem('menuItem', JSON.stringify(menuDev));
+    secureLocalStorage.setItem('selectedRoleName', 'inputer');
+  }
+
   useEffect(() => {
     const dataToSave = {
       nip: user?.nikUser,
-      role: 'inputer',
-      codeDiv: user?.divisiUser,
+      role: role,
+      name: user?.nameUser,
+      email: user?.emailUser,
+      division: user?.divisiUser,
+      branchCode: user.kodeCabangUser,
     };
-    localStorage.setItem('history', JSON.stringify(dataToSave));
-    setHistory(JSON.parse(localStorage.getItem('history')));
+
+    secureLocalStorage.setItem('history', JSON.stringify(dataToSave));
+    setHistory(JSON.parse(secureLocalStorage.getItem('history')));
   }, []);
 
   useEffect(() => {
@@ -133,17 +321,17 @@ const Dashboard = (props) => {
                         >
                           <TableCell>{index + 1}</TableCell>
                           <TableCell>{row.idLaporan}</TableCell>
-                          <TableCell>{row?.unitKerja?.namaUnitKerja}</TableCell>
-                          <TableCell>{row.statusKejadian.nama}</TableCell>
+                          <TableCell>{row.unitKerja?.namaUnitKerja}</TableCell>
+                          <TableCell>{row.statusKejadian?.nama}</TableCell>
                           <TableCell>
                             {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
                           </TableCell>
-                          <TableCell>{row.statusLaporan.nama}</TableCell>
+                          <TableCell>{row.statusLaporan?.nama}</TableCell>
                           <TableCell>
                             <Button
                               sx={{ marginRight: '8px' }}
                               size="small"
-                              color={'primary'}
+                              color="primary"
                               variant="contained"
                               startIcon={<IconFileDescription />}
                               onClick={() => {
@@ -185,13 +373,13 @@ const Dashboard = (props) => {
                   component="div"
                   rowsPerPage={rowsPerPage}
                   onPageChange={handleChangePage}
-                  labelRowsPerPage={'Baris per halaman'}
+                  labelRowsPerPage="Baris per halaman"
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
             </>
           ) : (
-            <Typography textAlign={'center'} variant="h2">
+            <Typography textAlign="center" variant="h2">
               Belum ada laporan dalam kotak masuk
             </Typography>
           )}

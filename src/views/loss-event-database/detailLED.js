@@ -24,6 +24,7 @@ import {
   getOneFormLed,
 } from 'src/actions/formLEDActions';
 import { showToast } from 'src/utils/use-snackbar';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -43,7 +44,7 @@ const BCrumb = [
 ];
 
 const DetailLED = (props) => {
-  const user = JSON.parse(localStorage.getItem('history'));
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
   const params = useParams();
   const navigate = useNavigate();
   const { detail, isLoading, approveIRM, rejectIRM, approveLED, sendBackLED, getOneFormLed } =
@@ -181,7 +182,7 @@ const DetailLED = (props) => {
               <DetailWrapper title="Status kejadian" content={dataLaporan?.statusKejadian?.nama} />
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Kronologi{' '}
+                  Kronologi
                 </Typography>
 
                 <Typography

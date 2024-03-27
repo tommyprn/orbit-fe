@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { validationSchema } from './validationForm';
 import { IconCloudUpload } from '@tabler/icons';
+import { validationSchema } from './validationForm';
+import { connect, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import {
   Card,
@@ -25,10 +25,9 @@ import {
 } from '@mui/material';
 import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
+import { createOption, createGroupedOption } from 'src/utils/use-options';
 import { editFormLed, getOneFormLed, approveLED, createDraftLed } from 'src/actions/formLEDActions';
-
-import './formLED.css';
-import './detailLED.css';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -39,6 +38,9 @@ import DashboardCard from '../../components/shared/DashboardCard';
 import QuillTextField from 'src/components/forms/quil-text/quill-text';
 import CustomAutoComplete from 'src/components/shared/custom-auto-complete';
 
+import './formLED.css';
+import './detailLED.css';
+
 const BCrumb = [
   {
     title: 'Mohon pastikan data yang telah anda ubah terisi dengan benar',
@@ -46,9 +48,10 @@ const BCrumb = [
 ];
 
 const EditFormLED = (props) => {
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
   const params = useParams();
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('history'));
+  const customizer = useSelector((state) => state.customizer);
   const {
     detail,
     isLoading,
@@ -194,18 +197,6 @@ const EditFormLED = (props) => {
     },
   });
 
-  const createOption = (option) => {
-    if (option === undefined) {
-      return [];
-    } else {
-      return option?.map((item) => {
-        return {
-          id: item.id || item.idUnitKerja,
-          label: item.nama || item.namaUnitKerja || item.namaCabang,
-        };
-      });
-    }
-  };
   const formatNumber = (value) => {
     const numericValue = parseFloat(value);
     if (!isNaN(numericValue)) {
@@ -408,10 +399,13 @@ const EditFormLED = (props) => {
 
           <Autocomplete
             disablePortal
-            id={'caseCategory'}
+            id="caseCategory"
             sx={{ width: '80%' }}
             value={caseCategoryValue}
-            options={createOption(masterData.dropdown.caseCategory.levelThree)}
+            options={createGroupedOption(masterData.dropdown.caseCategory.levelThree).sort(
+              (a, b) => a.idCategory - b.idCategory,
+            )}
+            groupBy={(option) => option.labelCategory}
             onChange={(event, newValue) => {
               if (newValue === null) {
                 setCaseCategoryValue({ id: 0, label: '' });
@@ -561,7 +555,7 @@ const EditFormLED = (props) => {
 
           <Autocomplete
             disablePortal
-            id={'costCentre'}
+            id="costCentre"
             sx={{ width: '80%' }}
             value={costCentreValue}
             options={createOption(masterData.dropdown.costCentre)}
@@ -706,7 +700,13 @@ const EditFormLED = (props) => {
   };
 
   return (
-    <PageContainer title="Edit Laporan Loss Event Database (LED)" description="EditFormLED Page">
+    <PageContainer
+      customStyle={{
+        maxWidth: customizer.isCollapse ? `calc(100vw - 152px)` : `calc(100vw - 335px)`,
+      }}
+      title="Edit Laporan Loss Event Database (LED)"
+      description="EditFormLED Page"
+    >
       <Breadcrumb title="Edit Laporan LED" items={BCrumb} />
 
       <DashboardCard>

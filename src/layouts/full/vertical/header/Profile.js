@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Menu,
-  Button,
-  Avatar,
-  Divider,
-  Typography,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
+import { Box, Menu, Button, Avatar, Divider, Typography, IconButton } from '@mui/material';
+import secureLocalStorage from 'react-secure-storage';
 
-import { IconMail, IconLogout } from '@tabler/icons';
 import { Stack } from '@mui/system';
+import { IconMail, IconLogout } from '@tabler/icons';
 
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
-const users = JSON.parse(localStorage.getItem('user'));
+const users = JSON.parse(secureLocalStorage.getItem('user'));
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -26,8 +18,8 @@ const Profile = () => {
     setAnchorEl2(null);
   };
   const handleBack = () => {
-    // localStorage.removeItem('menuItem');
     window.location.href = 'http://10.55.54.152/maps-login';
+    secureLocalStorage.removeItem('menuItem');
   };
 
   return (
@@ -77,10 +69,10 @@ const Profile = () => {
           <Avatar src={ProfileImg} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
           <Box>
             <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
-              {users.nameUser}
+              {users?.nameUser}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
-              {users.nikUser} - {users.divisiUser}
+              {users?.nikUser} - {users?.divisiUser}
             </Typography>
             <Typography
               variant="subtitle2"

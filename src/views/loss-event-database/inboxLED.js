@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { getAllInbox } from 'src/actions/formLEDActions';
 import { IconFileDescription, IconHistory, IconPencil } from '@tabler/icons';
+import secureLocalStorage from 'react-secure-storage';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
@@ -47,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const InboxLED = (props) => {
   const { LED, getAllInbox } = props;
   const navigation = useNavigate();
-  const user = JSON.parse(localStorage.getItem('history'));
+  const user = JSON.parse(secureLocalStorage.getItem('history'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -152,7 +153,11 @@ const InboxLED = (props) => {
                           >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{row?.idLaporan}</TableCell>
-                            <TableCell>{row?.unitKerja?.namaUnitKerja}</TableCell>
+                            <TableCell>
+                              {row?.unitKerja?.namaUnitKerja !== 'CABANG'
+                                ? row?.unitKerja?.namaUnitKerja
+                                : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
+                            </TableCell>
                             <TableCell>{row?.statusKejadian?.nama}</TableCell>
                             <TableCell>
                               {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
@@ -216,13 +221,13 @@ const InboxLED = (props) => {
                   component="div"
                   rowsPerPage={rowsPerPage}
                   onPageChange={handleChangePage}
-                  labelRowsPerPage={'Baris per halaman'}
+                  labelRowsPerPage="Baris per halaman"
                   onRowsPerPageChange={handleChangeRowsPerPage}
                 />
               </Paper>
             </>
           ) : (
-            <Typography textAlign={'center'} variant="h2">
+            <Typography textAlign="center" variant="h2">
               Belum ada laporan dalam kotak masuk
             </Typography>
           )}

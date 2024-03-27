@@ -53,6 +53,8 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
                 label: '',
               },
             );
+            formik.setFieldValue(`actionPlan.${index}.PIC`, '');
+            formik.setFieldValue(`actionPlan.${index}.email`, '');
           } else {
             formik.setFieldValue(
               branch ? `actionPlan.${index}.branch` : `actionPlan.${index}.workUnit`,
@@ -65,6 +67,8 @@ const CustomAutoComplete = ({ formik, index, branchOption, workUnitOption }) => 
                 label: '',
               },
             );
+            formik.setFieldValue(`actionPlan.${index}.PIC`, newValue.pic);
+            formik.setFieldValue(`actionPlan.${index}.email`, newValue.email);
           }
         }}
         isOptionEqualToValue={(option, value) => option.id === value.id}

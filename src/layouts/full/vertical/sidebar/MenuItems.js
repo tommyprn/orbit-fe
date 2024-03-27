@@ -1,7 +1,3 @@
-import { IconBoxMultiple, IconPoint, IconReport, IconHistory } from '@tabler/icons';
-
-import { uniqueId } from 'lodash';
-
 const Menuitems = [
   {
     navlabel: true,

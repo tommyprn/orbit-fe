@@ -101,7 +101,7 @@ const CaseCause = (props) => {
       {process.env.HEADER_SHOW ? <Breadcrumb title="Penyebab Kejadian" items={BCrumb} /> : null}
 
       <CaseMasterTable
-        title={'Data Master Penyebab Kejadian'}
+        title="Data Master Penyebab Kejadian"
         master={masterData?.caseCause}
         header={header}
         onSearch={onSearch}
@@ -115,7 +115,7 @@ const CaseCause = (props) => {
       />
 
       <SimpleModal
-        title={'Tambah Penyebab Kejadian'}
+        title="Tambah Penyebab Kejadian"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -127,7 +127,7 @@ const CaseCause = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Ubah Penyebab Kejadian'}
+        title="Ubah Penyebab Kejadian"
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -140,7 +140,7 @@ const CaseCause = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Penyebab Kejadian'}
+        title="Hapus Penyebab Kejadian"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

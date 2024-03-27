@@ -60,11 +60,11 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
   }, [pathname, menu.children]);
 
   // If Menu has Children
-  const submenus = menu.children?.map((item) => {
+  const submenus = menu.children?.map((item, index) => {
     if (item.children) {
       return (
         <NavCollapse
-          key={item.id}
+          key={index}
           menu={item}
           level={level + 1}
           pathWithoutLastPart={pathWithoutLastPart}
@@ -75,7 +75,7 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
     } else {
       return (
         <NavItem
-          key={item.id}
+          key={index}
           item={item}
           level={level + 1}
           pathDirect={pathDirect}

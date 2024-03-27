@@ -109,7 +109,7 @@ const LevelThree = (props) => {
       {process.env.HEADER_SHOW ? <Breadcrumb title="Aktivitas" items={BCrumb} /> : null}
 
       <CategoryTable
-        title={'Aktivitas'}
+        title="Aktivitas"
         master={masterData?.caseCategory?.levelThree}
         header={header}
         onSearch={onSearch}
@@ -122,11 +122,7 @@ const LevelThree = (props) => {
         onOpenHandler={onCreateHandler}
       />
 
-      <SimpleModal
-        title={'Tambah Basel 2'}
-        isOpen={createModalOpen}
-        onCloseHandler={onCloseHandler}
-      >
+      <SimpleModal title="Tambah Basel 2" isOpen={createModalOpen} onCloseHandler={onCloseHandler}>
         <CreateMasterFormBasel
           levelThree
           options={masterData?.caseCategory?.levelTwo}
@@ -137,7 +133,7 @@ const LevelThree = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Ubah Kategori Kejadian'}
+        title="Ubah Kategori Kejadian"
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
@@ -152,7 +148,7 @@ const LevelThree = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title={'Hapus Kategori Kejadian'}
+        title="Hapus Kategori Kejadian"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}

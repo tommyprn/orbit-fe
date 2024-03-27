@@ -68,7 +68,7 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
     >
       <TextField
         sx={{ width: '100%' }}
-        id={'code'}
+        id="code"
         label={`kode ${masterTitle} baru`}
         variant="outlined"
         required
@@ -79,7 +79,7 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
         helperText={sslFormik.touched.code && sslFormik.errors.code}
       />
       <TextField
-        id={'name'}
+        id="name"
         sx={{ width: '100%' }}
         rows={4}
         label={`nama ${masterTitle}`}
@@ -178,7 +178,7 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
     >
       <TextField
         sx={{ width: '100%' }}
-        id={'name'}
+        id="name"
         label={`${masterTitle} baru`}
         variant="outlined"
         required
@@ -189,7 +189,7 @@ const CreateMasterForm = ({ ssl, workUnit, masterTitle, onSaveHandler, onCloseHa
         helperText={formik.touched.name && formik.errors.name}
       />
       <TextField
-        id={'description'}
+        id="description"
         sx={{ width: '100%' }}
         rows={4}
         label="Deskripsi"

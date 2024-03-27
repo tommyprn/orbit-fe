@@ -118,7 +118,7 @@ const Customizer = () => {
         {/* ------------ Customizer Sidebar ------------- */}
         {/* ------------------------------------------- */}
         <Scrollbar sx={{ height: 'calc(100vh - 5px)' }}>
-          <Box p={2} display="flex" justifyContent={'space-between'} alignItems="center">
+          <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4">Settings</Typography>
 
             <IconButton
@@ -139,7 +139,7 @@ const Customizer = () => {
             <Typography variant="h6" gutterBottom>
               Theme Option
             </Typography>
-            <Stack direction={'row'} gap={2} my={2}>
+            <Stack direction="row" gap={2} my={2}>
               <StyledBox onClick={() => dispatch(setDarkMode('light'))} display="flex" gap={1}>
                 <WbSunnyTwoToneIcon
                   color={customizer.activeMode === 'light' ? 'primary' : 'inherit'}
@@ -160,17 +160,17 @@ const Customizer = () => {
             <Typography variant="h6" gutterBottom>
               Theme Direction
             </Typography>
-            <Stack direction={'row'} gap={2} my={2}>
+            <Stack direction="row" gap={2} my={2}>
               <StyledBox onClick={() => dispatch(setDir('ltr'))} display="flex" gap={1}>
                 <SwipeLeftAltTwoToneIcon
                   color={customizer.activeDir === 'ltr' ? 'primary' : 'inherit'}
-                />{' '}
+                />
                 LTR
               </StyledBox>
               <StyledBox onClick={() => dispatch(setDir('rtl'))} display="flex" gap={1}>
                 <SwipeRightAltTwoToneIcon
                   color={customizer.activeDir === 'rtl' ? 'primary' : 'inherit'}
-                />{' '}
+                />
                 RTL
               </StyledBox>
             </Stack>
@@ -214,7 +214,7 @@ const Customizer = () => {
                 <Typography variant="h6" gutterBottom>
                   Sidebar Type
                 </Typography>
-                <Stack direction={'row'} gap={2} my={2}>
+                <Stack direction="row" gap={2} my={2}>
                   <StyledBox onClick={() => dispatch(toggleSidebar())} display="flex" gap={1}>
                     <WebAssetTwoToneIcon color={!customizer.isCollapse ? 'primary' : 'inherit'} />
                     Full
@@ -230,7 +230,7 @@ const Customizer = () => {
             <Typography variant="h6" gutterBottom>
               Card With
             </Typography>
-            <Stack direction={'row'} gap={2} my={2}>
+            <Stack direction="row" gap={2} my={2}>
               <StyledBox onClick={() => dispatch(setCardShadow(false))} display="flex" gap={1}>
                 <BorderOuter color={!customizer.isCardShadow ? 'primary' : 'inherit'} />
                 Border

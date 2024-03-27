@@ -6,6 +6,7 @@ import RTL from './layouts/full/shared/customizer/RTL';
 import Router from './routes/Router';
 import ScrollToTop from './components/shared/ScrollToTop';
 import axiosServices from './utils/axios';
+import secureLocalStorage from 'react-secure-storage';
 
 function App() {
   const routing = useRoutes(Router);
@@ -16,39 +17,39 @@ function App() {
     window.location.href = url;
   };
 
-  const checkSessionExpiry = async () => {
-    const accessToken = localStorage.getItem('accessToken');
-    const menu = localStorage.getItem('menuItem');
+  // const checkSessionExpiry = async () => {
+  //   const accessToken = secureLocalStorage?.getItem('accessToken');
+  //   const menu = secureLocalStorage?.getItem('menuItem');
 
-    if (
-      !accessToken ||
-      accessToken === '' ||
-      accessToken === null ||
-      !menu ||
-      menu === '' ||
-      menu === null
-    ) {
-      // navigate to login when no token/ menu item found
-      navigateTo('http://10.55.54.152/maps-login');
-      return;
-    }
+  //   if (
+  //     !accessToken ||
+  //     accessToken === '' ||
+  //     accessToken === null ||
+  //     !menu ||
+  //     menu === '' ||
+  //     menu === null
+  //   ) {
+  //     // navigate to login when no token/ menu item found
+  //     navigateTo('http://10.55.54.152/maps-login');
+  //     return;
+  //   }
 
-    const apiUrl = 'http://10.80.244.168:12987/maps/v1/auth/session-expiry';
-    const headers = {
-      Authorization: `${accessToken}`,
-    };
+  //   const apiUrl = 'http://10.80.244.168:12987/maps/v1/auth/session-expiry';
+  //   const headers = {
+  //     Authorization: `${accessToken}`,
+  //   };
 
-    try {
-      const response = await axiosServices.get(apiUrl, { headers });
+  //   try {
+  //     const response = await axiosServices.get(apiUrl, { headers });
 
-      if (!response.data || response.data !== 'active') {
-        navigateTo('http://10.55.54.152/maps-login');
-      }
-    } catch (error) {
-      console.error(error);
-      navigateTo('http://10.55.54.152/maps-login');
-    }
-  };
+  //     if (!response.data || response.data !== 'active') {
+  //       navigateTo('http://10.55.54.152/maps-login');
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     navigateTo('http://10.55.54.152/maps-login');
+  //   }
+  // };
 
   // checkSessionExpiry();
 
