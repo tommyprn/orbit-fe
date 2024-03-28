@@ -245,6 +245,8 @@ const Dashboard = (props) => {
       email: user?.emailUser,
       division: user?.divisiUser,
       branchCode: user.kodeCabangUser,
+      branchName: user?.namaCabangUser,
+      department: user?.departementUser,
     };
 
     secureLocalStorage.setItem('history', JSON.stringify(dataToSave));

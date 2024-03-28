@@ -1,23 +1,23 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Typography, styled } from '@mui/material';
-import { ReactComponent as LogoBMI } from 'src/assets/images/logos/BMI.svg';
+import { styled } from '@mui/material';
+import LogoBMI from 'src/assets/images/logos/logo.jpeg';
 
 const Logo = () => {
   const customizer = useSelector((state) => state.customizer);
   const LinkStyled = styled(Link)(() => ({
-    minHeight: '110px',
+    minHeight: '80px',
     height: customizer.TopbarHeight,
     width: 'auto',
     overflow: 'hidden',
     display: 'block',
     marginBottom: '16px',
+    marginTop: '16px',
   }));
 
   return (
     <LinkStyled to="/">
-      <LogoBMI height={customizer.TopbarHeight} />
-      {customizer.isCollapse ? null : <Typography variant="h2">Orbit</Typography>}
+      <img style={{ height: customizer.TopbarHeight }} alt="logo" src={LogoBMI} />
     </LinkStyled>
   );
 };

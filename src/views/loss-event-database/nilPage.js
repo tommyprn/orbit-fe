@@ -86,6 +86,7 @@ const NilPage = (props) => {
       branch: user.branchCode,
       workUnit: user.division,
     };
+
     const res = await createZeroReport(dataToSend);
     setConfirmationModal(false);
 
@@ -100,15 +101,15 @@ const NilPage = (props) => {
   };
 
   const data = LED.nil;
-
   return (
     <PageContainer titdatae="Laporan Nihil" description="zro report Page">
       <Breadcrumb title="Laporan Nihil" items={BCrumb} />
 
       <SimpleModal isOpen={confirmationModal} title="Konfirmasi" onCloseHandler={onClose} on>
         <Typography>
-          Kami akan mengirimkan laporan nihil secara otomatis ke IRM, lanjutkan proses pembuatan
-          laporan nihil?
+          Kami akan mengirimkan laporan nihil bulan{' '}
+          <strong>{dayjs().subtract(1, 'month').format('MMMM')} </strong>
+          secara otomatis ke IRM, lanjutkan proses pembuatan laporan nihil?
         </Typography>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
@@ -133,9 +134,11 @@ const NilPage = (props) => {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SearchBar onSubmit={(val) => onSearch(val)} />
-            <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
-              Submit laporan nihil
-            </Button>
+            {user.role === 'approver' ? (
+              <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
+                Submit laporan nihil
+              </Button>
+            ) : null}
           </div>
 
           <Paper
@@ -167,7 +170,16 @@ const NilPage = (props) => {
                         <TableCell>{dayjs(row.tanggalLapor).format('DD-MMM-YY')}</TableCell>
                         <TableCell>{row.unitKerjaEntity.namaApproverUnit}</TableCell>
                         <TableCell>
-                          {row.unitKerjaEntity.kodeUnitKerja} - {row.unitKerjaEntity.namaUnitKerja}
+                          {row.unitKerjaEntity.namaUnitKerja !== 'CABANG' ? (
+                            <>
+                              {row.unitKerjaEntity.kodeUnitKerja} -{' '}
+                              {row.unitKerjaEntity.namaUnitKerja}
+                            </>
+                          ) : (
+                            <>
+                              {row.cabangEntity.kodeCabang} - {row.cabangEntity.namaCabang}
+                            </>
+                          )}
                         </TableCell>
                       </StyledTableRow>
                     );

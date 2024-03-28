@@ -44,7 +44,7 @@ const CreateMasterFormBasel = ({
     },
   });
 
-  const newOption = options.data.map((item) => {
+  const newOption = options?.data?.map((item) => {
     return {
       id: item.id,
       label: levelThree ? `${item.nama} - ${item.kategoriKejadian.nama}` : item.nama,
@@ -59,7 +59,7 @@ const CreateMasterFormBasel = ({
       <Autocomplete
         disablePortal
         id="idLevelOne"
-        options={newOption}
+        options={newOption ? newOption : []}
         value={value}
         onChange={(event, newValue) => {
           if (newValue === null) {
@@ -114,7 +114,7 @@ const CreateMasterFormBasel = ({
       <Autocomplete
         disablePortal
         id="idLevelTwo"
-        options={newOption}
+        options={newOption ? newOption : []}
         value={value}
         onChange={(event, newValue) => {
           if (newValue === null) {

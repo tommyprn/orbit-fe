@@ -732,8 +732,8 @@ export const createZeroReport = (user) => {
   );
 
   const requestBody = {
-    kodeUnitKerja: user.workUnit,
     kodeCabang: Number(user.branch),
+    kodeUnitKerja: user.workUnit,
   };
 
   return async (dispatch) => {

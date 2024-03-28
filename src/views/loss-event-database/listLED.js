@@ -147,7 +147,12 @@ const ListLED = (props) => {
                           >
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>{row.idLaporan}</TableCell>
-                            <TableCell>{row.unitKerja.namaUnitKerja}</TableCell>
+                            <TableCell>
+                              {' '}
+                              {row?.unitKerja?.namaUnitKerja !== 'CABANG'
+                                ? row?.unitKerja?.namaUnitKerja
+                                : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
+                            </TableCell>
                             <TableCell>{row.statusKejadian.nama}</TableCell>
                             <TableCell>
                               {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
