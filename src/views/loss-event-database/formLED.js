@@ -225,10 +225,15 @@ const CreateFormLED = (props) => {
     return '0';
   };
 
+  console.log(window.innerWidth);
   return (
     <PageContainer
       customStyle={{
-        maxWidth: customizer.isCollapse ? `calc(100vw - 152px)` : `calc(100vw - 335px)`,
+        maxWidth: customizer.isCollapse
+          ? `calc(100vw - 152px)`
+          : window.innerWidth > 1199
+          ? `calc(100vw - 335px)`
+          : '',
       }}
       title="Buat Laporan Loss Event Database (LED)"
       description="CreateFormLED Page"
@@ -600,7 +605,7 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Detail NO.GL/SSL/Cost Centre
+                  Cost Centre
                 </Typography>
 
                 <Autocomplete

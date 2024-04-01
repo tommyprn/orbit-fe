@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
@@ -17,11 +17,14 @@ import {
   TableHead,
   TextField,
   Typography,
+  Autocomplete,
+  InputAdornment,
   TableContainer,
 } from '@mui/material';
 import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { validationSchema } from './validationForm';
+import { createOption } from 'src/utils/use-options';
 import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
 import secureLocalStorage from 'react-secure-storage';
 
@@ -31,6 +34,7 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import DetailWrapper from 'src/components/shared/detail-wrapper';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
+import QuillTextField from 'src/components/forms/quil-text/quill-text';
 
 import './formLED.css';
 import './detailLED.css';
@@ -49,6 +53,11 @@ const UpdateFormLED = (props) => {
   const { detail, isLoading, approveLED, masterData, getDropdown, editFormLed, getOneFormLed } =
     props;
 
+  const [caseStatusValue, setCaseStatusValue] = useState({
+    id: 0,
+    label: '',
+  });
+
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
 
@@ -58,6 +67,15 @@ const UpdateFormLED = (props) => {
       await getOneFormLed(params.reportId);
     })();
   }, [getDropdown, getOneFormLed, params.reportId]);
+
+  useEffect(() => {
+    if (dataLaporan) {
+      setCaseStatusValue({
+        id: dataLaporan?.statusKejadian?.id ?? 0,
+        label: dataLaporan?.statusKejadian?.nama ?? '',
+      });
+    }
+  }, [dataLaporan, dataActionPlan]);
 
   const formik = useFormik({
     initialValues: {
@@ -157,18 +175,67 @@ const UpdateFormLED = (props) => {
             </div>
 
             <>
-              <DetailWrapper title="Status kejadian" content={dataLaporan?.statusKejadian?.nama} />
-              <div className="detail-wrapper">
+              <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Kronologi
+                  Status kejadian
                 </Typography>
 
-                <Typography
-                  variant="body1"
+                <Autocomplete
+                  disablePortal
+                  id="caseStatus"
                   sx={{ width: '80%' }}
-                  dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+                  value={caseStatusValue}
+                  options={createOption(masterData.dropdown.caseStatus)}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      setCaseStatusValue({ id: 0, label: '' });
+                    } else {
+                      setCaseStatusValue(newValue);
+                      formik.setFieldValue('caseStatus', newValue.id);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      id="caseStatus"
+                      value={caseStatusValue}
+                      error={formik.touched.caseStatus && Boolean(formik.errors.caseStatus)}
+                      onBlur={formik.handleBlur}
+                      helperText={formik.touched.caseStatus && formik.errors.caseStatus}
+                      placeholder="pilih status kejadian"
+                    />
+                  )}
                 />
               </div>
+
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <div className="detail-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Kronologi
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ width: '80%' }}
+                    dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+                  />
+                </div>
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Kronologi
+                  </Typography>
+
+                  <QuillTextField
+                    id="chronology"
+                    value={formik.values.chronology}
+                    isError={formik.errors}
+                    onChange={(val) => formik.setFieldValue('chronology', val)}
+                    helperText="kronologi kejadian wajib diisi"
+                  />
+                </div>
+              )}
+
               <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
               <DetailWrapper
                 title="Tanggal lapor"
@@ -225,25 +292,95 @@ const UpdateFormLED = (props) => {
                 content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
               />
 
-              <DetailWrapper
-                title="Nominal recovery"
-                content={`Rp. ${formatNumber(dataLaporan?.nominalRecovery)}`}
-              />
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <DetailWrapper
+                  title="Nominal recovery"
+                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
+                />
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Nominal recovery
+                  </Typography>
 
-              <DetailWrapper
-                title="Nominal realisasi kerugian"
-                content={`Rp. ${formatNumber(dataLaporan?.nominalRealisasiKerugian)}`}
-              />
+                  <TextField
+                    sx={{ width: '80%' }}
+                    id="recoveryAmount"
+                    type="text"
+                    value={formatNumber(formik.values.recoveryAmount)}
+                    error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
+                    onBlur={formik.handleBlur}
+                    variant="outlined"
+                    onChange={(e) => {
+                      const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                      formik.setFieldValue('recoveryAmount', newValue);
+                    }}
+                    helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
+                    placeholder="nominal jumlah pemulihan"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                    }}
+                  />
+                </div>
+              )}
 
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <DetailWrapper
+                  title="Nominal recovery"
+                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
+                />
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Nominal realisasi kerugian
+                  </Typography>
+
+                  <TextField
+                    sx={{ width: '80%' }}
+                    id="actualLoss"
+                    type="text"
+                    value={formatNumber(formik.values.actualLoss)}
+                    error={formik.touched.actualLoss && Boolean(formik.errors.actualLoss)}
+                    onBlur={formik.handleBlur}
+                    variant="outlined"
+                    onChange={(e) => {
+                      const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                      formik.setFieldValue('actualLoss', newValue);
+                    }}
+                    helperText={formik.touched.actualLoss && formik.errors.actualLoss}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                    }}
+                    placeholder="nominal kerugian aktual"
+                  />
+                </div>
+              )}
               <DetailWrapper
-                title="Detail NO.GL/SSL/Cost Centre"
+                title="Cost Centre"
                 content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}
               />
 
-              <DetailWrapper
-                title="Sumber recovery"
-                content={`Rp. ${formatNumber(dataLaporan?.sumberRecovery)}`}
-              />
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <DetailWrapper title="Sumber recovery" content={dataLaporan.sumberRecovery} />
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%' }}>
+                    Sumber recovery
+                  </Typography>
+
+                  <TextField
+                    sx={{ width: '80%' }}
+                    id="recoverySource"
+                    value={formik.values.recoverySource}
+                    error={formik.touched.recoverySource && Boolean(formik.errors.recoverySource)}
+                    onBlur={formik.handleBlur}
+                    variant="outlined"
+                    onChange={formik.handleChange}
+                    helperText={formik.touched.recoverySource && formik.errors.recoverySource}
+                    placeholder="tuliskan sumber disini"
+                  />
+                </div>
+              )}
             </>
 
             <Divider sx={{ marginTop: 'px' }} />

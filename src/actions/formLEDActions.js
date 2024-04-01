@@ -386,8 +386,8 @@ export const sendBackLED = (id, user, comment) => {
     const requestBody = {
       id: id,
       nip: user.nip,
+      role: user.role,
       keterangan: comment,
-      // role: user.role,
     };
 
     try {

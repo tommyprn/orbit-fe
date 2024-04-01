@@ -9,7 +9,6 @@ const AddComment = ({ isOpen, title, newStyle, onSaveHandler, onCloseHandler }) 
   const validationSchema = yup.object({
     comment: yup
       .string(`masukkan alasan laporan ini ditolak`)
-      .min(50, 'minimal alasan diberikan 50 karakter')
       .required(`wajib memberikan alasan ditolak`),
   });
 
@@ -39,11 +38,7 @@ const AddComment = ({ isOpen, title, newStyle, onSaveHandler, onCloseHandler }) 
           onBlur={formik.handleBlur}
           variant="outlined"
           onChange={formik.handleChange}
-          helperText={
-            formik.touched.comment && formik.errors.comment
-              ? formik.errors.comment
-              : '*Min 50 kerakter'
-          }
+          helperText={formik.errors.comment}
           required
           multiline
         />

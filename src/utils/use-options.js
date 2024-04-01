@@ -3,7 +3,6 @@ export const createOption = (option) => {
     return [];
   } else {
     return option?.map((item) => {
-      console.log(item);
       return {
         id: item.id || item.idUnitKerja,
         label: item.nama || item.namaUnitKerja || item.namaCabang,

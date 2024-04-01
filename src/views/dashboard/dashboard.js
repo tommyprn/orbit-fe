@@ -91,7 +91,7 @@ const menuDev = [
         id: '25',
         title: 'Status laporan',
         icon: 'IconPoint',
-        href: '/master/report-utatus',
+        href: '/master/report-status',
       },
     ],
   },
@@ -224,7 +224,7 @@ const Dashboard = (props) => {
   const { LED, getAllInbox } = props;
   const navigation = useNavigate();
   const user = JSON.parse(secureLocalStorage.getItem('user'));
-  const role = secureLocalStorage.getItem('selectedRoleName');
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -234,7 +234,7 @@ const Dashboard = (props) => {
   if (process.env.REACT_APP_DEPLOY_STATE === 'false') {
     secureLocalStorage.setItem('user', JSON.stringify(userDev));
     secureLocalStorage.setItem('menuItem', JSON.stringify(menuDev));
-    secureLocalStorage.setItem('selectedRoleName', 'inputer');
+    // secureLocalStorage.setItem('selectedRoleName', JSON.stringify('inputer'));
   }
 
   useEffect(() => {

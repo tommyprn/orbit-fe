@@ -68,7 +68,7 @@ const InboxLED = (props) => {
 
   const onEdit = (id, status) => {
     if (user.role === 'inputer') {
-      if (status === 'Draft' || status === 'Need Fix') {
+      if (status === 'Draft' || status === 'Need Update') {
         navigation(`/LED/edit-report/${id}`);
       } else {
         navigation(`/LED/update-report/${id}`);

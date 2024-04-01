@@ -133,9 +133,14 @@ const NilPage = (props) => {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <SearchBar onSubmit={(val) => onSearch(val)} />
+            {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
+            <div />
             {user.role === 'approver' ? (
-              <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
+              <Button
+                variant="contained"
+                onClick={onOpenModal}
+                // disabled={!data.isButtonEnable}
+              >
                 Submit laporan nihil
               </Button>
             ) : null}

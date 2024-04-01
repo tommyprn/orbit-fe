@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
-import { Box, List, useMediaQuery } from '@mui/material';
+import { Box, List, useMediaQuery, Button, ButtonGroup, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import secureLocalStorage from 'react-secure-storage';
 
@@ -11,15 +11,22 @@ import NavCollapse from './NavCollapse';
 
 const SidebarItems = () => {
   const { pathname } = useLocation();
-  const customizer = useSelector((state) => state.customizer);
-  const dispatch = useDispatch();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const dispatch = useDispatch();
+  const customizer = useSelector((state) => state.customizer);
   const hideMenu = lgUp ? customizer.isCollapse && !customizer.isSidebarHover : '';
   const pathDirect = pathname;
   const pathWithoutLastPart = pathname.slice(0, pathname.lastIndexOf('/'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
-  const Menuitems = JSON.parse(secureLocalStorage?.getItem('menuItem'));
-  // const Menuitems = secureLocalStorage?.getItem('menuItem');
+  const Menuitems =
+    process.env.REACT_APP_DEPLOY_STATE === 'true'
+      ? secureLocalStorage?.getItem('menuItem')
+      : JSON.parse(secureLocalStorage?.getItem('menuItem'));
+
+  const onClick = (role) => {
+    secureLocalStorage.setItem('selectedRoleName', JSON.stringify(role));
+  };
 
   return (
     <Box sx={{ px: 3 }}>
@@ -68,6 +75,19 @@ const SidebarItems = () => {
           <br />
           mohon laklukan koneksi ulang
         </p>
+      ) : null}
+
+      {process.env.REACT_APP_DEPLOY_STATE === 'false' ? (
+        <>
+          <ButtonGroup variant="outlined">
+            <Button onClick={() => onClick('inputer')}>Inputer</Button>
+            <Button onClick={() => onClick('approver')}>Approver</Button>
+            <Button onClick={() => onClick('IRM')}>IRM</Button>
+          </ButtonGroup>
+          <Typography sx={{ color: 'black', marginTop: '8px' }}>
+            role: <strong>{role}</strong>
+          </Typography>
+        </>
       ) : null}
     </Box>
   );

@@ -44,6 +44,10 @@ const BCrumb = [
 ];
 
 const DetailLED = (props) => {
+  const API =
+    process.env.REACT_APP_DEPLOY_STATE === 'true'
+      ? 'http://10.55.54.161:30090/api/v1/'
+      : 'http://10.80.240.45:1933/api/v1/';
   const user = JSON.parse(secureLocalStorage.getItem('history'));
   const params = useParams();
   const navigate = useNavigate();
@@ -62,6 +66,7 @@ const DetailLED = (props) => {
 
   const [rejectModal, setRejectModal] = useState(false);
   const [approveModal, setApproveModal] = useState(false);
+  const [sendBackModal, setSendBackModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -102,12 +107,32 @@ const DetailLED = (props) => {
       navigate('/LED/list');
       showToast('success', 'Laporan dikirim kembali ke RTU');
     } else {
-      showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');
+      showToast('error', 'gagal mengubah status laporan, mohon coba beberapa saat lagi');
     }
   };
 
   const onCancelReject = () => {
     setRejectModal(false);
+  };
+
+  // send back
+  const onSendBack = () => {
+    setSendBackModal(true);
+  };
+
+  const onSendBackConfirm = async (comment) => {
+    const res = await sendBackLED(detail.laporanLed.id, user, comment);
+
+    if (res?.responseCode === 200) {
+      navigate('/LED/list');
+      showToast('success', 'Laporan dikirim kembali ke RTU');
+    } else {
+      showToast('error', 'gagal mengubah status laporan, mohon coba beberapa saat lagi');
+    }
+  };
+
+  const onSendbackCancel = () => {
+    setSendBackModal(false);
   };
 
   // approve function
@@ -148,11 +173,19 @@ const DetailLED = (props) => {
       <Breadcrumb title="Buat Laporan LED" items={BCrumb} />
 
       <AddComment
-        title="Alasan Laporan ditolak"
+        title="Alasan laporan ditolak"
         isOpen={rejectModal}
         newStyle={style}
         onCloseHandler={onCancelReject}
         onSaveHandler={(value) => onRejectConfirm(value)}
+      />
+
+      <AddComment
+        title="Alasan laporan ditolak"
+        isOpen={sendBackModal}
+        newStyle={style}
+        onCloseHandler={onSendbackCancel}
+        onSaveHandler={(value) => onSendBackConfirm(value)}
       />
 
       <SimpleModal isOpen={approveModal} title="Konfirmasi" onCloseHandler={onCancelApprove} on>
@@ -262,7 +295,7 @@ const DetailLED = (props) => {
               />
 
               <DetailWrapper
-                title="Detail NO.GL/SSL/Cost Centre"
+                title="Cost Centre"
                 content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}
               />
 
@@ -345,10 +378,7 @@ const DetailLED = (props) => {
                             <TableCell>
                               {row?.namaFile ? (
                                 <Button startIcon={<IconDownload />}>
-                                  <a
-                                    id={row.id}
-                                    href={`http://10.80.240.45:1933/api/v1/download-lampiran?id=${row.id}`}
-                                  >
+                                  <a id={row.id} href={`${API}download-lampiran?id=${row.id}`}>
                                     {row.namaFile}
                                   </a>
                                 </Button>
@@ -366,7 +396,7 @@ const DetailLED = (props) => {
             </Card>
 
             <div className="button-wrapper">
-              <Button variant="contained" color="warning" onClick={backHandler}>
+              <Button variant="contained" color="secondary" onClick={backHandler}>
                 Kembali
               </Button>
 
@@ -375,6 +405,12 @@ const DetailLED = (props) => {
                   <Button variant="contained" color="error" onClick={onRejectReport}>
                     {user.role === 'IRM' ? 'Void' : 'Revisi'} Laporan
                   </Button>
+
+                  {user.role === 'IRM' ? (
+                    <Button variant="contained" color="warning" onClick={onSendBack}>
+                      Revisi Laporan
+                    </Button>
+                  ) : null}
 
                   <Button variant="contained" onClick={onApproveReport}>
                     {user.role === 'IRM' ? 'Terima' : 'Setujui'} Laporan
