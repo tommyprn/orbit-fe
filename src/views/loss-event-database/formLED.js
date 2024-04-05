@@ -123,6 +123,7 @@ const CreateFormLED = (props) => {
     initialValues: {
       brief: '',
       impact: '',
+      followUp: '',
       caseCause: 0,
       actionPlan: [
         {
@@ -225,7 +226,6 @@ const CreateFormLED = (props) => {
     return '0';
   };
 
-  console.log(window.innerWidth);
   return (
     <PageContainer
       customStyle={{
@@ -233,7 +233,7 @@ const CreateFormLED = (props) => {
           ? `calc(100vw - 152px)`
           : window.innerWidth > 1199
           ? `calc(100vw - 335px)`
-          : '',
+          : '100%',
       }}
       title="Buat Laporan Loss Event Database (LED)"
       description="CreateFormLED Page"
@@ -654,6 +654,20 @@ const CreateFormLED = (props) => {
                   placeholder="tuliskan sumber disini"
                 />
               </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Tindak lanjut
+                </Typography>
+
+                <QuillTextField
+                  id="followUp"
+                  value={formik.values.followUp}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('followUp', val)}
+                  helperText={formik.errors.followUp}
+                />
+              </div>
             </>
 
             <Divider sx={{ marginTop: 'px' }} />
@@ -864,6 +878,7 @@ const CreateFormLED = (props) => {
                 </TableContainer>
               </Paper>
             </Card>
+
             <div className="button-wrapper">
               <Button variant="contained" type="button" color="error" onClick={backHandler}>
                 Batal

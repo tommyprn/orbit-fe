@@ -23,9 +23,12 @@ export const fetchReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllReport = () => {
+export const getAllReport = (region, period) => {
   const queryString = stringify(
-    {},
+    {
+      filter: 'region',
+      filterPeriod: 'triwulan',
+    },
     {
       arrayFormat: 'comma',
       encode: false,
@@ -41,7 +44,7 @@ export const getAllReport = () => {
     };
 
     try {
-      const res = await fetch(API_URL + `get-all-report?` + queryString, {
+      const res = await fetch(API_URL + `get-filter?` + queryString, {
         method: 'GET',
         headers: requestHeaders,
       });
@@ -54,6 +57,168 @@ export const getAllReport = () => {
     } catch (err) {
       console.log(err);
       dispatch(fetchReportFailure(err));
+    }
+  };
+};
+
+export const FETCH_ZERO_REPORT_REQUEST = 'FETCH_ZERO_REPORT_REQUEST';
+export const FETCH_ZERO_REPORT_SUCCESS = 'FETCH_ZERO_REPORT_SUCCESS';
+export const FETCH_ZERO_REPORT_FAILURE = 'FETCH_ZERO_REPORT_FAILURE';
+
+export const fetchZeroReportRequest = () => ({
+  type: FETCH_ZERO_REPORT_REQUEST,
+});
+
+export const fetchZeroReportSuccess = (data) => ({
+  type: FETCH_ZERO_REPORT_SUCCESS,
+  payload: data,
+});
+
+export const fetchZeroReportFailure = (error) => ({
+  type: FETCH_ZERO_REPORT_FAILURE,
+  payload: error,
+});
+
+export const getAllZeroReport = (month, keyword) => {
+  const queryString = stringify(
+    {
+      bulan: month,
+      keyword: keyword,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchZeroReportRequest());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-report-nihil?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchZeroReportSuccess(responseJSON.data));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchZeroReportFailure(err));
+    }
+  };
+};
+
+export const FETCH_POTENTIAL_LOSS_REPORT_REQUEST = 'FETCH_POTENTIAL_LOSS_REPORT_REQUEST';
+export const FETCH_POTENTIAL_LOSS_REPORT_SUCCESS = 'FETCH_POTENTIAL_LOSS_REPORT_SUCCESS';
+export const FETCH_POTENTIAL_LOSS_REPORT_FAILURE = 'FETCH_POTENTIAL_LOSS_REPORT_FAILURE';
+
+export const fetchPotentialLossReportRequest = () => ({
+  type: FETCH_POTENTIAL_LOSS_REPORT_REQUEST,
+});
+
+export const fetchPotentialLossReportSuccess = (data) => ({
+  type: FETCH_POTENTIAL_LOSS_REPORT_SUCCESS,
+  payload: data,
+});
+
+export const fetchPotentialLossReportFailure = (error) => ({
+  type: FETCH_POTENTIAL_LOSS_REPORT_FAILURE,
+  payload: error,
+});
+
+export const getAllPotentialLossReport = (month) => {
+  const queryString = stringify(
+    { bulan: month },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchPotentialLossReportRequest());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-report-potensi-kerugian?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchPotentialLossReportSuccess(responseJSON.data));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchPotentialLossReportFailure(err));
+    }
+  };
+};
+
+export const FETCH_ACTUAL_LOSS_REPORT_REQUEST = 'FETCH_ACTUAL_LOSS_REPORT_REQUEST';
+export const FETCH_ACTUAL_LOSS_REPORT_SUCCESS = 'FETCH_ACTUAL_LOSS_REPORT_SUCCESS';
+export const FETCH_ACTUAL_LOSS_REPORT_FAILURE = 'FETCH_ACTUAL_LOSS_REPORT_FAILURE';
+
+export const fetchActualLossReportRequest = () => ({
+  type: FETCH_ACTUAL_LOSS_REPORT_REQUEST,
+});
+
+export const fetchActualLossReportSuccess = (data) => ({
+  type: FETCH_ACTUAL_LOSS_REPORT_SUCCESS,
+  payload: data,
+});
+
+export const fetchActualLossReportFailure = (error) => ({
+  type: FETCH_ACTUAL_LOSS_REPORT_FAILURE,
+  payload: error,
+});
+
+export const getAllActualLossReport = (month) => {
+  const queryString = stringify(
+    { bulan: month },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchActualLossReportRequest());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-report-realisasi-kerugian?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchActualLossReportSuccess(responseJSON.data));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchActualLossReportFailure(err));
     }
   };
 };

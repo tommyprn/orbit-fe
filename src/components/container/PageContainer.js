@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
+// import './pageContainer.css';
+
 const PageContainer = ({ title, customStyle, description, children }) => (
-  <div style={{ paddingTop: '24px', ...customStyle }}>
+  <div className="container" style={{ paddingTop: '24px', ...customStyle }}>
     <Helmet>
       <title>{title}</title>
       <meta name="description" content={description} />

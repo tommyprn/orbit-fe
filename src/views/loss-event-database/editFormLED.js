@@ -146,9 +146,10 @@ const EditFormLED = (props) => {
   const formik = useFormik({
     initialValues: {
       id: dataLaporan?.id,
-      reportId: dataLaporan?.idLaporan,
       brief: dataLaporan?.kronologiSingkat ?? '',
       impact: dataLaporan?.dampak ?? '',
+      reportId: dataLaporan?.idLaporan,
+      followUp: dataLaporan?.tindakLanjut,
       caseCause: dataLaporan?.penyebabKejadianEntity?.id ?? 0,
       actionPlan:
         dataActionPlan?.map((item) => {
@@ -599,6 +600,20 @@ const EditFormLED = (props) => {
             placeholder="tuliskan sumber disini"
           />
         </div>
+
+        <div className="form-input-wrapper">
+          <Typography variant="body1" sx={{ width: '20%' }}>
+            Tindak lanjut
+          </Typography>
+
+          <QuillTextField
+            id="followUp"
+            value={formik.values.followUp}
+            isError={formik.errors}
+            onChange={(val) => formik.setFieldValue('followUp', val)}
+            helperText={formik.errors.followUp}
+          />
+        </div>
       </>
     );
   };
@@ -706,7 +721,7 @@ const EditFormLED = (props) => {
           ? `calc(100vw - 152px)`
           : window.innerWidth > 1199
           ? `calc(100vw - 335px)`
-          : '',
+          : '100%',
       }}
       title="Edit Laporan Loss Event Database (LED)"
       description="EditFormLED Page"
@@ -839,7 +854,12 @@ const EditFormLED = (props) => {
 
               {user.role === 'inputer' ? (
                 <>
-                  <Button variant="contained" color="warning" onClick={onSaveAsDraft}>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={onSaveAsDraft}
+                    disabled={!formik.dirty}
+                  >
                     Draft
                   </Button>
                   <Button

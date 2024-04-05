@@ -19,7 +19,7 @@ const SimpleModal = ({ title, isOpen, children, newStyle, onCloseHandler }) => {
           style={{
             display: 'flex',
             alignItems: 'center',
-            marginBottom: '8px',
+            marginBottom: '16px',
             justifyContent: 'space-between',
           }}
         >

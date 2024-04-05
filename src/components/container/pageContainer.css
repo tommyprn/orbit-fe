@@ -1,0 +1,9 @@
+.container {
+  padding-top: 24px;
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: calc(100vw - 152px);
+  }
+}

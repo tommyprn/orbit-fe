@@ -82,6 +82,7 @@ const UpdateFormLED = (props) => {
       id: dataLaporan?.id,
       brief: dataLaporan?.kronologiSingkat,
       impact: dataLaporan?.dampak,
+      followUp: dataLaporan?.tindakLanjut,
       reportId: dataLaporan?.idLaporan,
       caseCause: dataLaporan?.penyebabKejadianEntity?.id,
       caseStatus: dataLaporan?.statusKejadian?.id,
@@ -381,6 +382,20 @@ const UpdateFormLED = (props) => {
                   />
                 </div>
               )}
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Tindak lanjut
+                </Typography>
+
+                <QuillTextField
+                  id="followUp"
+                  value={formik.values.followUp}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('followUp', val)}
+                  helperText={formik.errors.followUp}
+                />
+              </div>
             </>
 
             <Divider sx={{ marginTop: 'px' }} />

@@ -303,6 +303,17 @@ const DetailLED = (props) => {
                 title="Sumber recovery"
                 content={`Rp. ${formatNumber(dataLaporan?.sumberRecovery)}`}
               />
+
+              <div className="detail-wrapper">
+                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                  Tindak lanjut
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ width: '80%' }}
+                  dangerouslySetInnerHTML={{ __html: dataLaporan?.tindakLanjut }}
+                />
+              </div>
             </>
 
             <Divider sx={{ marginTop: 'px' }} />

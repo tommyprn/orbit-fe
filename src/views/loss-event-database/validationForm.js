@@ -42,6 +42,7 @@ export const validationSchema = yup.object({
     .typeError('harap pilih cost centre')
     .required(`harap pilih cost centre`),
   recoverySource: yup.string(`masukkan sumber recovery`).required(`sumber recovery wajib diisi`),
+  followUp: yup.string(`masukkan sumber recovery`).required(`tindak lanjut wajib diisi`),
 
   //action plan
   actionPlan: yup.array().of(

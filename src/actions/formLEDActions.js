@@ -43,6 +43,7 @@ export const createFormLed = (payload, user) => {
 
     formData.append('ssl', payload.costCentre);
     formData.append('nip', user.nip);
+    formData.append('role', user.role);
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
@@ -50,6 +51,7 @@ export const createFormLed = (payload, user) => {
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
     formData.append('tanggalLapor', payload.reportDate);
+    formData.append('tindakLanjut', payload.followUp);
     formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
@@ -117,8 +119,14 @@ export const editFormLed = (payload, user) => {
     };
 
     const formData = new FormData();
-    formData.append('id', payload.id);
     formData.append('nip', user.nip);
+    formData.append('role', user.role);
+    formData.append('kodeCabang', user.branchCode);
+    formData.append('namaInputer', user.name);
+    formData.append('emailInputer', user.email);
+    formData.append('kodeUnitKerja', user.division);
+
+    formData.append('id', payload.id);
     formData.append('ssl', payload.costCentre);
     formData.append('dampak', payload.impact);
     if (payload.reportId) {
@@ -126,11 +134,8 @@ export const editFormLed = (payload, user) => {
     }
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
-    formData.append('namaInputer', user.name);
-    formData.append('kodeCabang', user.branchCode);
-    formData.append('emailInputer', user.email);
     formData.append('tanggalLapor', payload.reportDate);
-    formData.append('kodeUnitKerja', user.division);
+    formData.append('tindakLanjut', payload.followUp);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -204,12 +209,14 @@ export const createDraftLed = (payload, user) => {
     }
     formData.append('ssl', payload.costCentre);
     formData.append('nip', user.nip);
+    formData.append('role', user.role);
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
     formData.append('kodeCabang', user.branchCode);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
+    formData.append('tindakLanjut', payload.followUp);
     formData.append('tanggalLapor', payload.reportDate ? payload.reportDate : new Date());
     formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
@@ -226,7 +233,7 @@ export const createDraftLed = (payload, user) => {
     formData.append('nominalRealisasiKerugian', payload.actualLoss);
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
-        if (actionKey === 'file' && actionValue !== '') {
+        if (actionKey === 'file' && actionValue !== '' && typeof actionValue === 'object') {
           formData.append(`actionPlans[${index}].multipartFile`, actionValue);
         } else if (actionKey === 'email') {
           formData.append(`actionPlans[${index}].email`, actionValue);
@@ -345,6 +352,7 @@ export const approveLED = (id, user) => {
     const requestBody = {
       id,
       nip: user.nip,
+      role: user.role,
     };
 
     try {
@@ -754,6 +762,48 @@ export const createZeroReport = (user) => {
 
       if (res.status === 200) {
         dispatch(fetchZeroReportSuccess(responseJSON));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchZeroReportFailure(err));
+    }
+  };
+};
+
+export const updateWorkingDays = (days) => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  const requestBody = {
+    workingDays: days,
+  };
+
+  return async (dispatch) => {
+    dispatch(fetchZeroReportStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `update-working-days?` + queryString, {
+        method: 'PATCH',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+
+      if (res.status === 200) {
+        // dispatch(fetchZeroReportSuccess(responseJSON));
+        console.log(responseJSON);
       }
 
       return responseJSON;

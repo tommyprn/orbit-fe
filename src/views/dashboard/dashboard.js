@@ -77,7 +77,7 @@ const menuDev = [
       },
       {
         id: '23',
-        title: 'No GL/SSL/cost centre',
+        title: 'Cost centre',
         icon: 'IconPoint',
         href: '/master/cost-centre',
       },

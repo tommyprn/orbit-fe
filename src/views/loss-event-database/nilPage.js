@@ -10,16 +10,17 @@ import {
   TableRow,
   TableBody,
   TableCell,
+  TextField,
   TableHead,
   Typography,
   TableContainer,
   TablePagination,
 } from '@mui/material';
-import { getZeroReport, createZeroReport } from 'src/actions/formLEDActions';
+import { getZeroReport, createZeroReport, updateWorkingDays } from 'src/actions/formLEDActions';
 import secureLocalStorage from 'react-secure-storage';
 
 // component
-import SearchBar from 'src/components/search-bar/SearchBar';
+// import SearchBar from 'src/components/search-bar/SearchBar';
 import SimpleModal from 'src/components/modal/simpleModal';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
@@ -45,12 +46,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const NilPage = (props) => {
-  const { LED, getZeroReport, createZeroReport } = props;
+  const { LED, getZeroReport, createZeroReport, updateWorkingDays } = props;
   const user = JSON.parse(secureLocalStorage.getItem('history'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [workingDays, setWorkingDays] = useState(false);
+  const [workingDaysModal, setWorkingDaysModal] = useState(false);
   const [confirmationModal, setConfirmationModal] = useState(false);
 
   useEffect(() => {
@@ -69,14 +72,16 @@ const NilPage = (props) => {
     setPage(0);
   };
 
-  const onSearch = (values) => {
-    setKeyword(values);
-  };
+  // const onSearch = (values) => {
+  //   setKeyword(values);
+  // };
 
   const onClose = () => {
+    setWorkingDaysModal(false);
     setConfirmationModal(false);
   };
 
+  // create zero report
   const onOpenModal = () => {
     setConfirmationModal(true);
   };
@@ -100,12 +105,28 @@ const NilPage = (props) => {
     }
   };
 
-  const data = LED.nil;
-  return (
-    <PageContainer titdatae="Laporan Nihil" description="zro report Page">
-      <Breadcrumb title="Laporan Nihil" items={BCrumb} />
+  // create zero report
+  const openWorkingDaysModal = () => {
+    setWorkingDaysModal(true);
+  };
 
-      <SimpleModal isOpen={confirmationModal} title="Konfirmasi" onCloseHandler={onClose} on>
+  const changeWorkingDays = async () => {
+    const res = await updateWorkingDays(workingDays);
+    setWorkingDaysModal(false);
+
+    if (res?.responseCode === 200) {
+      showToast('success', 'berhasil mengubah hari kerja laporan nihil');
+    } else {
+      showToast('error', 'terjadi kesalahan saat mengubah request, mohon coba beberapa saat lagi');
+    }
+  };
+
+  const data = LED.nil;
+
+  return (
+    <PageContainer titdatae="Laporan Nihil" description="zero report Page">
+      <Breadcrumb title="Laporan Nihil" items={BCrumb} />
+      <SimpleModal isOpen={confirmationModal} title="Konfirmasi" onCloseHandler={onClose}>
         <Typography>
           Kami akan mengirimkan laporan nihil bulan{' '}
           <strong>{dayjs().subtract(1, 'month').format('MMMM')} </strong>
@@ -118,6 +139,25 @@ const NilPage = (props) => {
             Batal
           </Button>
           <Button variant="contained" onClick={onGenerateNil}>
+            Simpan
+          </Button>
+        </div>
+      </SimpleModal>
+
+      <SimpleModal
+        title="Ubah jangka waktu pembuatan laporan nihil"
+        isOpen={workingDaysModal}
+        onCloseHandler={onClose}
+      >
+        <TextField onChange={(e) => setWorkingDays(e.target.value)} sx={{ width: '100%' }} />
+
+        <div
+          style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
+        >
+          <Button variant="contained" color="error" onClick={onClose}>
+            Batal
+          </Button>
+          <Button variant="contained" onClick={changeWorkingDays}>
             Simpan
           </Button>
         </div>
@@ -136,12 +176,12 @@ const NilPage = (props) => {
             {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
             <div />
             {user.role === 'approver' ? (
-              <Button
-                variant="contained"
-                onClick={onOpenModal}
-                // disabled={!data.isButtonEnable}
-              >
+              <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
                 Submit laporan nihil
+              </Button>
+            ) : user.role === 'IRM' ? (
+              <Button variant="contained" onClick={openWorkingDaysModal}>
+                Ubah periode pembuatan laporan nihil
               </Button>
             ) : null}
           </div>
@@ -226,6 +266,7 @@ const mapDispatchToProps = (dispatch) => {
     getZeroReport: (pagination, keyword, role) =>
       dispatch(getZeroReport(pagination, keyword, role)),
     createZeroReport: (user) => dispatch(createZeroReport(user)),
+    updateWorkingDays: (workingDays) => dispatch(updateWorkingDays(workingDays)),
   };
 };
 
