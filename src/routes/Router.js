@@ -27,7 +27,11 @@ const EditFormLED = Loadable(lazy(() => import('../views/loss-event-database/edi
 const UpdateFormLED = Loadable(lazy(() => import('../views/loss-event-database/updateFormLED')));
 
 /* ****Report Pages***** */
-const ReportPage = Loadable(lazy(() => import('../views/report/report')));
+const LedReport = Loadable(lazy(() => import('../views/report/led-report')));
+const OfficeReport = Loadable(lazy(() => import('../views/report/office-report')));
+const TopIssueReport = Loadable(lazy(() => import('../views/report/top-issue')));
+const DatabaseReport = Loadable(lazy(() => import('../views/report/database-report')));
+const IrmActionReport = Loadable(lazy(() => import('../views/report/irm-action-report')));
 
 /* ****404 Pages***** */
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
@@ -59,7 +63,11 @@ const Router = [
       { path: '/LED/update-report/:reportId', exact: true, element: <UpdateFormLED /> },
 
       // ============================== REPORT ROUTES =====================================
-      { path: '/report', exact: true, element: <ReportPage /> },
+      { path: '/report/LED', exact: true, element: <LedReport /> },
+      { path: '/report/office', exact: true, element: <OfficeReport /> },
+      { path: '/report/database', exact: true, element: <DatabaseReport /> },
+      { path: '/report/top-issue', exact: true, element: <TopIssueReport /> },
+      { path: '/report/irm-action', exact: true, element: <IrmActionReport /> },
 
       // ============================== ERROR PAGE =====================================
       { path: '/404', element: <Navigate to="/auth/404" /> },

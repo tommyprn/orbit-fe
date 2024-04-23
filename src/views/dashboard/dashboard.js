@@ -65,7 +65,7 @@ const menuDev = [
       },
       {
         id: '222',
-        title: 'Sub Kategori',
+        title: 'Sub kategori',
         icon: 'IconPoint',
         href: '/master/case-category/level-two',
       },
@@ -120,7 +120,7 @@ const menuDev = [
         href: '/LED/report',
       },
       {
-        id: '263',
+        id: '264',
         title: 'Laporan nihil',
         icon: 'IconPoint',
         href: '/LED/zero-report',
@@ -131,7 +131,38 @@ const menuDev = [
     id: '27',
     title: 'Report',
     icon: 'IconHistory',
-    href: '/report',
+    children: [
+      {
+        id: '271',
+        title: 'LED berdasarkan kantor',
+        icon: 'IconPoint',
+        href: 'report/office',
+      },
+      {
+        id: '272',
+        title: 'Laporan data',
+        icon: 'IconPoint',
+        href: '/report/LED',
+      },
+      {
+        id: '273',
+        title: 'Laporan top issue',
+        icon: 'IconPoint',
+        href: '/report/top-issue',
+      },
+      {
+        id: '274',
+        title: 'Laporan status IRM',
+        icon: 'IconPoint',
+        href: '/report/irm-action',
+      },
+      {
+        id: '275',
+        title: 'Database LED',
+        icon: 'IconPoint',
+        href: '/report/database',
+      },
+    ],
   },
 ];
 
@@ -234,7 +265,6 @@ const Dashboard = (props) => {
   if (process.env.REACT_APP_DEPLOY_STATE === 'false') {
     secureLocalStorage.setItem('user', JSON.stringify(userDev));
     secureLocalStorage.setItem('menuItem', JSON.stringify(menuDev));
-    // secureLocalStorage.setItem('selectedRoleName', JSON.stringify('inputer'));
   }
 
   useEffect(() => {

@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Paper,
   Table,
@@ -19,48 +21,75 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const ReportFilterTable = ({ data, header, tableRef }) => {
+const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
+  const customizer = useSelector((state) => state.customizer);
+
+  const tableTitle = {
+    month: 'Bulanan',
+    triwulan: 'Triwulan',
+    semester: 'Semester',
+    annual: 'Tahunan',
+  };
+
   return (
     <Paper
       sx={{
         maxWidth: '100%',
         overflow: 'hidden',
+        marginBottom: '20px',
       }}
       elevation={0}
       variant="outlined"
     >
-      <TableContainer sx={{ maxHeight: '350px' }} className="table-filter" ref={tableRef}>
+      <TableContainer
+        sx={{
+          maxHeight: '350px',
+          maxWidth: customizer.isCollapse
+            ? `calc(100vw - 202px)`
+            : window.innerWidth > 1199
+            ? `calc(100vw - 385px)`
+            : '100%',
+        }}
+        className="table-filter"
+        ref={tableRef}
+      >
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell rowSpan={3} sx={{ borderRight: '1px solid #e5eaef' }}>
                 Kategori Jenis Kejadian
               </TableCell>
-              <TableCell colSpan={8} align="center">
-                Triwulan
+              <TableCell colSpan={subHeader?.length * 2} align="center">
+                {tableTitle[title]}
               </TableCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={2} align="center" sx={{ border: '1px solid #e5eaef' }}>
-                TW1
-              </TableCell>
-              <TableCell colSpan={2} align="center" sx={{ border: '1px solid #e5eaef' }}>
-                TW2
-              </TableCell>
-              <TableCell colSpan={2} align="center" sx={{ border: '1px solid #e5eaef' }}>
-                TW3
-              </TableCell>
-              <TableCell colSpan={2} align="center" sx={{ border: '1px solid #e5eaef' }}>
-                TW4
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              {header?.map((item, i) => {
-                return i !== 0 ? (
-                  <TableCell key={i} sx={{ border: '1px solid #e5eaef' }}>
+              {subHeader.map((item, i) => {
+                return (
+                  <TableCell
+                    key={i}
+                    colSpan={2}
+                    align="center"
+                    sx={{ border: '1px solid #e5eaef' }}
+                  >
                     {item}
                   </TableCell>
-                ) : null;
+                );
+              })}
+            </TableRow>
+            <TableRow>
+              {subHeader?.map((item, i) => {
+                return (
+                  <Fragment key={i}>
+                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                      Frekuensi
+                    </TableCell>
+
+                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                      nominal
+                    </TableCell>
+                  </Fragment>
+                );
               })}
             </TableRow>
           </TableHead>
@@ -71,15 +100,16 @@ const ReportFilterTable = ({ data, header, tableRef }) => {
                   key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell>{row.kategori}</TableCell>
-                  <TableCell>{row.triwulan1?.frekuensi || 0}</TableCell>
-                  <TableCell>{row.triwulan1?.nominal || 0}</TableCell>
-                  <TableCell>{row.triwulan2?.frekuensi || 0}</TableCell>
-                  <TableCell>{row.triwulan2?.nominal || 0}</TableCell>
-                  <TableCell>{row.triwulan3?.frekuensi || 0}</TableCell>
-                  <TableCell>{row.triwulan3?.nominal || 0}</TableCell>
-                  <TableCell>{row.triwulan4?.frekuensi || 0}</TableCell>
-                  <TableCell>{row.triwulan4?.nominal || 0}</TableCell>
+                  <TableCell>{row.label}</TableCell>
+
+                  {row.frekuensi?.map((item, i) => {
+                    return (
+                      <Fragment key={i}>
+                        <TableCell sx={{ textAlign: 'center' }}>{item || 0}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>{row.nominal[i] || 0}</TableCell>
+                      </Fragment>
+                    );
+                  })}
                 </StyledTableRow>
               );
             })}

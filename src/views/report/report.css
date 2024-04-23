@@ -1,29 +1,28 @@
 .first-section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
 }
 
 .first-section-content {
-  gap: 24px;
+  gap: 16px;
   display: flex;
   justify-content: space-between;
 }
 
 .nil-container {
-  width: 45%;
+  gap: 16px;
+  width: 50%;
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
 }
 
 .nil-table {
+  width: 100%;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  width: 100%;
-}
-
-.nil-table-wrapper {
-  max-height: 300px;
-  overflow-x: hidden;
 }
 
 /* .table-filter::-webkit-scrollbar {

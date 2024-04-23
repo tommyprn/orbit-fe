@@ -43,6 +43,16 @@ const BCrumb = [
   },
 ];
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '60vw',
+  bgcolor: 'background.paper',
+  p: 3,
+};
+
 const DetailLED = (props) => {
   const API =
     process.env.REACT_APP_DEPLOY_STATE === 'true'
@@ -54,15 +64,8 @@ const DetailLED = (props) => {
   const { detail, isLoading, approveIRM, rejectIRM, approveLED, sendBackLED, getOneFormLed } =
     props;
 
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '60vw',
-    bgcolor: 'background.paper',
-    p: 3,
-  };
+  const dataLaporan = detail?.laporanLed;
+  const dataActionPlan = detail?.actionPlans;
 
   const [rejectModal, setRejectModal] = useState(false);
   const [approveModal, setApproveModal] = useState(false);
@@ -139,12 +142,11 @@ const DetailLED = (props) => {
   const onApproveReport = () => {
     setApproveModal(true);
   };
-
   const onApproveConfirm = async () => {
     let res;
-    if (user.role === 'approver') {
+    if (dataLaporan?.statusLaporanEntity?.nama === 'Recorded') {
       res = await approveLED(detail.laporanLed.id, user);
-    } else if (user.role === 'IRM') {
+    } else if (dataLaporan?.statusLaporanEntity?.nama === 'On Progress') {
       res = await approveIRM(detail.laporanLed.id, user);
     }
 
@@ -160,13 +162,9 @@ const DetailLED = (props) => {
     setApproveModal(false);
   };
 
-  const dataLaporan = detail?.laporanLed;
-  const dataActionPlan = detail?.actionPlans;
-
   const hideButton =
     user?.role === 'inputer' ||
-    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver') ||
-    (dataLaporan?.statusLaporanEntity?.nama !== 'On Progress' && user?.role === 'IRM');
+    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver');
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -414,17 +412,21 @@ const DetailLED = (props) => {
               {hideButton ? null : (
                 <>
                   <Button variant="contained" color="error" onClick={onRejectReport}>
-                    {user.role === 'IRM' ? 'Void' : 'Revisi'} Laporan
+                    {dataLaporan?.statusLaporanEntity?.nama === 'On Progress' ? 'Void ' : 'Revisi '}
+                    Laporan
                   </Button>
 
-                  {user.role === 'IRM' ? (
+                  {dataLaporan?.statusLaporanEntity?.nama === 'On Progress' ? (
                     <Button variant="contained" color="warning" onClick={onSendBack}>
                       Revisi Laporan
                     </Button>
                   ) : null}
 
                   <Button variant="contained" onClick={onApproveReport}>
-                    {user.role === 'IRM' ? 'Terima' : 'Setujui'} Laporan
+                    {dataLaporan?.statusLaporanEntity?.nama === 'On Progress'
+                      ? 'Terima '
+                      : 'Setujui '}
+                    Laporan
                   </Button>
                 </>
               )}
@@ -445,9 +447,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    rejectIRM: (id, user, comment) => dispatch(rejectIRM(id, user, comment)),
     approveIRM: (id, user) => dispatch(approveIRM(id, user)),
     approveLED: (id, user) => dispatch(approveLED(id, user)),
-    rejectIRM: (id, user, comment) => dispatch(rejectIRM(id, user, comment)),
     sendBackLED: (id, user, comment) => dispatch(sendBackLED(id, user, comment)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
   };

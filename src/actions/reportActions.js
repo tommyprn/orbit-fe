@@ -1,5 +1,6 @@
 import { stringify } from 'qs';
 
+// const API_URL ='http://10.55.54.161:30090/api/v1/'
 const API_URL =
   process.env.REACT_APP_DEPLOY_STATE === 'true'
     ? 'http://10.55.54.161:30090/api/v1/'
@@ -23,11 +24,11 @@ export const fetchReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllReport = (region, period) => {
+export const getAllLedReport = (fil, period) => {
   const queryString = stringify(
     {
-      filter: 'region',
-      filterPeriod: 'triwulan',
+      filter: fil,
+      filterPeriod: period,
     },
     {
       arrayFormat: 'comma',
@@ -79,7 +80,7 @@ export const fetchZeroReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllZeroReport = (month, keyword) => {
+export const getAllOfficeReport = (month, keyword) => {
   const queryString = stringify(
     {
       bulan: month,
@@ -219,6 +220,115 @@ export const getAllActualLossReport = (month) => {
     } catch (err) {
       console.log(err);
       dispatch(fetchActualLossReportFailure(err));
+    }
+  };
+};
+
+export const FETCH_IRM_HISTORY_REQUEST = 'FETCH_IRM_HISTORY_REQUEST';
+export const FETCH_IRM_HISTORY_SUCCESS = 'FETCH_IRM_HISTORY_SUCCESS';
+export const FETCH_IRM_HISTORY_FAILURE = 'FETCH_IRM_HISTORY_FAILURE';
+
+export const fetchIrmHistoryRequest = () => ({
+  type: FETCH_IRM_HISTORY_REQUEST,
+});
+
+export const fetchIrmHistorySuccess = (data) => ({
+  type: FETCH_IRM_HISTORY_SUCCESS,
+  payload: data,
+});
+
+export const fetchIrmHistoryFailure = (error) => ({
+  type: FETCH_IRM_HISTORY_FAILURE,
+  payload: error,
+});
+
+export const getAllIrmActionReport = (startDate, endDate) => {
+  const queryString = stringify(
+    {
+      startDate: startDate,
+      endDate: endDate,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchIrmHistoryRequest());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-history-irm?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchIrmHistorySuccess(responseJSON.data));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchIrmHistoryFailure(err));
+    }
+  };
+};
+
+export const FETCH_ALL_REPORT_REQUEST = 'FETCH_ALL_REPORT_REQUEST';
+export const FETCH_ALL_REPORT_SUCCESS = 'FETCH_ALL_REPORT_SUCCESS';
+export const FETCH_ALL_REPORT_FAILURE = 'FETCH_ALL_REPORT_FAILURE';
+
+export const fetchAllReportRequest = () => ({
+  type: FETCH_ALL_REPORT_REQUEST,
+});
+
+export const fetchAllReportSuccess = (data) => ({
+  type: FETCH_ALL_REPORT_SUCCESS,
+  payload: data,
+});
+
+export const fetchAllReportFailure = (error) => ({
+  type: FETCH_ALL_REPORT_FAILURE,
+  payload: error,
+});
+
+export const getAllDatabaseReport = () => {
+  const queryString = stringify(
+    {},
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchAllReportRequest());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-report?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchAllReportSuccess(responseJSON.data));
+      }
+
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchAllReportFailure(err));
     }
   };
 };

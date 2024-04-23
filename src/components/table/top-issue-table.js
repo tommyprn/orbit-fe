@@ -1,5 +1,7 @@
+import { useRef } from 'react';
 import dayjs from 'dayjs';
-import { CSVLink } from 'react-csv';
+import { month } from '../../utils/get-dropdown-data';
+
 import {
   Table,
   styled,
@@ -14,7 +16,7 @@ import {
   TableContainer,
 } from '@mui/material';
 import { IconDownload } from '@tabler/icons';
-import { useEffect, useState } from 'react';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -26,47 +28,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const PotentialLossTable = ({ data, title, header, fileName, setValue }) => {
-  const [csv, setCsv] = useState([]);
+const TopIssueTable = ({ data, title, header, fileName, setValue }) => {
+  const tableRef = useRef(null);
 
-  const month = [
-    { label: 'Januari', value: 1 },
-    { label: 'Februari', value: 2 },
-    { label: 'Maret', value: 3 },
-    { label: 'April', value: 4 },
-    { label: 'Mei', value: 5 },
-    { label: 'Juni', value: 6 },
-    { label: 'Juli', value: 7 },
-    { label: 'Agustus', value: 8 },
-    { label: 'September', value: 9 },
-    { label: 'Oktober', value: 10 },
-    { label: 'November', value: 11 },
-    { label: 'Desember', value: 12 },
-  ];
-
-  useEffect(() => {
-    const newHeader = header.map((item, i) => {
-      const keyGen = {
-        No: 'id',
-        Region: 'namaCabang',
-        'Nama Kantor': 'namaCabang',
-        'Tanggal Kejadian': 'tglKejadian',
-        'Tanggal Pelaporan': 'tglLapor',
-        'Detail Aktivitas': 'namaAktivitas',
-        'Potensi Kerugian': 'potensiKerugian',
-        Recovery: 'nominalRecovery',
-        Status: 'namaStatusLaporan',
-        'Realisasi Kerugian': 'nominalRealisasiKerugian',
-      };
-
-      return {
-        label: item,
-        key: keyGen[item],
-      };
-    });
-
-    setCsv(newHeader);
-  }, [header]);
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: fileName,
+    sheet: 'LED',
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -81,16 +50,14 @@ const PotentialLossTable = ({ data, title, header, fileName, setValue }) => {
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => <TextField {...params} label="Bulan" />}
         />
-        {csv.length > 0 ? (
-          <Button startIcon={<IconDownload size={18} />}>
-            <CSVLink data={data} headers={csv} filename={fileName} style={{ color: 'inherit' }}>
-              Unduh Laporan
-            </CSVLink>
-          </Button>
-        ) : null}
+        <Button startIcon={<IconDownload size={18} />} onClick={onDownload}>
+          Unduh Laporan
+        </Button>
       </div>
+
       <TableContainer
         sx={{ overflowY: 'hidden', border: '1px solid #e5eaef', borderRadius: '8px' }}
+        ref={tableRef}
       >
         <Table size="small" aria-label="a dense table">
           <TableHead>
@@ -126,4 +93,4 @@ const PotentialLossTable = ({ data, title, header, fileName, setValue }) => {
   );
 };
 
-export default PotentialLossTable;
+export default TopIssueTable;

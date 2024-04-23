@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { IconBoxMultiple, IconReport, IconPoint } from '@tabler/icons';
+import { IconBoxMultiple, IconHistory, IconReport, IconPoint } from '@tabler/icons';
 
 // mui imports
 import { ListItemIcon, ListItem, Collapse, styled, ListItemText, useTheme } from '@mui/material';
@@ -23,9 +23,10 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const iconConvert = {
-    IconBoxMultiple: IconBoxMultiple,
-    IconReport: IconReport,
     IconPoint: IconPoint,
+    IconReport: IconReport,
+    IconHistory: IconHistory,
+    IconBoxMultiple: IconBoxMultiple,
   };
   const Icon = iconConvert?.[menu?.icon];
   const menuIcon =

@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { IconSearch } from '@tabler/icons';
 import { OutlinedInput, InputAdornment } from '@mui/material';
 
-const SearchBar = ({ onSubmit }) => {
+const SearchBar = ({ onSubmit, customStyle }) => {
   const validationSchema = yup.object({
     userInput: yup.string('input search keyword'),
   });
@@ -24,6 +24,7 @@ const SearchBar = ({ onSubmit }) => {
       onSubmit={formik.handleSubmit}
     >
       <OutlinedInput
+        sx={{ ...customStyle }}
         id="userInput"
         value={formik.values.userInput}
         onBlur={formik.handleBlur}
