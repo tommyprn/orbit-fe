@@ -1192,6 +1192,9 @@ export const updateWorkUnit = (payload) => {
       idUnitKerja: payload.id,
       kodeUnitKerja: payload.code,
       namaUnitKerja: payload.name,
+      emailUpperUnit: payload.emailUpperLevel,
+      namaApproverUnit: payload.approver,
+      emailApproverUnit: payload.emailApprover,
     };
 
     const requestHeaders = {
@@ -1252,8 +1255,11 @@ export const createWorkUnit = (payload) => {
     const requestBody = {
       namaPic: payload.pic,
       emailPic: payload.email,
+      namaApprover: payload.approver,
+      emailApprover: payload.emailApprover,
       namaUnitKerja: payload.name,
       kodeUnitKerja: payload.code,
+      emailUpperUnit: payload.emailUpperLevel,
     };
 
     const requestHeaders = {
@@ -1275,6 +1281,169 @@ export const createWorkUnit = (payload) => {
     } catch (err) {
       console.log(err);
       dispatch(fetchWorkUnitFailure(err));
+    }
+  };
+};
+
+//============================== BRANCH =================================
+
+export const FETCH_BRANCH_REQUEST = 'FETCH_BRANCH_REQUEST';
+export const FETCH_BRANCH_SUCCESS = 'FETCH_BRANCH_SUCCESS';
+export const FETCH_BRANCH_FAILURE = 'FETCH_BRANCH_FAILURE';
+
+export const fetchBranchStart = () => ({
+  type: FETCH_BRANCH_REQUEST,
+});
+
+export const fetchBranchSuccess = (data) => ({
+  type: FETCH_BRANCH_SUCCESS,
+  payload: data,
+});
+
+export const fetchBranchFailure = (error) => ({
+  type: FETCH_BRANCH_FAILURE,
+  payload: error,
+});
+
+export const getBranch = (pagination, keyword) => {
+  const queryString = stringify(
+    {
+      keyword: keyword,
+      pageSize: pagination?.perPage,
+      pageNumber: pagination?.page,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchBranchStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-cabang?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchBranchSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchBranchFailure(err));
+    }
+  };
+};
+
+export const updateBranch = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchBranchStart());
+    const requestBody = {
+      id: payload.id,
+      emailPic: payload.email,
+      namaPic: payload.pic,
+      isEnable: payload.isEnable,
+      kodeCabang: payload.code,
+      namaCabang: payload.name,
+      indukCabang: payload.parent,
+      emailUpperCabang: payload.emailUpperLevel,
+      namaApproverCabang: payload.approver,
+      emailApproverCabang: payload.emailApprover,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'update-cabang?', {
+        method: 'PUT',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchBranchSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchBranchFailure(err));
+    }
+  };
+};
+
+export const deleteBranch = (id) => {
+  return async (dispatch) => {
+    dispatch(fetchBranchStart());
+
+    const requestBody = {};
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `delete-cabang?id=${id}`, {
+        method: 'DELETE',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchBranchSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchBranchFailure(err));
+    }
+  };
+};
+
+export const createBranch = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchBranchStart());
+    const requestBody = {
+      kodeCabang: payload.code,
+      namaCabang: payload.name,
+      indukCabang: payload.parent,
+      namaPicCabang: payload.pic,
+      emailPicCabang: payload.email,
+      namaApproverCabang: payload.approver,
+      emailApproverCabang: payload.emailApprover,
+      emailUpperLevelCabang: payload.emailUpperLevel,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'save-cabang?', {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchBranchSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchBranchFailure(err));
     }
   };
 };

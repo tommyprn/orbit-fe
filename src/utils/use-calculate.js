@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const chunkArray = (arr, amount) => {
   var chunkLength = Math.max(arr?.length / amount, 1);
   var chunks = [];
@@ -6,4 +8,9 @@ export const chunkArray = (arr, amount) => {
       chunks?.push(arr?.slice(chunkLength * i, chunkLength * (i + 1)));
   }
   return chunks;
+};
+
+export const dateDiff = (start, end) => {
+  const diff = dayjs(start).diff(end, 'day');
+  return diff;
 };

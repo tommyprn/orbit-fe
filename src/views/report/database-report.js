@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { getAllDatabaseReport } from 'src/actions/reportActions';
 
@@ -11,17 +12,23 @@ import './report.css';
 
 const DatabaseReport = (props) => {
   const { report, getAllDatabaseReport } = props;
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month') + 1);
 
   useEffect(() => {
     (async () => {
-      await getAllDatabaseReport();
+      await getAllDatabaseReport(selectedMonth);
     })();
-  }, []);
+  }, [selectedMonth]);
 
   return (
     <PageContainer title="Database Report" description="Database Report Page">
       <DashboardCard>
-        <DetailedReportTable data={report.database} title="Detail laporan LED" />
+        <DetailedReportTable
+          data={report.database}
+          title="Detail laporan LED"
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+        />
       </DashboardCard>
     </PageContainer>
   );
@@ -35,7 +42,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllDatabaseReport: () => dispatch(getAllDatabaseReport()),
+    getAllDatabaseReport: (month) => dispatch(getAllDatabaseReport(month)),
   };
 };
 

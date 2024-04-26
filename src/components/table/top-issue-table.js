@@ -1,6 +1,9 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
 import { month } from '../../utils/get-dropdown-data';
+import { IconDownload } from '@tabler/icons';
+import { formatNumber } from 'src/utils/use-formatter';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 
 import {
   Table,
@@ -15,8 +18,6 @@ import {
   Autocomplete,
   TableContainer,
 } from '@mui/material';
-import { IconDownload } from '@tabler/icons';
-import { useDownloadExcel } from 'react-export-table-to-excel';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -81,8 +82,10 @@ const TopIssueTable = ({ data, title, header, fileName, setValue }) => {
                 <TableCell>{dayjs(row.tglKejadian).format('DD - MMM - YYYY')}</TableCell>
                 <TableCell>{dayjs(row.tglLapor).format('DD - MMM - YYYY')}</TableCell>
                 <TableCell>{row.namaAktivitas}</TableCell>
-                <TableCell>Rp. {row?.potensiKerugian || row?.nominalRealisasiKerugian}</TableCell>
-                <TableCell>Rp. {row?.nominalRecovery}</TableCell>
+                <TableCell>
+                  Rp. {formatNumber(row?.potensiKerugian || row?.nominalRealisasiKerugian)}
+                </TableCell>
+                <TableCell>Rp. {formatNumber(row?.nominalRecovery)}</TableCell>
                 <TableCell>{row.namaStatusLaporan}</TableCell>
               </StyledTableRow>
             ))}

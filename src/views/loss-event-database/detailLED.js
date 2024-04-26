@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
-import { useNavigate, useParams } from 'react-router';
+import secureLocalStorage from 'react-secure-storage';
 import { connect } from 'react-redux';
+import { showToast } from 'src/utils/use-snackbar';
+import { IconDownload } from '@tabler/icons';
+import { useNavigate, useParams } from 'react-router';
+import { formatDate, formatNumber } from 'src/utils/use-formatter';
 import {
   Card,
   Table,
@@ -15,7 +18,6 @@ import {
   Typography,
   TableContainer,
 } from '@mui/material';
-import { IconDownload } from '@tabler/icons';
 import {
   rejectIRM,
   approveLED,
@@ -23,8 +25,6 @@ import {
   sendBackLED,
   getOneFormLed,
 } from 'src/actions/formLEDActions';
-import { showToast } from 'src/utils/use-snackbar';
-import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -76,18 +76,6 @@ const DetailLED = (props) => {
       await getOneFormLed(params.reportId);
     })();
   }, [getOneFormLed]);
-
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue) && numericValue > 0) {
-      return numericValue?.toLocaleString('ID-id');
-    }
-    return '-';
-  };
-
-  const formatDate = (value) => {
-    return dayjs(value).format('DD MMMM YYYY');
-  };
 
   const backHandler = () => {
     navigate(-1);
@@ -164,7 +152,9 @@ const DetailLED = (props) => {
 
   const hideButton =
     user?.role === 'inputer' ||
-    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver');
+    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver') ||
+    dataLaporan?.statusLaporanEntity?.nama === 'Closed' ||
+    dataLaporan?.statusLaporanEntity?.nama === 'Need Update';
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">

@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
+import { formatNumber } from 'src/utils/use-formatter';
 import {
   Paper,
   Table,
@@ -36,7 +37,6 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
       sx={{
         maxWidth: '100%',
         overflow: 'hidden',
-        marginBottom: '20px',
       }}
       elevation={0}
       variant="outlined"
@@ -105,8 +105,12 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
                   {row.frekuensi?.map((item, i) => {
                     return (
                       <Fragment key={i}>
-                        <TableCell sx={{ textAlign: 'center' }}>{item || 0}</TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>{row.nominal[i] || 0}</TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>
+                          {formatNumber(item) || 0}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'center' }}>
+                          {formatNumber(row.nominal[i]) || 0}
+                        </TableCell>
                       </Fragment>
                     );
                   })}

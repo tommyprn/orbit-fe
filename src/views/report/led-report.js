@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
-import { BarChart } from '@mui/x-charts/BarChart';
-import { PieChart } from '@mui/x-charts/PieChart';
-import { chunkArray } from 'src/utils/use-calculate';
 import { IconDownload } from '@tabler/icons';
-import { saveSvgAsPng } from 'save-svg-as-png';
 import { getAllLedReport } from 'src/actions/reportActions';
 import { useDownloadExcel } from 'react-export-table-to-excel';
+import { exportComponentAsJPEG } from 'react-component-export-image';
+import { chartValue, periodTranslate } from 'src/utils/use-chart-utils';
 import { officeOpt, periodOpt, month } from '../../utils/get-dropdown-data';
 import { Button, TextField, Autocomplete, Typography } from '@mui/material';
 
 // component
+import BarChart from 'src/components/shared/charts/bar-chart';
+import PieChart from 'src/components/shared/charts/pie-chart';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import ReportFilterTable from 'src/components/table/report-filter-table';
@@ -66,23 +66,18 @@ const dummySeries = [
 const LedReport = (props) => {
   const { report, getAllLedReport } = props;
   const tableRef = useRef(null);
-  const pieChartRef = useRef();
-  const barChartRef = useRef();
+  const chartRef = useRef();
 
   const [filter, setFilter] = useState('kategori');
   const [period, setPeriod] = useState('triwulan');
+  const [selectedYear, setSelectedYear] = useState();
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month') + 1);
 
   useEffect(() => {
     (async () => {
       await getAllLedReport(filter, period);
     })();
   }, [filter, period]);
-
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: `laporan-LED-${month[dayjs().month() - 1].label.toLowerCase()}-${dayjs().year()}`,
-    sheet: 'LED',
-  });
 
   const axis = {
     month: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -91,45 +86,36 @@ const LedReport = (props) => {
     triwulan: ['TW1', 'TW2', 'TW3', 'TW4'],
   };
 
-  const getSliceAmount = () => {
-    if (period === 'month') {
-      return 12;
-    } else if (period === 'semester') {
-      return 2;
-    } else if (period === 'annual') {
-      return 1;
-    } else {
-      return 4;
-    }
-  };
-
-  const chartValue = (data) => {
-    const newData = chunkArray(data, getSliceAmount());
-    const newValue = newData.map((item) => {
-      return item.reduce((sum, val) => {
-        return sum + val;
-      }, 0);
-    });
-
-    return newValue;
-  };
-
   const tableValue = (data) => {
     const newData = data.map((item) => {
       return {
         ...item,
-        nominal: chartValue(item?.nominal),
-        frekuensi: chartValue(item?.frekuensi),
+        nominal:
+          period !== 'month'
+            ? chartValue(item?.nominal, period)
+            : [item?.nominal[selectedMonth - 1] ? item?.nominal[selectedMonth - 1] : 0],
+        frekuensi:
+          period !== 'month'
+            ? chartValue(item?.frekuensi, period)
+            : [item?.nominal[selectedMonth - 1] ? item?.nominal[selectedMonth - 1] : 0],
       };
     });
 
     return newData;
   };
 
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: `laporan-LED-${month[dayjs().month() - 1].label.toLowerCase()}-${dayjs().year()}`,
+    sheet: 'LED',
+  });
+
   const handleDownload = () => {
     onDownload();
-    saveSvgAsPng(pieChartRef?.current?.getElementsByTagName('svg')[0], 'pieChart.png');
-    saveSvgAsPng(barChartRef.current, 'barChart.png');
+    exportComponentAsJPEG(chartRef, {
+      fileName: `BarChart-${period}-${filter}`,
+      html2CanvasOptions: { height: 500 },
+    });
   };
 
   return (
@@ -165,6 +151,39 @@ const LedReport = (props) => {
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 renderInput={(params) => <TextField {...params} label="Periode" />}
               />
+
+              {period === 'month' ? (
+                <Autocomplete
+                  sx={{ width: '200px' }}
+                  options={month}
+                  onChange={(event, newValue) => {
+                    if (newValue !== null) {
+                      setSelectedMonth(newValue.value);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  renderInput={(params) => <TextField {...params} label="Bulan" />}
+                />
+              ) : null}
+
+              {period === 'annualy' ? (
+                <Autocomplete
+                  sx={{ width: '200px' }}
+                  options={[
+                    { label: '1 tahun', value: 1 },
+                    { label: '2 tahun', value: 2 },
+                    { label: '5 tahun', value: 5 },
+                    { label: '10 tahun', value: 10 },
+                  ]}
+                  onChange={(event, newValue) => {
+                    if (newValue !== null) {
+                      setSelectedYear(newValue.value);
+                    }
+                  }}
+                  isOptionEqualToValue={(option, value) => option.value === value.value}
+                  renderInput={(params) => <TextField {...params} label="Tahun" />}
+                />
+              ) : null}
             </div>
             <Button onClick={handleDownload} startIcon={<IconDownload size={18} />}>
               Unduh Laporan
@@ -175,87 +194,26 @@ const LedReport = (props) => {
             data={tableValue(report?.report)}
             title={period}
             tableRef={tableRef}
-            subHeader={axis[period]}
+            subHeader={period !== 'month' ? axis[period] : [axis[period][selectedMonth - 1]]}
           />
         </div>
 
-        {filter !== 'cabang' && report?.report.length > 0 ? (
-          <>
+        <div style={{ maxWidth: period === 'month' ? '500px' : '1000px' }} ref={chartRef}>
+          {period !== 'month' ? (
             <BarChart
-              series={report?.report
-                .filter((item) => item?.label.toLocaleLowerCase() !== 'grand total')
-                ?.map((item) => ({
-                  ...item,
-                  data: chartValue(item.frekuensi),
-                }))}
-              xAxis={[
-                {
-                  data: axis[period],
-                  scaleType: 'band',
-                  barGapRatio: 0.5,
-                  categoryGapRatio: 0.4,
-                },
-              ]}
-              ref={barChartRef}
-              height={450}
-              margin={{ top: 120 }}
+              data={report?.report}
+              label={axis[period]}
+              title={`Grand total ${filter} kurun waktu ${periodTranslate[period]}`}
+              period={period}
             />
-
-            <div
-              ref={pieChartRef}
-              style={{
-                gap: 20,
-                width: '100%',
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              {chartValue(report?.report?.[0]?.frekuensi).map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    style={{
-                      gap: 16,
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '8px',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <Typography variant="h5">{axis[period][index]}</Typography>
-                    <PieChart
-                      series={[
-                        {
-                          data: report?.report
-                            ?.filter((item) => item?.label.toLocaleLowerCase() !== 'grand total')
-                            ?.map((item) => ({
-                              ...item,
-                              value: chartValue(item.frekuensi)[index],
-                            })),
-                        },
-                      ]}
-                      width={250}
-                      height={400}
-                      margin={{ right: 0, top: -150 }}
-                      slotProps={{
-                        legend: {
-                          padding: 0,
-                          position: { vertical: 'bottom', horizontal: 'right' },
-                          direction: 'row',
-                          labelStyle: {
-                            fontSize: 10,
-                          },
-                          itemMarkHeight: 2,
-                        },
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        ) : null}
+          ) : (
+            <PieChart
+              data={report?.report}
+              title={`Grafik frekuensi kejadian tiap ${filter}`}
+              chosenMonth={selectedMonth}
+            />
+          )}
+        </div>
       </DashboardCard>
     </PageContainer>
   );

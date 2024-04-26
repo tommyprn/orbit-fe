@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import secureLocalStorage from 'react-secure-storage';
 import { connect } from 'react-redux';
 import { useFormik } from 'formik';
+import { showToast } from 'src/utils/use-snackbar';
+import { getDropdown } from 'src/actions/masterDataActions';
+import { createOption } from 'src/utils/use-options';
 import { IconCloudUpload } from '@tabler/icons';
+import { validationSchema } from './validationForm';
 import { useNavigate, useParams } from 'react-router';
+import { formatNumber, formatDate } from 'src/utils/use-formatter';
+import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
 import {
   Card,
   Table,
@@ -21,12 +28,6 @@ import {
   InputAdornment,
   TableContainer,
 } from '@mui/material';
-import { showToast } from 'src/utils/use-snackbar';
-import { getDropdown } from 'src/actions/masterDataActions';
-import { validationSchema } from './validationForm';
-import { createOption } from 'src/utils/use-options';
-import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
-import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -131,18 +132,6 @@ const UpdateFormLED = (props) => {
       }
     },
   });
-
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue.toLocaleString('en-US');
-    }
-    return '0';
-  };
-
-  const formatDate = (value) => {
-    return dayjs(value).format('DD MMMM YYYY');
-  };
 
   const onCancel = () => {
     navigate(-1);

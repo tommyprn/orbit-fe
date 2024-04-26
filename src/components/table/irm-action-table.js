@@ -23,14 +23,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const ReportFilterTable = ({ data }) => {
+const IrmActionTable = ({ data }) => {
   const customizer = useSelector((state) => state.customizer);
   const tableRef = useRef(null);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <Typography variant="h4">Laporan History IRM</Typography>
-
       <Paper
         sx={{
           maxWidth: '100%',
@@ -59,7 +57,11 @@ const ReportFilterTable = ({ data }) => {
                   .sort((a, b) => dayjs(a) - dayjs(b))
                   .filter((item) => item !== 'label')
                   .map((key, i) => {
-                    return <TableCell key={i}>{key}</TableCell>;
+                    return (
+                      <TableCell key={i} sx={{ textWrap: 'noWrap' }}>
+                        {key}
+                      </TableCell>
+                    );
                   })}
               </TableRow>
             </TableHead>
@@ -78,8 +80,8 @@ const ReportFilterTable = ({ data }) => {
                       .map((key, i) => {
                         return (
                           <TableCell key={i}>
-                            {row[key]?.map((item) => {
-                              return <Typography>{item}</Typography>;
+                            {row[key]?.map((item, index) => {
+                              return <Typography key={index}>{item}</Typography>;
                             })}
                           </TableCell>
                         );
@@ -95,4 +97,4 @@ const ReportFilterTable = ({ data }) => {
   );
 };
 
-export default ReportFilterTable;
+export default IrmActionTable;

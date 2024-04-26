@@ -1,6 +1,10 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
+import { month } from '../../utils/get-dropdown-data';
 import { useSelector } from 'react-redux';
+import { formatNumber } from 'src/utils/use-formatter';
+import { IconDownload } from '@tabler/icons';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import {
   Table,
   styled,
@@ -8,12 +12,12 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  TextField,
   TableBody,
   Typography,
+  Autocomplete,
   TableContainer,
 } from '@mui/material';
-import { IconDownload } from '@tabler/icons';
-import { useDownloadExcel } from 'react-export-table-to-excel';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
@@ -25,7 +29,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const DetailedReportTable = ({ data, title }) => {
+const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) => {
   const tableRef = useRef();
   const customizer = useSelector((state) => state.customizer);
 
@@ -64,23 +68,28 @@ const DetailedReportTable = ({ data, title }) => {
     sheet: 'LED',
   });
 
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue.toLocaleString('en-US');
-    }
-    return '0';
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Typography variant="h4">{title}</Typography>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div />
+        <Autocomplete
+          sx={{ width: '200px' }}
+          value={month.find((item) => item.value === selectedMonth)}
+          options={month}
+          onChange={(event, newValue) => {
+            if (newValue !== null) {
+              setSelectedMonth(newValue.value);
+            }
+          }}
+          renderInput={(params) => <TextField {...params} label="Bulan" />}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+        />
+
         <Button startIcon={<IconDownload size={18} />} onClick={onDownload}>
           Unduh Laporan
         </Button>
       </div>
+
       <TableContainer
         sx={{
           overflowY: 'hidden',
@@ -99,7 +108,11 @@ const DetailedReportTable = ({ data, title }) => {
           <TableHead>
             <TableRow>
               {header?.map((item, i) => {
-                return <TableCell key={i}>{item}</TableCell>;
+                return (
+                  <TableCell key={i} sx={{ textWrap: 'noWrap' }}>
+                    {item}
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>
@@ -130,9 +143,15 @@ const DetailedReportTable = ({ data, title }) => {
                 <TableCell>{row.kronologiSingkat}</TableCell>
                 <TableCell>{row.kronologi}</TableCell>
                 <TableCell>-</TableCell>
-                <TableCell>Rp. {formatNumber(row?.potensiKerugian)}</TableCell>
-                <TableCell>Rp. {formatNumber(row?.nominalRecovery)}</TableCell>
-                <TableCell>Rp. {formatNumber(row?.nominalRealisasiKerugian)}</TableCell>
+                <TableCell sx={{ textWrap: 'noWrap' }}>
+                  Rp. {formatNumber(row?.potensiKerugian)}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap' }}>
+                  Rp. {formatNumber(row?.nominalRecovery)}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap' }}>
+                  Rp. {formatNumber(row?.nominalRealisasiKerugian)}
+                </TableCell>
                 <TableCell>{row.statusLaporan.nama}</TableCell>
                 <TableCell>
                   {dayjs(row.actionPlan[row.actionPlan.length - 1].targetPenyelesaian).format(

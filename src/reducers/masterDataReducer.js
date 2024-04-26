@@ -1,4 +1,7 @@
 import {
+  FETCH_BRANCH_FAILURE,
+  FETCH_BRANCH_REQUEST,
+  FETCH_BRANCH_SUCCESS,
   FETCH_DROPDOWN_FAILURE,
   FETCH_DROPDOWN_REQUEST,
   FETCH_DROPDOWN_SUCCESS,
@@ -11,12 +14,12 @@ import {
   FETCH_LEVEL_TWO_REQUEST,
   FETCH_LEVEL_TWO_FAILURE,
   FETCH_LEVEL_TWO_SUCCESS,
-  FETCH_LEVEL_THREE_REQUEST,
-  FETCH_LEVEL_THREE_FAILURE,
-  FETCH_LEVEL_THREE_SUCCESS,
   FETCH_CASE_CAUSE_REQUEST,
   FETCH_CASE_CAUSE_FAILURE,
   FETCH_CASE_CAUSE_SUCCESS,
+  FETCH_LEVEL_THREE_REQUEST,
+  FETCH_LEVEL_THREE_FAILURE,
+  FETCH_LEVEL_THREE_SUCCESS,
   FETCH_CASE_STATUS_REQUEST,
   FETCH_CASE_STATUS_FAILURE,
   FETCH_CASE_STATUS_SUCCESS,
@@ -30,6 +33,7 @@ import {
 
 const initialState = {
   error: null,
+  branch: [],
   workUnit: [],
   caseCause: [],
   costCentre: [],
@@ -49,6 +53,7 @@ const initialState = {
 
 const masterDataReducer = (state = initialState, action) => {
   switch (action.type) {
+    case FETCH_BRANCH_REQUEST:
     case FETCH_DROPDOWN_REQUEST:
     case FETCH_WORK_UNIT_REQUEST:
     case FETCH_LEVEL_ONE_REQUEST:
@@ -60,6 +65,7 @@ const masterDataReducer = (state = initialState, action) => {
     case FETCH_REPORT_STATUS_REQUEST:
       return { ...state, isLoading: true };
 
+    case FETCH_BRANCH_FAILURE:
     case FETCH_DROPDOWN_FAILURE:
     case FETCH_WORK_UNIT_FAILURE:
     case FETCH_LEVEL_ONE_FAILURE:
@@ -71,6 +77,8 @@ const masterDataReducer = (state = initialState, action) => {
     case FETCH_REPORT_STATUS_FAILURE:
       return { ...state, isLoading: false, error: action.payload };
 
+    case FETCH_BRANCH_SUCCESS:
+      return { ...state, branch: action.payload, isLoading: false };
     case FETCH_WORK_UNIT_SUCCESS:
       return { ...state, workUnit: action.payload, isLoading: false };
     case FETCH_LEVEL_ONE_SUCCESS:

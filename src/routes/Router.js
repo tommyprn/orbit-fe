@@ -6,10 +6,13 @@ import Loadable from '../layouts/full/shared/loadable/Loadable';
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
 
-/* ****Master Pages***** */
+/* ***Dashboard**** */
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/dashboard')));
-const GLNumberPage = Loadable(lazy(() => import('../views/master/costCentre')));
+
+/* ****Master Pages***** */
+const BranchPage = Loadable(lazy(() => import('../views/master/branch')));
 const WorkUnitPage = Loadable(lazy(() => import('../views/master/workUnit')));
+const GLNumberPage = Loadable(lazy(() => import('../views/master/costCentre')));
 const BaselOnePage = Loadable(lazy(() => import('../views/master/caseCategory/levelOne')));
 const BaselTwoPage = Loadable(lazy(() => import('../views/master/caseCategory/levelTwo')));
 const CaseCausePage = Loadable(lazy(() => import('../views/master/caseCause')));
@@ -44,6 +47,7 @@ const Router = [
       { path: '/', exact: true, element: <Dashboard /> },
 
       // ============================== MASTER ROUTES =====================================
+      { path: '/master/Branch', exact: true, element: <BranchPage /> },
       { path: '/master/work-unit', exact: true, element: <WorkUnitPage /> },
       { path: '/master/case-cause', exact: true, element: <CaseCausePage /> },
       { path: '/master/cost-centre', exact: true, element: <GLNumberPage /> },

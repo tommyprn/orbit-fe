@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { formatNumber } from 'src/utils/use-formatter';
 import { IconCloudUpload } from '@tabler/icons';
 import { validationSchema } from './validationForm';
 import { connect, useSelector } from 'react-redux';
@@ -198,13 +199,6 @@ const EditFormLED = (props) => {
     },
   });
 
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue.toLocaleString('en-US');
-    }
-    return '0';
-  };
   const onCancel = () => {
     navigate(-1);
   };

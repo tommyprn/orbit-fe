@@ -91,7 +91,14 @@ export const WorkUnitTable = ({
                 <td
                   key={index}
                   style={{
-                    width: index === 0 ? '3%' : index < header.length - 1 ? '20%' : '15%',
+                    width:
+                      index === 0
+                        ? '2%'
+                        : index === 1
+                        ? '10%'
+                        : index < header.length - 1
+                        ? '17%'
+                        : '15%',
                   }}
                 >
                   <Typography>{item}</Typography>
@@ -114,22 +121,29 @@ export const WorkUnitTable = ({
                   paddingBottom: '8px',
                 }}
               >
-                <td style={{ width: '3%' }}>
+                <td style={{ width: '2%' }}>
                   <Typography>{page * 10 + index + 1}</Typography>
                 </td>
-                <td style={{ width: '20%' }}>
-                  <Typography> {item?.kodeUnitKerja}</Typography>
+                <td style={{ width: '10%' }}>
+                  <Typography> {item?.kodeUnitKerja || item?.kodeCabang}</Typography>
                 </td>
-                <td style={{ width: '20%' }}>
-                  <Typography>{item?.namaUnitKerja}</Typography>
+                <td style={{ width: '17%' }}>
+                  <Typography>{item?.namaUnitKerja || item?.namaCabang}</Typography>
                 </td>
-                <td style={{ width: '20%' }}>
+                <td style={{ width: '17%' }}>
                   <Typography>{item?.namaPic || '-'}</Typography>
                   <Typography>{item?.emailPic || '-'}</Typography>
                 </td>
-                <td style={{ width: '20%' }}>
-                  <Typography>{item?.namaApproverUnit || '-'}</Typography>
-                  <Typography>{item?.emailApproverUnit || '-'}</Typography>
+                <td style={{ width: '17%' }}>
+                  <Typography>
+                    {item?.namaApproverUnit || item?.namaApproverCabang || '-'}
+                  </Typography>
+                  <Typography>
+                    {item?.emailApproverUnit || item?.emailApproverCabang || '-'}
+                  </Typography>
+                </td>
+                <td style={{ width: '17%' }}>
+                  <Typography>{item?.emailUpperUnit || item?.emailUpperCabang || '-'}</Typography>
                 </td>
                 <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
                   <IconButton aria-label="edit" onClick={() => onUpdate(item)} disabled={disabled}>

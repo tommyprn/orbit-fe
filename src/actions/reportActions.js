@@ -298,9 +298,11 @@ export const fetchAllReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllDatabaseReport = () => {
+export const getAllDatabaseReport = (month) => {
   const queryString = stringify(
-    {},
+    {
+      bulan: month,
+    },
     {
       arrayFormat: 'comma',
       encode: false,

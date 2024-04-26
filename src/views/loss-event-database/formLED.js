@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
+import secureLocalStorage from 'react-secure-storage';
+import { dateDiff } from 'src/utils/use-calculate';
 import { useFormik } from 'formik';
+import { showToast } from 'src/utils/use-snackbar';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { getDropdown } from 'src/actions/masterDataActions';
 import { useNavigate } from 'react-router';
+import { formatNumber } from 'src/utils/use-formatter';
 import { validationSchema } from './validationForm';
 import { useSelector, connect } from 'react-redux';
 import { IconX, IconCloudUpload } from '@tabler/icons';
+import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
+import { createOption, createGroupedOption } from 'src/utils/use-options';
 import {
   Card,
   Table,
@@ -24,11 +30,6 @@ import {
   TableContainer,
   InputAdornment,
 } from '@mui/material';
-import { showToast } from 'src/utils/use-snackbar';
-import { getDropdown } from 'src/actions/masterDataActions';
-import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
-import { createOption, createGroupedOption } from 'src/utils/use-options';
-import secureLocalStorage from 'react-secure-storage';
 
 // component
 import Spinner from '../spinner/Spinner';
@@ -210,20 +211,6 @@ const CreateFormLED = (props) => {
 
   const backHandler = () => {
     navigate(-1);
-  };
-
-  //utils
-  const dateDiff = (start, end) => {
-    const diff = dayjs(start).diff(end, 'day');
-    return diff;
-  };
-
-  const formatNumber = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue.toLocaleString('en-US');
-    }
-    return '0';
   };
 
   return (

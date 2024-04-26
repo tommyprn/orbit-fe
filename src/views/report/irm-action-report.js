@@ -1,5 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import { connect } from 'react-redux';
+import { Typography } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getAllIrmActionReport } from 'src/actions/reportActions';
 
 // component
@@ -11,17 +14,47 @@ import './report.css';
 
 const IrmActionReport = (props) => {
   const { report, getAllIrmActionReport } = props;
+  const [endDate, setEndDate] = useState(dayjs());
+  const [startDate, setStartDate] = useState(dayjs().subtract(5, 'day'));
 
   useEffect(() => {
     (async () => {
-      await getAllIrmActionReport();
+      await getAllIrmActionReport(
+        dayjs(startDate).format('DD-MM-YYYY'),
+        dayjs(endDate).format('DD-MM-YYYY'),
+      );
     })();
-  }, []);
+  }, [endDate, startDate]);
 
   return (
     <PageContainer title="Database Report" description="Database Report Page">
       <DashboardCard>
-        <IrmActionTable data={report} title="IRM Action" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <Typography variant="h4">Laporan History IRM</Typography>
+
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <Typography sx={{ fontSize: '16px' }}>dari</Typography>
+
+            <DatePicker
+              id="startDate"
+              value={dayjs(startDate)}
+              format=" DD - MMM - YYYY"
+              onChange={(value) => {
+                setStartDate(dayjs(value));
+              }}
+            />
+            <Typography sx={{ fontSize: '16px' }}>s/d</Typography>
+            <DatePicker
+              id="endDate"
+              value={dayjs(endDate)}
+              format=" DD - MMM - YYYY"
+              onChange={(value) => {
+                setEndDate(dayjs(value));
+              }}
+            />
+          </div>
+          <IrmActionTable data={report} title="IRM Action" />
+        </div>
       </DashboardCard>
     </PageContainer>
   );
@@ -35,7 +68,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllIrmActionReport: () => dispatch(getAllIrmActionReport()),
+    getAllIrmActionReport: (start, end) => dispatch(getAllIrmActionReport(start, end)),
   };
 };
 
