@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
-import { month } from '../../utils/get-dropdown-data';
+import { DatePicker } from '@mui/x-date-pickers';
 import { useSelector } from 'react-redux';
 import { formatNumber } from 'src/utils/use-formatter';
 import { IconDownload } from '@tabler/icons';
@@ -12,10 +12,8 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TextField,
   TableBody,
   Typography,
-  Autocomplete,
   TableContainer,
 } from '@mui/material';
 
@@ -29,7 +27,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) => {
+const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setStartDate }) => {
   const tableRef = useRef();
   const customizer = useSelector((state) => state.customizer);
 
@@ -49,9 +47,10 @@ const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) =
     'Highlight Kronologis',
     'Kronologis',
     'Rencana Tindakan',
-    'Perkiraan Kerugian',
-    'Recovery',
-    'Realisasi Kerugian',
+    'Perkiraan Kerugian (Rp)',
+    'Recovery (Rp)',
+    'Realisasi Kerugian (Rp gross)',
+    'Net loss (Rp)',
     'Status LED',
     'Target Date',
     'Sumber Recovery',
@@ -72,18 +71,27 @@ const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) =
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Typography variant="h4">{title}</Typography>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Autocomplete
-          sx={{ width: '200px' }}
-          value={month.find((item) => item.value === selectedMonth)}
-          options={month}
-          onChange={(event, newValue) => {
-            if (newValue !== null) {
-              setSelectedMonth(newValue.value);
-            }
-          }}
-          renderInput={(params) => <TextField {...params} label="Bulan" />}
-          isOptionEqualToValue={(option, value) => option.value === value.value}
-        />
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Typography sx={{ fontSize: '16px' }}>dari</Typography>
+
+          <DatePicker
+            id="startDate"
+            value={dayjs(startDate)}
+            format=" DD - MMM - YYYY"
+            onChange={(value) => {
+              setStartDate(dayjs(value));
+            }}
+          />
+          <Typography sx={{ fontSize: '16px' }}>s/d</Typography>
+          <DatePicker
+            id="endDate"
+            value={dayjs(endDate)}
+            format=" DD - MMM - YYYY"
+            onChange={(value) => {
+              setEndDate(dayjs(value));
+            }}
+          />
+        </div>
 
         <Button startIcon={<IconDownload size={18} />} onClick={onDownload}>
           Unduh Laporan
@@ -141,16 +149,30 @@ const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) =
                 <TableCell>{row.aktivitas.subKategori.nama}</TableCell>
                 <TableCell>{row.aktivitas.nama}</TableCell>
                 <TableCell>{row.kronologiSingkat}</TableCell>
-                <TableCell>{row.kronologi}</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell sx={{ textWrap: 'noWrap' }}>
-                  Rp. {formatNumber(row?.potensiKerugian)}
+                <TableCell>
+                  <Typography
+                    sx={{ fontSize: '12px' }}
+                    dangerouslySetInnerHTML={{ __html: row?.kronologi }}
+                  />
                 </TableCell>
-                <TableCell sx={{ textWrap: 'noWrap' }}>
-                  Rp. {formatNumber(row?.nominalRecovery)}
+                <TableCell>
+                  {' '}
+                  <Typography
+                    sx={{ fontSize: '12px' }}
+                    dangerouslySetInnerHTML={{ __html: row?.tindakLanjut }}
+                  />
                 </TableCell>
-                <TableCell sx={{ textWrap: 'noWrap' }}>
-                  Rp. {formatNumber(row?.nominalRealisasiKerugian)}
+                <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
+                  {formatNumber(row?.potensiKerugian)}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
+                  {formatNumber(row?.nominalRecovery)}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
+                  {formatNumber(row?.nominalRealisasiKerugian)}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
+                  {formatNumber(row?.nominalRealisasiKerugian - row?.nominalRecovery)}
                 </TableCell>
                 <TableCell>{row.statusLaporan.nama}</TableCell>
                 <TableCell>
@@ -158,7 +180,7 @@ const DetailedReportTable = ({ data, title, selectedMonth, setSelectedMonth }) =
                     'DD - MMM - YYYY',
                   )}
                 </TableCell>
-                <TableCell>-</TableCell>
+                <TableCell>{row?.sumberRecovery}</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>-</TableCell>
                 <TableCell>

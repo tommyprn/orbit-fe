@@ -12,13 +12,23 @@ import './report.css';
 
 const DatabaseReport = (props) => {
   const { report, getAllDatabaseReport } = props;
+  const [endDate, setEndDate] = useState(dayjs());
+  const [startDate, setStartDate] = useState(dayjs().subtract(5, 'day'));
   const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month') + 1);
 
   useEffect(() => {
     (async () => {
       await getAllDatabaseReport(selectedMonth);
+      // await getAllDatabaseReport(
+      //   dayjs(startDate).format('DD-MM-YYYY'),
+      //   dayjs(endDate).format('DD-MM-YYYY'),
+      // );
     })();
-  }, [selectedMonth]);
+  }, [
+    // endDate,
+    // startDate,
+    selectedMonth,
+  ]);
 
   return (
     <PageContainer title="Database Report" description="Database Report Page">
@@ -26,8 +36,10 @@ const DatabaseReport = (props) => {
         <DetailedReportTable
           data={report.database}
           title="Detail laporan LED"
-          selectedMonth={selectedMonth}
-          setSelectedMonth={setSelectedMonth}
+          endDate={endDate}
+          startDate={startDate}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
         />
       </DashboardCard>
     </PageContainer>

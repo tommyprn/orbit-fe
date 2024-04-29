@@ -578,11 +578,11 @@ export const fetchOneFormLedFailure = (error) => ({
   payload: error,
 });
 
-export const getOneFormLed = (id) => {
+export const getOneFormLed = (id, incidentNumber) => {
   const queryString = stringify(
     {
       id,
-      // nip: payload?.nip,
+      nomorInsiden: incidentNumber,
     },
     {
       arrayFormat: 'comma',

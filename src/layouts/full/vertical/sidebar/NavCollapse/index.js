@@ -42,6 +42,11 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
       backgroundColor: 'rgb(85,26,139,0.7)',
       color: 'white',
     },
+    // backgroundColor: open && level < 2
+    //     ? 'rgb(85,26,139)'
+    //     : `inherit` && level > 1 && open
+    //     ? 'rgb(85,26,139)'
+    //     : theme.palette.text.secondary,
     color:
       open && level < 2
         ? 'rgb(85,26,139)'
@@ -96,9 +101,9 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
     <React.Fragment key={menu.id}>
       <ListItemStyled
         button
-        component="li"
         onClick={handleClick}
         selected={pathWithoutLastPart === menu.href}
+        component="li"
       >
         <ListItemIcon
           sx={{

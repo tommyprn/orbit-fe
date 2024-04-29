@@ -18,51 +18,6 @@ import ReportFilterTable from 'src/components/table/report-filter-table';
 
 import './report.css';
 
-const dummySeries = [
-  {
-    label: 'Eks. pengiriman',
-    nominal: [35, 44, 24, 34, 35, 44, 24, 34, 35, 44, 24, 34],
-    frekuensi: [35, 44, 24, 34, 35, 44, 24, 34, 35, 44, 24, 34],
-  },
-  {
-    label: 'Eksternal fraud',
-    nominal: [51, 6, 49, 30, 51, 6, 49, 30, 51, 6, 49, 30],
-    frekuensi: [51, 6, 49, 30, 51, 6, 49, 30, 51, 6, 49, 30],
-  },
-  {
-    label: 'kegagalan sistem',
-    nominal: [15, 25, 30, 50, 15, 25, 30, 50, 15, 25, 30, 50],
-    frekuensi: [15, 25, 30, 50, 15, 25, 30, 50, 15, 25, 30, 50],
-  },
-  {
-    label: 'Internal Fraud',
-    nominal: [60, 50, 15, 25, 60, 50, 15, 25, 60, 50, 15, 25],
-    frekuensi: [60, 50, 15, 25, 60, 50, 15, 25, 60, 50, 15, 25],
-  },
-
-  {
-    label: 'Kerusakan aset fisik',
-    nominal: [12, 5, 8, 2, 12, 5, 8, 2, 12, 5, 8, 2],
-    frekuensi: [12, 5, 8, 2, 12, 5, 8, 2, 12, 5, 8, 2],
-  },
-  {
-    label: 'Praktek bisnis',
-    nominal: [67, 23, 0, 5, 67, 23, 0, 5, 67, 23, 0, 5],
-    frekuensi: [67, 23, 0, 5, 67, 23, 0, 5, 67, 23, 0, 5],
-  },
-  {
-    color: 'orange',
-    label: 'ketenagakerjaan & K3',
-    nominal: [5, 3, 1, 11, 5, 3, 1, 11, 5, 3, 1, 11],
-    frekuensi: [5, 3, 1, 11, 5, 3, 1, 11, 5, 3, 1, 11],
-  },
-  {
-    label: 'grand total',
-    nominal: [200, 50, 20, 10, 0, 15, 30, 70, 150, 300, 369, 299],
-    frekuensi: [200, 50, 20, 10, 0, 15, 30, 70, 150, 300, 369, 299],
-  },
-];
-
 const LedReport = (props) => {
   const { report, getAllLedReport } = props;
   const tableRef = useRef(null);
@@ -131,11 +86,11 @@ const LedReport = (props) => {
               <Autocomplete
                 sx={{ width: '200px' }}
                 options={officeOpt}
-                onChange={(event, newValue) => {
-                  if (newValue !== null) {
-                    setFilter(newValue.value);
-                  }
-                }}
+                // onChange={(event, newValue) => {
+                //   if (newValue !== null) {
+                //     setFilter(newValue.value);
+                //   }
+                // }}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 renderInput={(params) => <TextField {...params} label="Kantor" />}
               />

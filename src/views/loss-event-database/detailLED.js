@@ -70,10 +70,9 @@ const DetailLED = (props) => {
   const [rejectModal, setRejectModal] = useState(false);
   const [approveModal, setApproveModal] = useState(false);
   const [sendBackModal, setSendBackModal] = useState(false);
-
   useEffect(() => {
     (async () => {
-      await getOneFormLed(params.reportId);
+      await getOneFormLed(JSON.parse(params.reportId), params.incidentNumber);
     })();
   }, [getOneFormLed]);
 
@@ -441,7 +440,7 @@ const mapDispatchToProps = (dispatch) => {
     approveIRM: (id, user) => dispatch(approveIRM(id, user)),
     approveLED: (id, user) => dispatch(approveLED(id, user)),
     sendBackLED: (id, user, comment) => dispatch(sendBackLED(id, user, comment)),
-    getOneFormLed: (id) => dispatch(getOneFormLed(id)),
+    getOneFormLed: (id, incidentNumber) => dispatch(getOneFormLed(id, incidentNumber)),
   };
 };
 

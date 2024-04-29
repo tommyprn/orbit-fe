@@ -86,7 +86,7 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
                     </TableCell>
 
                     <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
-                      nominal
+                      nominal (Rp)
                     </TableCell>
                   </Fragment>
                 );
@@ -108,7 +108,7 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
                         <TableCell sx={{ textAlign: 'center' }}>
                           {formatNumber(item) || 0}
                         </TableCell>
-                        <TableCell sx={{ textAlign: 'center' }}>
+                        <TableCell sx={{ textAlign: 'right' }}>
                           {formatNumber(row.nominal[i]) || 0}
                         </TableCell>
                       </Fragment>

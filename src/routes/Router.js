@@ -63,8 +63,12 @@ const Router = [
       { path: '/LED/report', exact: true, element: <FormLED /> },
       { path: '/LED/zero-report', exact: true, element: <NilPage /> },
       { path: '/LED/edit-report/:reportId', exact: true, element: <EditFormLED /> },
-      { path: '/LED/detail-report/:reportId', exact: true, element: <DetailLED /> },
       { path: '/LED/update-report/:reportId', exact: true, element: <UpdateFormLED /> },
+      {
+        path: '/LED/detail-report/:reportId?/:incidentNumber?',
+        exact: true,
+        element: <DetailLED />,
+      },
 
       // ============================== REPORT ROUTES =====================================
       { path: '/report/LED', exact: true, element: <LedReport /> },

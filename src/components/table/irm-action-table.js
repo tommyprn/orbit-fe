@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import {
+  Link,
   Paper,
   Table,
   styled,
@@ -81,7 +83,16 @@ const IrmActionTable = ({ data }) => {
                         return (
                           <TableCell key={i}>
                             {row[key]?.map((item, index) => {
-                              return <Typography key={index}>{item}</Typography>;
+                              return (
+                                <Link
+                                  key={index}
+                                  underline="none"
+                                  component={NavLink}
+                                  to={`/LED/detail-report/null/${item}`}
+                                >
+                                  <Typography>{item}</Typography>
+                                </Link>
+                              );
                             })}
                           </TableCell>
                         );
