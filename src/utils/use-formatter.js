@@ -8,6 +8,18 @@ export const formatNumber = (value) => {
   return '0';
 };
 
+export const formatText = (data) => {
+  return data
+    .replace('<p>', '')
+    .replace('</p>', '')
+    .replace('<strong>', '')
+    .replace('</strong>', '')
+    .replace('<em>', '')
+    .replace('</em>', '')
+    .replace('<u>', '')
+    .replace('</u>', '');
+};
+
 export const formatDate = (value) => {
   return dayjs(value).format('DD MMMM YYYY');
 };

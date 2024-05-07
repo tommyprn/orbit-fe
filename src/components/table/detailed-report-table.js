@@ -1,10 +1,10 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
+import Workbook from 'react-excel-workbook';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useSelector } from 'react-redux';
-import { formatNumber } from 'src/utils/use-formatter';
+import { formatNumber, formatText } from 'src/utils/use-formatter';
 import { IconDownload } from '@tabler/icons';
-import { useDownloadExcel } from 'react-export-table-to-excel';
 import {
   Table,
   styled,
@@ -27,7 +27,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setStartDate }) => {
+const DetailedReportTable = ({
+  data,
+  title,
+  endDate,
+  startDate,
+  actionPlan,
+  setEndDate,
+  setStartDate,
+}) => {
   const tableRef = useRef();
   const customizer = useSelector((state) => state.customizer);
 
@@ -61,11 +69,112 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
     'Status Akhir',
   ];
 
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: `detail-laporan-LED`,
-    sheet: 'LED',
-  });
+  const generateGeneralData = (data) => {
+    return data.map((item) => {
+      return {
+        bulanInputLed: item.createdDate,
+        Tahun: dayjs(item.createdDate, 'DD-MM-YYYY').get('year'),
+        divisiCabang:
+          item?.unitKerja?.namaUnitKerja === 'CABANG'
+            ? item.cabang?.namaCabang
+            : item?.unitKerja?.namaUnitKerja,
+        noLed: item.idLaporan,
+        statusKejadian: item.statusKejadian.nama,
+        tanggalKejadian: item.tanggalKejadian,
+        tanggalTeridentifikasi: item.tanggalIdentifikasi,
+        tanggalLapor: item.tanggalLapor,
+        penyebabKejadian: item.penyebabKejadian?.nama,
+        kategori: item.aktivitas?.subKategori?.kategoriKejadian.nama,
+        subKategori: item.aktivitas?.subKategori?.nama,
+        aktivitas: item.aktivitas?.nama,
+        highlight: item.kronologiSingkat,
+        kronologis: formatText(item?.kronologi),
+        rencanaTindakan: formatText(item?.tindakLanjut),
+        potensiKerugian: String(item?.potensiKerugian),
+        recovery: String(item?.nominalRecovery),
+        grossLoss: String(item?.nominalRealisasiKerugian),
+        netLoss: String(item?.nominalRealisasiKerugian - item?.nominalRecovery),
+        statusLed: item.statusLaporan.nama,
+        targetDate: item.actionPlan[item.actionPlan?.length - 1].targetPenyelesaian,
+        sumberRecovery: item?.sumberRecovery,
+        statusOtorisasi:
+          item.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
+        catatan: item.catatan,
+        picAndMail:
+          item.unitKerja?.namaUnitKerja === 'CABANG'
+            ? item.cabang.emailPic
+            : item.unitKerja?.emailPic,
+        tindakLanjut: item.actionPlan[item.actionPlan?.length - 1].actionPlan,
+        statusAkhir:
+          item.statusLaporan.nama === 'Void' || item.statusLaporan.nama === 'Closed'
+            ? item.statusLaporan.nama
+            : null,
+      };
+    });
+  };
+
+  const generateActionData = (data) => {
+    return data.map((item) => {
+      return {
+        nomorLed: item.laporanLed?.idLaporan,
+        plan: item?.actionPlan,
+        divisi:
+          item?.unitKerjaEntity?.namaUnitKerja !== 'CABANG'
+            ? item?.unitKerjaEntity?.namaUnitKerja
+            : item?.cabangEntity?.namaCabang,
+        PIC: item?.penanggungJawab,
+        email: item?.email,
+        targetPenyelesaian: item?.targetPenyelesaian,
+      };
+    });
+  };
+
+  const DownloadButton = () => (
+    <Workbook
+      filename={`Laporan Database LED (${dayjs(startDate).format('DD/MMM/YYYY')} - ${dayjs(
+        endDate,
+      ).format('DD/MMM/YYYY')}).xlsx`}
+      element={<Button startIcon={<IconDownload size={18} />}>Unduh Laporan</Button>}
+    >
+      <Workbook.Sheet data={generateGeneralData(data)} name="LED">
+        <Workbook.Column label="Bulan Input LED" value="bulanInputLed" />
+        <Workbook.Column label="Tahun" value="Tahun" />
+        <Workbook.Column label="Divisi/ Cabang" value="divisiCabang" />
+        <Workbook.Column label="No LED" value="noLed" />
+        <Workbook.Column label="Status Kejadian" value="statusKejadian" />
+        <Workbook.Column label="Tanggal Kejadian" value="tanggalKejadian" />
+        <Workbook.Column label="Tanggal Teridentifikasi" value="tanggalTeridentifikasi" />
+        <Workbook.Column label="Tanggal Lapor" value="tanggalLapor" />
+        <Workbook.Column label="Penyebab Kejadian" value="penyebabKejadian" />
+        <Workbook.Column label="Kategori Kejadian (level 1)" value="kategori" />
+        <Workbook.Column label="Kategori Kejadian (level 2)" value="subKategori" />
+        <Workbook.Column label="Kategori Kejadian (level 3)" value="aktivitas" />
+        <Workbook.Column label="Highlight Kronologis" value="highlight" />
+        <Workbook.Column label="Kronologis" value="kronologis" />
+        <Workbook.Column label="Rencana Tindakan" value="rencanaTindakan" />
+        <Workbook.Column label="Potensi Kerugian (Rp)" value="potensiKerugian" />
+        <Workbook.Column label="Recovery (Rp)" value="recovery" />
+        <Workbook.Column label="Gross Loss (Rp)" value="grossLoss" />
+        <Workbook.Column label="Net Loss (Rp)" value="netLoss" />
+        <Workbook.Column label="Status LED" value="statusLed" />
+        <Workbook.Column label="Target Penyelesaian" value="targetDate" />
+        <Workbook.Column label="Sumber Recovery" value="sumberRecovery" />
+        <Workbook.Column label="Status Otorisasi" value="statusOtorisasi" />
+        <Workbook.Column label="Catatan" value="catatan" />
+        <Workbook.Column label="Nama PIC/ Email" value="picAndMail" />
+        <Workbook.Column label="Tindak Lanjut" value="tindakLanjut" />
+        <Workbook.Column label="Status Akhir" value="statusAkhir" />
+      </Workbook.Sheet>
+      <Workbook.Sheet data={generateActionData(actionPlan)} name="Action Plan">
+        <Workbook.Column label="Nomor Laporan" value="nomorLed" />
+        <Workbook.Column label="Action Plan" value="plan" />
+        <Workbook.Column label="Divisi" value="divisi" />
+        <Workbook.Column label="PIC" value="PIC" />
+        <Workbook.Column label="Email PIC" value="email" />
+        <Workbook.Column label="Target Penyelesaian" value="targetPenyelesaian" />
+      </Workbook.Sheet>
+    </Workbook>
+  );
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -93,9 +202,7 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
           />
         </div>
 
-        <Button startIcon={<IconDownload size={18} />} onClick={onDownload}>
-          Unduh Laporan
-        </Button>
+        <DownloadButton />
       </div>
 
       <TableContainer
