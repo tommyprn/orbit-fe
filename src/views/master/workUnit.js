@@ -119,7 +119,6 @@ const WorkUnit = (props) => {
     setKeyword(values);
   };
 
-  console.log(selectedUnit);
   return (
     <PageContainer title="Unit Kerja/ Business Lines" description="Business Lines Page">
       {process.env.HEADER_SHOW ? (

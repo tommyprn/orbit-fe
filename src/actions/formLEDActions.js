@@ -353,6 +353,7 @@ export const approveLED = (id, user) => {
     const requestBody = {
       id,
       nip: user.nip,
+      nama: user.name,
       role: user.role,
     };
 
@@ -395,6 +396,7 @@ export const sendBackLED = (id, user, comment) => {
     const requestBody = {
       id: id,
       nip: user.nip,
+      nama: user.name,
       role: user.role,
       keterangan: comment,
     };
@@ -438,6 +440,7 @@ export const approveIRM = (id, user) => {
     const requestBody = {
       id,
       nip: user.nip,
+      nama: user.name,
     };
 
     try {
@@ -479,6 +482,7 @@ export const rejectIRM = (id, user, comment) => {
     const requestBody = {
       id: id,
       nip: user.nip,
+      nama: user.name,
       keterangan: comment,
       // role: user.role,
     };
@@ -803,8 +807,7 @@ export const updateWorkingDays = (days) => {
       const responseJSON = await res.json();
 
       if (res.status === 200) {
-        // dispatch(fetchZeroReportSuccess(responseJSON));
-        console.log(responseJSON);
+        dispatch(fetchZeroReportSuccess(responseJSON));
       }
 
       return responseJSON;

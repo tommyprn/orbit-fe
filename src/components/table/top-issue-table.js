@@ -83,7 +83,9 @@ const TopIssueTable = ({ data, title, header, fileName, setValue }) => {
                 <TableCell>{dayjs(row.tglLapor).format('DD - MMM - YYYY')}</TableCell>
                 <TableCell>{row.namaAktivitas}</TableCell>
                 <TableCell sx={{ textAlign: 'right' }}>
-                  {formatNumber(row?.potensiKerugian || row?.nominalRealisasiKerugian)}
+                  {formatNumber(
+                    row?.potensiKerugian || row?.nominalRealisasiKerugian - row?.nominalRecovery,
+                  )}
                 </TableCell>
                 <TableCell sx={{ textAlign: 'right' }}>
                   {formatNumber(row?.nominalRecovery)}

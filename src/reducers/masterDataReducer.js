@@ -122,6 +122,7 @@ const masterDataReducer = (state = initialState, action) => {
           },
           reportStatus: action.payload.statusLaporan,
           branch: action.payload.cabang,
+          region: action.payload.region,
         },
         isLoading: false,
       };

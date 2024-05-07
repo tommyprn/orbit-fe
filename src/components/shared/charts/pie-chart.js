@@ -1,20 +1,32 @@
 import { Pie } from 'react-chartjs-2';
+import { formatNumber } from 'src/utils/use-formatter';
 import { Title, Legend, Tooltip, ArcElement, Chart as ChartJS } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const PieChart = ({ data, title, chosenMonth }) => {
-  ChartJS.register(Title, Legend, Tooltip, ArcElement);
+  ChartJS.register(Title, Legend, Tooltip, ArcElement, ChartDataLabels);
   const label = data
     ?.filter((item) => item.label.toLowerCase() !== 'grand total')
     .map((item) => item.label);
-  const frekuensi = data
+  const nominal = data
     ?.filter((item) => item.label.toLowerCase() !== 'grand total')
-    .map((item) => item.frekuensi[chosenMonth - 1]);
+    .map((item) => item.realisasiKerugian[chosenMonth - 1]);
 
   const generateData = {
     labels: label,
+    // labels: [
+    //   'Kecurangan Intern (Internal Fraud)',
+    //   'Kecurangan Ekstern (Exsternal Fraud)',
+    //   'Employment Practices and workplace safety',
+    //   'Clients, Products, and Business Practices',
+    //   'Damage to Physical Assets',
+    //   'Business Disruption and System Failure',
+    //   'Execution, Delivery, and Process Management',
+    // ],
     datasets: [
       {
-        data: frekuensi,
+        data: nominal,
+        // data: [10, 13, 19, 21, 52, 34, 21],
         label: 'Frekuensi kejadian',
         backgroundColor: [
           'rgba(255, 99, 132)',
@@ -31,22 +43,39 @@ const PieChart = ({ data, title, chosenMonth }) => {
 
   const config = {
     responsive: true,
-
+    aspectRatio: 2,
     plugins: {
       title: {
         text: title,
         display: true,
+        padding: 30,
       },
       legend: {
-        position: 'bottom',
-        align: 'start',
+        display: false,
+      },
+      datalabels: {
+        formatter: (val, ctx) => {
+          if (val !== null && val !== 0) {
+            return (
+              ctx.chart.data.labels[ctx.dataIndex] +
+              ': ' +
+              formatNumber(Math.round((val / 1000000) * 1000) / 1000)
+            );
+          }
+        },
+        font: {
+          weight: 'bold',
+        },
+        align: 'top',
+        anchor: 'end',
+        color: '#fffff',
       },
     },
   };
 
   return (
     <div style={{ marginTop: '16px' }}>
-      <Pie type="bar" data={generateData} options={config} />;
+      <Pie type="bar" data={generateData} options={config} width={1000} height={1000} />
     </div>
   );
 };

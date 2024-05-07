@@ -140,7 +140,7 @@ const menuDev = [
     children: [
       {
         id: '271',
-        title: 'LED berdasarkan kantor',
+        title: 'Pelaporan nihil',
         icon: 'IconPoint',
         href: 'report/office',
       },
@@ -178,7 +178,7 @@ const userDev = {
   idUser: '2',
   nikUser: '20150213',
   idDivisi: '21',
-  nameUser: 'CS-IN',
+  nameUser: 'Yanto',
   emailUser: 'test@mail.com',
   divisiUser: 'CABANG',
   kodeCabangUser: '512',

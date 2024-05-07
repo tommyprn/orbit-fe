@@ -11,7 +11,7 @@ import {
   TableBody,
   TableContainer,
 } from '@mui/material';
-import { getHistoryLED } from 'src/actions/formLEDActions';
+import { getOneIrmActionReport } from 'src/actions/reportActions';
 
 // component
 import SimpleModal from './simpleModal';
@@ -37,32 +37,16 @@ const newStyle = {
   transform: 'translate(-50%, -50%)',
 };
 
-const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onCloseHandler }) => {
+const IrmHistoryModal = ({ id, report, title, isOpen, getOneIrmActionReport, onCloseHandler }) => {
   useEffect(() => {
     (async () => {
       if (id) {
-        await getHistoryLED(id);
+        await getOneIrmActionReport(id);
       }
     })();
   }, [id]);
 
-  const role = {
-    1: 'Inputer',
-    2: 'Approver',
-    3: 'IRM',
-  };
-
-  const header = [
-    'No',
-    'ID Laporan',
-    'NIK',
-    'Posisi',
-    'Status',
-    'Tanggal Mulai',
-    'Tanggal Berakhir',
-    'Status Laporan',
-    'Keterangan',
-  ];
+  const header = ['No', 'NIK', 'Nama', 'Aksi', 'Catatan', 'Tanggal'];
 
   return (
     <SimpleModal title={title} isOpen={isOpen} newStyle={newStyle} onCloseHandler={onCloseHandler}>
@@ -84,22 +68,17 @@ const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onClose
               </TableRow>
             </TableHead>
             <TableBody>
-              {LED?.data?.map((row, index) => (
+              {report?.map((row, index) => (
                 <StyledTableRow
                   key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{reportId || 'DRAFT'}</TableCell>
                   <TableCell>{row.createdBy}</TableCell>
-                  <TableCell>{role[row.idFlow]}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{dayjs(row.tglStart).format('DD-MMM-YY | HH:mm:ss')}</TableCell>
-                  <TableCell>
-                    {row.tglEnd ? dayjs(row.tglEnd).format('DD-MMM-YY | HH:mm:ss') : '-'}
-                  </TableCell>
-                  <TableCell>{row.statusLaporanEntity?.nama}</TableCell>
+                  <TableCell>{row.nama}</TableCell>
+                  <TableCell>{row.action}</TableCell>
                   <TableCell>{row.keterangan}</TableCell>
+                  <TableCell>{dayjs(row.tglEnd).format('DD - MMM - YYYY')}</TableCell>
                 </StyledTableRow>
               ))}
             </TableBody>
@@ -112,14 +91,14 @@ const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onClose
 
 const mapStateToProps = (state) => {
   return {
-    LED: state.LED.history,
+    report: state.report.detailedHistory.data,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getHistoryLED: (id) => dispatch(getHistoryLED(id)),
+    getOneIrmActionReport: (id) => dispatch(getOneIrmActionReport(id)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HistoryModal);
+export default connect(mapStateToProps, mapDispatchToProps)(IrmHistoryModal);

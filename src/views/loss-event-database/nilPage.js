@@ -20,7 +20,7 @@ import { getZeroReport, createZeroReport, updateWorkingDays } from 'src/actions/
 import secureLocalStorage from 'react-secure-storage';
 
 // component
-// import SearchBar from 'src/components/search-bar/SearchBar';
+import SearchBar from 'src/components/search-bar/SearchBar';
 import SimpleModal from 'src/components/modal/simpleModal';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
@@ -72,9 +72,9 @@ const NilPage = (props) => {
     setPage(0);
   };
 
-  // const onSearch = (values) => {
-  //   setKeyword(values);
-  // };
+  const onSearch = (values) => {
+    setKeyword(values);
+  };
 
   const onClose = () => {
     setWorkingDaysModal(false);
@@ -173,7 +173,7 @@ const NilPage = (props) => {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
+            <SearchBar onSubmit={(val) => onSearch(val)} />
             <div />
             {user.role === 'approver' ? (
               <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>

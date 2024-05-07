@@ -15,7 +15,7 @@ import { Chart } from 'react-chartjs-2';
 import { chartValue, getSeries } from 'src/utils/use-chart-utils';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-const BarChart = ({ data, label, title, period }) => {
+const BarChart = ({ data, label, title, period, filter }) => {
   ChartJS.register(
     Title,
     Legend,
@@ -35,18 +35,20 @@ const BarChart = ({ data, label, title, period }) => {
     datasets: [
       {
         type: 'line',
-        data: chartValue(getSeries(data)?.frekuensi, period),
+        data: chartValue(getSeries(data, filter)?.frekuensi, period),
         fill: false,
         label: 'Frekuensi kejadian',
         order: 0,
         borderColor: '#FFB1C1',
         backgroundColor: '#FF6384',
+        yAxisID: 'frekuensi',
       },
       {
-        data: chartValue(getSeries(data)?.nominal, period, true),
+        data: chartValue(getSeries(data, filter)?.realisasiKerugian, period, true),
         label: 'Rata-rata nominal kerugian 1 tahun terakhir (Rp Juta)',
         order: 1,
         backgroundColor: '#9BD0F5',
+        yAxisID: 'nominal',
       },
     ],
   };
@@ -66,11 +68,23 @@ const BarChart = ({ data, label, title, period }) => {
         font: {
           weight: 'bold',
         },
-        formatter: (value, context) => {
-          return value;
-        },
         align: 'end',
-        anchor: 'end',
+        // anchor: 'end',
+      },
+    },
+    scales: {
+      nominal: {
+        type: 'linear',
+        display: true,
+        position: 'left',
+      },
+      frekuensi: {
+        type: 'linear',
+        display: true,
+        position: 'right',
+        grid: {
+          drawOnChartArea: false,
+        },
       },
     },
   };

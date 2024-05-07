@@ -5,7 +5,7 @@ export const createOption = (option) => {
     return option?.map((item) => {
       return {
         id: item.id || item.idUnitKerja,
-        label: item.nama || item.namaUnitKerja || item.namaCabang,
+        label: item.nama || item.namaUnitKerja || item.namaCabang || item.namaRegion,
         pic: item.namaPic || '',
         email: item.emailPic || '',
       };

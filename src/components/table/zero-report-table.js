@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import dayjs from 'dayjs';
 import {
   Paper,
   Table,
@@ -24,7 +25,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const ZeroReportTable = ({ data, title }) => {
+const ZeroReportTable = ({ data, title, isFinished }) => {
   const tableRef = useRef(null);
 
   const { onDownload } = useDownloadExcel({
@@ -58,7 +59,9 @@ const ZeroReportTable = ({ data, title }) => {
             <TableHead>
               <TableRow>
                 <TableCell>No</TableCell>
-                <TableCell>Nama Cabang</TableCell>
+                <TableCell>Region/ Direktorat</TableCell>
+                <TableCell>Nama Cabang/ Divisi</TableCell>
+                {isFinished ? <TableCell>Tanggal Pengumpulan</TableCell> : null}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -70,13 +73,17 @@ const ZeroReportTable = ({ data, title }) => {
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell>{index + 1}</TableCell>
-                      <TableCell>{row}</TableCell>
+                      <TableCell>{row.keterangan ? row?.keterangan : '-'}</TableCell>
+                      <TableCell>{row.nama ? row.nama : '-'}</TableCell>
+                      {isFinished ? (
+                        <TableCell>{dayjs(row?.tanggal).format('DD-MMM-YYYY')}</TableCell>
+                      ) : null}
                     </StyledTableRow>
                   );
                 })
               ) : (
                 <StyledTableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                  <TableCell colSpan={2} align="center">
+                  <TableCell colSpan={isFinished ? 4 : 3} align="center">
                     <Typography variant="h6">Belum ada data cabang</Typography>
                   </TableCell>
                 </StyledTableRow>

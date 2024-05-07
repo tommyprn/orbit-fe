@@ -17,7 +17,7 @@ export const chartValue = (data, period, nominal) => {
   const newValue = newData.map((item) => {
     return item.reduce((sum, val) => {
       if (nominal) {
-        return sum + val / 1000000;
+        return Math.round((sum + val / 1000000) * 1000) / 1000;
       }
       return sum + val;
     }, 0);
@@ -26,8 +26,8 @@ export const chartValue = (data, period, nominal) => {
   return newValue;
 };
 
-export const getSeries = (data) => {
-  return data.find((item) => item.label.toLowerCase() === 'grand total');
+export const getSeries = (data, filter) => {
+  return data.find((item) => item.label === filter);
 };
 
 export const periodTranslate = {

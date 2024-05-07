@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import { createOption } from './use-options';
+
 export const month = [
   { label: 'Januari', value: 1 },
   { label: 'Februari', value: 2 },
@@ -13,10 +16,25 @@ export const month = [
   { label: 'Desember', value: 12 },
 ];
 
-export const officeOpt = [
+export const geoOpt = (data) => {
+  const opt = createOption(data);
+  return [{ id: null, label: 'Tampil Semua', pic: '', email: '' }, ...opt];
+};
+
+export const getYearOpt = () => {
+  const year = dayjs().year();
+  const arr = [];
+  for (let i = 9; i > 0; i--) {
+    arr.push(year - i);
+  }
+  arr.push(year);
+
+  return arr;
+};
+
+export const caseOpt = [
   { label: 'Kategori kejadian', value: 'kategori' },
-  { label: 'Cabang', value: 'cabang' },
-  { label: 'Region', value: 'region' },
+  { label: 'Penyebab kejadian', value: 'penyebab' },
 ];
 
 export const periodOpt = [

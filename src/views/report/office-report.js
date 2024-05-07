@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import dayjs from 'dayjs';
 import { month } from '../../utils/get-dropdown-data';
 import { getAllOfficeReport } from 'src/actions/reportActions';
 import { connect, useSelector } from 'react-redux';
@@ -17,27 +17,13 @@ const OfficeReport = (props) => {
 
   const { report, getAllOfficeReport } = props;
   const [keyword, setKeyword] = useState('');
-  const [zeroReport, setZeroReport] = useState({});
-  const [monthFilter, setMonthFilter] = useState(1);
+  const [monthFilter, setMonthFilter] = useState(dayjs().get('month'));
 
   useEffect(() => {
     (async () => {
       await getAllOfficeReport(monthFilter, keyword);
     })();
   }, [keyword, monthFilter]);
-
-  useEffect(() => {
-    if (!_.isEmpty(report.zeroReport)) {
-      const dataToSave = {
-        reported: [...report?.zeroReport?.cabangMelapor, ...report?.zeroReport?.unitKerjaMelapor],
-        unreported: [
-          ...report?.zeroReport?.cabangTidakMelapor,
-          ...report?.zeroReport?.unitKerjaTidakMelapor,
-        ],
-      };
-      setZeroReport(dataToSave);
-    }
-  }, [report]);
 
   const onSearch = (values) => {
     setKeyword(values);
@@ -47,7 +33,7 @@ const OfficeReport = (props) => {
     <PageContainer title="Report Office" description="Report Office Page">
       {report?.reported && report?.unreported ? null : (
         <Card className="first-section" elevation={customizer.isCardShadow ? 9 : 0}>
-          <Typography variant="h4">Laporan LED Berdasarkan Kantor</Typography>
+          <Typography variant="h4">Laporan LED Berdasarkan Laporan NIhil</Typography>
 
           <div style={{ display: 'flex', gap: '16px' }}>
             <SearchBar onSubmit={onSearch} customStyle={{ height: '54px' }} />
@@ -68,13 +54,14 @@ const OfficeReport = (props) => {
 
           <div className="first-section-content">
             <ZeroReportTable
-              data={zeroReport.reported}
+              data={report?.zeroReport?.melapor}
               title="Sudah melapor"
               message="Belum ada KCU / unit kerja yang membuat laporan"
+              isFinished
             />
 
             <ZeroReportTable
-              data={zeroReport.unreported}
+              data={report?.zeroReport?.belumMelapor}
               title="Belum melapor"
               message="Seluruh KCU & unit kerja sudah mengumpulkan laporan"
             />

@@ -43,7 +43,7 @@ const TopIssueReport = (props) => {
     'Tanggal Kejadian',
     'Tanggal Pelaporan',
     'Detail Aktivitas',
-    'Realisasi Kerugian (Rp)',
+    'Realisasi Kerugian - Net Loss (Rp)',
     'Recovery (Rp)',
     'Status',
   ];

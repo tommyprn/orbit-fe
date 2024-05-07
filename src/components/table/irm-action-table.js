@@ -1,11 +1,10 @@
-import { useRef } from 'react';
+import { Fragment, useRef } from 'react';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
 import {
-  Link,
   Paper,
   Table,
+  Button,
   styled,
   TableRow,
   TableCell,
@@ -25,7 +24,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const IrmActionTable = ({ data }) => {
+const IrmActionTable = ({ data, onClick }) => {
   const customizer = useSelector((state) => state.customizer);
   const tableRef = useRef(null);
 
@@ -44,7 +43,7 @@ const IrmActionTable = ({ data }) => {
             maxWidth: customizer.isCollapse
               ? `calc(100vw - 202px)`
               : window.innerWidth > 1199
-              ? `calc(100vw - 385px)`
+              ? `calc(100vw - 350px)`
               : '100%',
           }}
           className="table-filter"
@@ -60,7 +59,7 @@ const IrmActionTable = ({ data }) => {
                   .filter((item) => item !== 'label')
                   .map((key, i) => {
                     return (
-                      <TableCell key={i} sx={{ textWrap: 'noWrap' }}>
+                      <TableCell sx={{ textWrap: 'noWrap' }} key={i}>
                         {key}
                       </TableCell>
                     );
@@ -81,17 +80,19 @@ const IrmActionTable = ({ data }) => {
                       .filter((item) => item !== 'label')
                       .map((key, i) => {
                         return (
-                          <TableCell key={i}>
+                          <TableCell key={i} sx={{ flexWrap: 'noWrap' }}>
                             {row[key]?.map((item, index) => {
                               return (
-                                <Link
-                                  key={index}
-                                  underline="none"
-                                  component={NavLink}
-                                  to={`/LED/detail-report/null/${item}`}
-                                >
-                                  <Typography>{item}</Typography>
-                                </Link>
+                                <Fragment key={index}>
+                                  <Button
+                                    sx={{ backgroundColor: 'transparent', color: 'black' }}
+                                    onClick={() => onClick(item)}
+                                    size="small"
+                                  >
+                                    <Typography>{item}</Typography>
+                                  </Button>
+                                  <br />
+                                </Fragment>
                               );
                             })}
                           </TableCell>

@@ -87,9 +87,9 @@ const DetailLED = (props) => {
 
   const onRejectConfirm = async (comment) => {
     let res;
-    if (user.role === 'approver') {
+    if (dataLaporan?.statusLaporanEntity?.nama === 'Recorded') {
       res = await sendBackLED(detail.laporanLed.id, user, comment);
-    } else if (user.role === 'IRM') {
+    } else if (user.role === 'IRM' && dataLaporan?.statusLaporanEntity?.nama === 'On Progress') {
       res = await rejectIRM(detail.laporanLed.id, user, comment);
     }
 

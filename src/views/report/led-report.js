@@ -1,13 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Fragment, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
+import { chartValue } from 'src/utils/use-chart-utils';
+import { getDropdown } from 'src/actions/masterDataActions';
 import { IconDownload } from '@tabler/icons';
 import { getAllLedReport } from 'src/actions/reportActions';
 import { useDownloadExcel } from 'react-export-table-to-excel';
 import { exportComponentAsJPEG } from 'react-component-export-image';
-import { chartValue, periodTranslate } from 'src/utils/use-chart-utils';
-import { officeOpt, periodOpt, month } from '../../utils/get-dropdown-data';
-import { Button, TextField, Autocomplete, Typography } from '@mui/material';
+import { geoOpt, periodOpt, caseOpt, month, getYearOpt } from '../../utils/get-dropdown-data';
+import {
+  Button,
+  Switch,
+  TextField,
+  Autocomplete,
+  Typography,
+  FormControlLabel,
+} from '@mui/material';
 
 // component
 import BarChart from 'src/components/shared/charts/bar-chart';
@@ -19,20 +27,24 @@ import ReportFilterTable from 'src/components/table/report-filter-table';
 import './report.css';
 
 const LedReport = (props) => {
-  const { report, getAllLedReport } = props;
+  const { report, dropdown, getDropdown, getAllLedReport } = props;
   const tableRef = useRef(null);
   const chartRef = useRef();
 
-  const [filter, setFilter] = useState('kategori');
+  const [filter, setFilter] = useState();
   const [period, setPeriod] = useState('triwulan');
-  const [selectedYear, setSelectedYear] = useState();
-  const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month') + 1);
+  const [isRegion, setIsRegion] = useState(false);
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedCase, setSelectedCase] = useState('kategori');
+  const [selectedYear, setSelectedYear] = useState(dayjs().year());
+  const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month'));
 
   useEffect(() => {
     (async () => {
-      await getAllLedReport(filter, period);
+      await getDropdown();
+      await getAllLedReport(selectedCase, selectedYear, filter, isRegion);
     })();
-  }, [filter, period]);
+  }, [filter, selectedYear, selectedCase]);
 
   const axis = {
     month: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -45,14 +57,30 @@ const LedReport = (props) => {
     const newData = data.map((item) => {
       return {
         ...item,
-        nominal:
+        realisasiKerugian:
           period !== 'month'
-            ? chartValue(item?.nominal, period)
-            : [item?.nominal[selectedMonth - 1] ? item?.nominal[selectedMonth - 1] : 0],
+            ? chartValue(item?.realisasiKerugian, period)
+            : [
+                item?.realisasiKerugian[selectedMonth - 1]
+                  ? item?.realisasiKerugian[selectedMonth - 1]
+                  : 0,
+              ],
+        recovery:
+          period !== 'month'
+            ? chartValue(item?.recovery, period)
+            : [item?.recovery[selectedMonth - 1] ? item?.recovery[selectedMonth - 1] : 0],
+        potensiKerugian:
+          period !== 'month'
+            ? chartValue(item?.potensiKerugian, period)
+            : [
+                item?.potensiKerugian[selectedMonth - 1]
+                  ? item?.potensiKerugian[selectedMonth - 1]
+                  : 0,
+              ],
         frekuensi:
           period !== 'month'
             ? chartValue(item?.frekuensi, period)
-            : [item?.nominal[selectedMonth - 1] ? item?.nominal[selectedMonth - 1] : 0],
+            : [item?.frekuensi[selectedMonth - 1] ? item?.frekuensi[selectedMonth - 1] : 0],
       };
     });
 
@@ -65,12 +93,23 @@ const LedReport = (props) => {
     sheet: 'LED',
   });
 
-  const handleDownload = () => {
+  const handleDownloadTable = () => {
     onDownload();
+  };
+
+  const handleDOwnloadGraph = () => {
     exportComponentAsJPEG(chartRef, {
-      fileName: `BarChart-${period}-${filter}`,
+      fileName: `BarChart-${selectedType}-${selectedYear}`,
       html2CanvasOptions: { height: 500 },
     });
+  };
+
+  const getCaseOpt = useMemo(() => {
+    return report?.report.filter((item) => item.label !== 'Grand Total').map((item) => item.label);
+  }, [report?.report]);
+
+  const onCheck = () => {
+    setIsRegion(!isRegion);
   };
 
   return (
@@ -81,20 +120,44 @@ const LedReport = (props) => {
             Laporan LED
           </Typography>
 
-          <div style={{ display: 'flex', marginBottom: '20px', justifyContent: 'space-between' }}>
+          <FormControlLabel
+            control={<Switch checked={!isRegion} onChange={onCheck} />}
+            label={!isRegion ? 'Dropdown Cabang' : 'Dropdown Region'}
+          />
+
+          <div
+            style={{
+              gap: '16px',
+              display: 'flex',
+              margin: '20px 0',
+              justifyContent: 'space-between',
+            }}
+          >
             <div style={{ display: 'flex', gap: '16px' }}>
               <Autocomplete
-                sx={{ width: '200px' }}
-                options={officeOpt}
-                // onChange={(event, newValue) => {
-                //   if (newValue !== null) {
-                //     setFilter(newValue.value);
-                //   }
-                // }}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
-                renderInput={(params) => <TextField {...params} label="Kantor" />}
+                sx={{ width: '300px' }}
+                options={geoOpt(!isRegion ? dropdown.branch : dropdown.region)}
+                onChange={(event, newValue) => {
+                  if (newValue !== null) {
+                    setFilter(newValue.id);
+                  } else {
+                    setFilter('');
+                  }
+                }}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderInput={(params) => <TextField {...params} label="filter cabang" />}
               />
-
+              <Autocomplete
+                sx={{ width: '200px' }}
+                options={caseOpt}
+                onChange={(event, newValue) => {
+                  if (newValue !== null) {
+                    setSelectedCase(newValue.value);
+                  }
+                }}
+                isOptionEqualToValue={(option, value) => option.value === value.value}
+                renderInput={(params) => <TextField {...params} label="filter kejadian" />}
+              />
               <Autocomplete
                 sx={{ width: '200px' }}
                 options={periodOpt}
@@ -105,6 +168,18 @@ const LedReport = (props) => {
                 }}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 renderInput={(params) => <TextField {...params} label="Periode" />}
+              />
+
+              <Autocomplete
+                sx={{ width: '200px' }}
+                options={getYearOpt()}
+                onChange={(event, newValue) => {
+                  if (newValue !== null) {
+                    setSelectedYear(newValue);
+                  }
+                }}
+                isOptionEqualToValue={(option, value) => option === value}
+                renderInput={(params) => <TextField {...params} label="Tahun" />}
               />
 
               {period === 'month' ? (
@@ -120,28 +195,9 @@ const LedReport = (props) => {
                   renderInput={(params) => <TextField {...params} label="Bulan" />}
                 />
               ) : null}
-
-              {period === 'annualy' ? (
-                <Autocomplete
-                  sx={{ width: '200px' }}
-                  options={[
-                    { label: '1 tahun', value: 1 },
-                    { label: '2 tahun', value: 2 },
-                    { label: '5 tahun', value: 5 },
-                    { label: '10 tahun', value: 10 },
-                  ]}
-                  onChange={(event, newValue) => {
-                    if (newValue !== null) {
-                      setSelectedYear(newValue.value);
-                    }
-                  }}
-                  isOptionEqualToValue={(option, value) => option.value === value.value}
-                  renderInput={(params) => <TextField {...params} label="Tahun" />}
-                />
-              ) : null}
             </div>
-            <Button onClick={handleDownload} startIcon={<IconDownload size={18} />}>
-              Unduh Laporan
+            <Button onClick={handleDownloadTable} startIcon={<IconDownload size={18} />}>
+              Unduh Tabel Laporan
             </Button>
           </div>
 
@@ -150,23 +206,84 @@ const LedReport = (props) => {
             title={period}
             tableRef={tableRef}
             subHeader={period !== 'month' ? axis[period] : [axis[period][selectedMonth - 1]]}
+            selectedCase={selectedCase}
           />
         </div>
 
-        <div style={{ maxWidth: period === 'month' ? '500px' : '1000px' }} ref={chartRef}>
+        <div
+          style={{
+            gap: '24px',
+            display: 'flex',
+            marginTop: '24px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Autocomplete
+            sx={{ width: '400px' }}
+            options={getCaseOpt}
+            onChange={(event, newValue) => {
+              if (newValue !== null) {
+                setSelectedType(newValue);
+              }
+            }}
+            isOptionEqualToValue={(option, value) => option === value}
+            renderInput={(params) => <TextField {...params} label="jenis kejadian" />}
+          />
+          <Button onClick={handleDOwnloadGraph} startIcon={<IconDownload size={18} />}>
+            Unduh Grafik Laporan
+          </Button>
+        </div>
+
+        <div
+          style={{
+            maxWidth: '1100px',
+          }}
+          ref={chartRef}
+        >
           {period !== 'month' ? (
-            <BarChart
-              data={report?.report}
-              label={axis[period]}
-              title={`Grand total ${filter} kurun waktu ${periodTranslate[period]}`}
-              period={period}
-            />
+            <Fragment>
+              <div
+                style={{
+                  display: 'flex',
+                  maxWidth: '1000px',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography
+                  sx={{ transform: 'rotate(270deg)', fontSize: '12px', fontWeight: 'bold' }}
+                >
+                  Nominal
+                </Typography>
+                <BarChart
+                  data={report?.report}
+                  label={axis[period]}
+                  title={`${selectedType} ${selectedYear}`}
+                  period={period}
+                  filter={selectedType}
+                />
+                <Typography
+                  sx={{ transform: 'rotate(90deg)', fontSize: '12px', fontWeight: 'bold' }}
+                >
+                  Frekuensi
+                </Typography>
+              </div>
+            </Fragment>
           ) : (
-            <PieChart
-              data={report?.report}
-              title={`Grafik frekuensi kejadian tiap ${filter}`}
-              chosenMonth={selectedMonth}
-            />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '1000px',
+              }}
+            >
+              <PieChart
+                data={report?.report}
+                title={`nominal gross loss bulan ${dayjs()
+                  .month(selectedMonth - 1)
+                  .format('MMMM')}`}
+                chosenMonth={selectedMonth}
+              />
+            </div>
           )}
         </div>
       </DashboardCard>
@@ -176,13 +293,16 @@ const LedReport = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    dropdown: state.masterData.dropdown,
     report: state.report,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllLedReport: (fil, period) => dispatch(getAllLedReport(fil, period)),
+    getDropdown: () => dispatch(getDropdown()),
+    getAllLedReport: (selCase, fil, period, isRegion) =>
+      dispatch(getAllLedReport(selCase, fil, period, isRegion)),
   };
 };
 

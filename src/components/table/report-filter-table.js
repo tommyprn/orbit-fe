@@ -17,12 +17,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.action.hover,
   },
   // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
+  '&:last-child td, &:last-child th': {},
 }));
 
-const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
+const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) => {
   const customizer = useSelector((state) => state.customizer);
 
   const tableTitle = {
@@ -36,14 +34,13 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
     <Paper
       sx={{
         maxWidth: '100%',
-        overflow: 'hidden',
+        overflowY: 'hidden',
       }}
       elevation={0}
       variant="outlined"
     >
       <TableContainer
         sx={{
-          maxHeight: '350px',
           maxWidth: customizer.isCollapse
             ? `calc(100vw - 202px)`
             : window.innerWidth > 1199
@@ -56,10 +53,10 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
         <Table size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell rowSpan={3} sx={{ borderRight: '1px solid #e5eaef' }}>
-                Kategori Jenis Kejadian
+              <TableCell rowSpan={4} sx={{ borderRight: '1px solid #e5eaef' }}>
+                {selectedCase.charAt(0).toUpperCase() + selectedCase.slice(1)} Kejadian
               </TableCell>
-              <TableCell colSpan={subHeader?.length * 2} align="center">
+              <TableCell colSpan={subHeader?.length * 4} align="center">
                 {tableTitle[title]}
               </TableCell>
             </TableRow>
@@ -68,7 +65,7 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
                 return (
                   <TableCell
                     key={i}
-                    colSpan={2}
+                    colSpan={4}
                     align="center"
                     sx={{ border: '1px solid #e5eaef' }}
                   >
@@ -81,12 +78,37 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
               {subHeader?.map((item, i) => {
                 return (
                   <Fragment key={i}>
-                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                    <TableCell
+                      rowSpan={2}
+                      sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}
+                    >
                       Frekuensi
                     </TableCell>
 
-                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                    <TableCell
+                      colSpan={3}
+                      sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}
+                    >
                       nominal (Rp)
+                    </TableCell>
+                  </Fragment>
+                );
+              })}
+            </TableRow>
+            <TableRow>
+              {subHeader?.map((item, i) => {
+                return (
+                  <Fragment key={i}>
+                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                      Recovery
+                    </TableCell>
+
+                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                      Potential
+                    </TableCell>
+
+                    <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
+                      Gross loss
                     </TableCell>
                   </Fragment>
                 );
@@ -96,20 +118,23 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader }) => {
           <TableBody>
             {data?.map((row, index) => {
               return (
-                <StyledTableRow
-                  key={index}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell>{row.label}</TableCell>
+                <StyledTableRow key={index}>
+                  <TableCell sx={{ textWrap: 'noWrap' }}>{row.label}</TableCell>
 
                   {row.frekuensi?.map((item, i) => {
                     return (
                       <Fragment key={i}>
-                        <TableCell sx={{ textAlign: 'center' }}>
+                        <TableCell sx={{ textAlign: 'center', borderLeft: '1px solid #e5eaef' }}>
                           {formatNumber(item) || 0}
                         </TableCell>
                         <TableCell sx={{ textAlign: 'right' }}>
-                          {formatNumber(row.nominal[i]) || 0}
+                          {formatNumber(row.recovery[i]) || 0}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          {formatNumber(row.potensiKerugian[i]) || 0}
+                        </TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                          {formatNumber(row.realisasiKerugian[i]) || 0}
                         </TableCell>
                       </Fragment>
                     );

@@ -36,7 +36,7 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
     'Tahun',
     'Divisi/ Cabang',
     'No LED',
-    'Jenis',
+    'Status Kejadian',
     'Tanggal Kejadian',
     'Tanggal Teridentifikasi',
     'Tanggal Lapor',
@@ -47,17 +47,17 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
     'Highlight Kronologis',
     'Kronologis',
     'Rencana Tindakan',
-    'Perkiraan Kerugian (Rp)',
+    'Potensi Kerugian (Rp)',
     'Recovery (Rp)',
-    'Realisasi Kerugian (Rp gross)',
-    'Net loss (Rp)',
+    'Gross Loss (Rp)',
+    'Net Loss (Rp)',
     'Status LED',
     'Target Date',
     'Sumber Recovery',
-    'Status Approval',
+    'Status Otorisasi',
     'Catatan',
     'Nama PIC/ Email',
-    'Action Plan',
+    'Tindak Lanjut',
     'Status Akhir',
   ];
 
@@ -135,28 +135,32 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
                 </TableCell>
                 <TableCell>{dayjs(row.createdDate, 'DD-MM-YYYY').get('year')}</TableCell>
                 <TableCell>
-                  {row.unitKerja.namaUnitKerja === 'CABANG'
-                    ? row.cabang.namaCabang
-                    : row.unitKerja.namaUnitKerja}
+                  {row?.unitKerja?.namaUnitKerja === 'CABANG'
+                    ? row.cabang?.namaCabang
+                    : row?.unitKerja?.namaUnitKerja}
                 </TableCell>
                 <TableCell>{row.idLaporan}</TableCell>
                 <TableCell>{row.statusKejadian.nama}</TableCell>
-                <TableCell>{dayjs(row.tglKejadian).format('DD - MMM - YYYY')}</TableCell>
-                <TableCell>{dayjs(row.tglIdentifikasi).format('DD - MMM - YYYY')}</TableCell>
-                <TableCell>{dayjs(row.tglLapor).format('DD - MMM - YYYY')}</TableCell>
-                <TableCell>{row.penyebabKejadian.nama}</TableCell>
-                <TableCell>{row.aktivitas.subKategori.kategoriKejadian.nama}</TableCell>
-                <TableCell>{row.aktivitas.subKategori.nama}</TableCell>
-                <TableCell>{row.aktivitas.nama}</TableCell>
-                <TableCell>{row.kronologiSingkat}</TableCell>
+                <TableCell>{dayjs(row.tanggalKejadian).format('DD - MMM - YYYY')}</TableCell>
+                <TableCell>{dayjs(row.tanggalIdentifikasi).format('DD - MMM - YYYY')}</TableCell>
+                <TableCell>{dayjs(row.tanggalLapor).format('DD - MMM - YYYY')}</TableCell>
+                <TableCell>{row.penyebabKejadian?.nama}</TableCell>
+                <TableCell>{row.aktivitas?.subKategori?.kategoriKejadian.nama}</TableCell>
+                <TableCell>{row.aktivitas?.subKategori?.nama}</TableCell>
+                <TableCell>{row.aktivitas?.nama}</TableCell>
+                <TableCell>
+                  <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
+                    {row.kronologiSingkat}
+                  </Typography>
+                </TableCell>
                 <TableCell>
                   <Typography
-                    sx={{ fontSize: '12px' }}
+                    sx={{ fontSize: '12px', maxWidth: '200px' }}
+                    noWrap
                     dangerouslySetInnerHTML={{ __html: row?.kronologi }}
                   />
                 </TableCell>
                 <TableCell>
-                  {' '}
                   <Typography
                     sx={{ fontSize: '12px' }}
                     dangerouslySetInnerHTML={{ __html: row?.tindakLanjut }}
@@ -176,20 +180,34 @@ const DetailedReportTable = ({ data, title, endDate, startDate, setEndDate, setS
                 </TableCell>
                 <TableCell>{row.statusLaporan.nama}</TableCell>
                 <TableCell>
-                  {dayjs(row.actionPlan[row.actionPlan.length - 1].targetPenyelesaian).format(
+                  {dayjs(row.actionPlan[row.actionPlan?.length - 1].targetPenyelesaian).format(
                     'DD - MMM - YYYY',
                   )}
                 </TableCell>
                 <TableCell>{row?.sumberRecovery}</TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
                 <TableCell>
-                  {row.unitKerja.namaUnitKerja === 'CABANG'
-                    ? row.cabang.emailPic
-                    : row.unitKerja.emailPic}
+                  {row.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
                 </TableCell>
-                <TableCell>-</TableCell>
-                <TableCell>-</TableCell>
+                <TableCell>
+                  <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
+                    {row.catatan}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  {row.unitKerja?.namaUnitKerja === 'CABANG'
+                    ? row.cabang.emailPic
+                    : row.unitKerja?.emailPic}
+                </TableCell>
+                <TableCell>
+                  <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
+                    {row.actionPlan[row.actionPlan?.length - 1].actionPlan}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  {row.statusLaporan.nama === 'Void' || row.statusLaporan.nama === 'Closed'
+                    ? row.statusLaporan.nama
+                    : '-'}
+                </TableCell>
               </StyledTableRow>
             ))}
           </TableBody>
