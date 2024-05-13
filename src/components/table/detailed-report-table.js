@@ -210,7 +210,6 @@ const DetailedReportTable = ({
           overflowY: 'hidden',
           border: '1px solid #e5eaef',
           borderRadius: '8px',
-          maxHeight: '350px',
           maxWidth: customizer.isCollapse
             ? `calc(100vw - 202px)`
             : window.innerWidth > 1199

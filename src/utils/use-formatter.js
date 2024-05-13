@@ -9,15 +9,7 @@ export const formatNumber = (value) => {
 };
 
 export const formatText = (data) => {
-  return data
-    .replace('<p>', '')
-    .replace('</p>', '')
-    .replace('<strong>', '')
-    .replace('</strong>', '')
-    .replace('<em>', '')
-    .replace('</em>', '')
-    .replace('<u>', '')
-    .replace('</u>', '');
+  return data.replace(/(<([^>]+)>)/gi, '');
 };
 
 export const formatDate = (value) => {

@@ -48,6 +48,17 @@ const TopIssueReport = (props) => {
     'Status',
   ];
 
+  const getNetLoss = (data) => {
+    return data
+      .map((item) => {
+        return {
+          ...item,
+          netLoss: item.nominalRealisasiKerugian - item.nominalRecovery,
+        };
+      })
+      .sort((a, b) => b.netLoss - a.netLoss);
+  };
+
   return (
     <PageContainer title="top issue" description="top issue Page">
       <DashboardCard>
@@ -64,7 +75,7 @@ const TopIssueReport = (props) => {
 
       <DashboardCard>
         <TopIssueTable
-          data={report.actualLoss}
+          data={getNetLoss(report.actualLoss)}
           title="Top 5 kejadian berdasarkan nominal kerugian aktual"
           header={actualHeader}
           setValue={setActualMonth}
