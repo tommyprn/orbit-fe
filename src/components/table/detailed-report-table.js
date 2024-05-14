@@ -60,12 +60,9 @@ const DetailedReportTable = ({
     'Gross Loss (Rp)',
     'Net Loss (Rp)',
     'Status LED',
-    'Target Date',
     'Sumber Recovery',
     'Status Otorisasi',
     'Catatan',
-    'Nama PIC/ Email',
-    'Tindak Lanjut',
     'Status Akhir',
   ];
 
@@ -176,6 +173,8 @@ const DetailedReportTable = ({
     </Workbook>
   );
 
+  console.log(data);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Typography variant="h4">{title}</Typography>
@@ -285,11 +284,7 @@ const DetailedReportTable = ({
                   {formatNumber(row?.nominalRealisasiKerugian - row?.nominalRecovery)}
                 </TableCell>
                 <TableCell>{row.statusLaporan.nama}</TableCell>
-                <TableCell>
-                  {dayjs(row.actionPlan[row.actionPlan?.length - 1].targetPenyelesaian).format(
-                    'DD - MMM - YYYY',
-                  )}
-                </TableCell>
+
                 <TableCell>{row?.sumberRecovery}</TableCell>
                 <TableCell>
                   {row.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
@@ -299,16 +294,7 @@ const DetailedReportTable = ({
                     {row.catatan}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  {row.unitKerja?.namaUnitKerja === 'CABANG'
-                    ? row.cabang.emailPic
-                    : row.unitKerja?.emailPic}
-                </TableCell>
-                <TableCell>
-                  <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
-                    {row.actionPlan[row.actionPlan?.length - 1].actionPlan}
-                  </Typography>
-                </TableCell>
+
                 <TableCell>
                   {row.statusLaporan.nama === 'Void' || row.statusLaporan.nama === 'Closed'
                     ? row.statusLaporan.nama

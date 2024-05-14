@@ -145,7 +145,9 @@ const LedReport = (props) => {
                   }
                 }}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => <TextField {...params} label="filter cabang" />}
+                renderInput={(params) => (
+                  <TextField {...params} label={!isRegion ? 'filter cabang' : 'filter region'} />
+                )}
               />
               <Autocomplete
                 sx={{ width: '200px' }}

@@ -7,7 +7,7 @@ import { getAllDatabaseReport, getAllActionPlanReport } from 'src/actions/report
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import DetailedReportTable from 'src/components/table/detailed-report-table';
-import ActionPlanReportTable from 'src/components/table/action-plan-report-table';
+// import ActionPlanReportTable from 'src/components/table/action-plan-report-table';
 
 import './report.css';
 
