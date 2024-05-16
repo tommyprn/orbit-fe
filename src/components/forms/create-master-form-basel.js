@@ -5,6 +5,7 @@ import { Button, TextField, Autocomplete } from '@mui/material';
 
 const CreateMasterFormBasel = ({
   options,
+  levelOne,
   levelThree,
   masterTitle,
   onSaveHandler,
@@ -13,6 +14,10 @@ const CreateMasterFormBasel = ({
   const [value, setValue] = useState({ id: 0, label: '' });
 
   // yup validation
+  const validationLevelOneSchema = yup.object({
+    name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
+    code: yup.string(`masukkan kode`).required(`kode wajib diisi`).max(3),
+  });
   const validationLevelTwoSchema = yup.object({
     name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
     idLevelOne: yup.number(`masukkan kategori`).required(`kategori wajib diisi`),
@@ -22,6 +27,16 @@ const CreateMasterFormBasel = ({
     idLevelTwo: yup.number(`masukkan sub kategori`).required(`sub kategori wajib diisi`),
   });
 
+  const formikLevelOne = useFormik({
+    initialValues: {
+      name: '',
+      code: '',
+    },
+    validationSchema: validationLevelOneSchema,
+    onSubmit: (values) => {
+      onSaveHandler(values);
+    },
+  });
   const formikLevelTwo = useFormik({
     initialValues: {
       name: '',
@@ -50,6 +65,48 @@ const CreateMasterFormBasel = ({
       label: levelThree ? `${item.nama} - ${item.kategoriKejadian.nama}` : item.nama,
     };
   });
+
+  const category = (
+    <form
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      onSubmit={formikLevelOne.handleSubmit}
+    >
+      <TextField
+        sx={{ width: '100%' }}
+        id="code"
+        label={`Kode ${masterTitle} baru`}
+        variant="outlined"
+        required
+        value={formikLevelOne.values.code}
+        error={formikLevelOne.touched.code && Boolean(formikLevelOne.errors.code)}
+        onBlur={formikLevelOne.handleBlur}
+        onChange={formikLevelOne.handleChange}
+        helperText={formikLevelOne.touched.code && formikLevelOne.errors.code}
+      />
+
+      <TextField
+        sx={{ width: '100%' }}
+        id="name"
+        label={`Nama ${masterTitle} baru`}
+        variant="outlined"
+        required
+        value={formikLevelOne.values.name}
+        error={formikLevelOne.touched.name && Boolean(formikLevelOne.errors.name)}
+        onBlur={formikLevelOne.handleBlur}
+        onChange={formikLevelOne.handleChange}
+        helperText={formikLevelOne.touched.name && formikLevelOne.errors.name}
+      />
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+        <Button variant="contained" color="error" onClick={onCloseHandler}>
+          Batal
+        </Button>
+        <Button variant="contained" type="submit">
+          Simpan
+        </Button>
+      </div>
+    </form>
+  );
 
   const subCategory = (
     <form
@@ -163,7 +220,7 @@ const CreateMasterFormBasel = ({
     </form>
   );
 
-  return levelThree ? activity : subCategory;
+  return levelOne ? category : levelThree ? activity : subCategory;
 };
 
 export default CreateMasterFormBasel;

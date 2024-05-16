@@ -14,6 +14,7 @@ import {
 const EditMasterFormBasel = ({
   options,
   selected,
+  levelOne,
   levelThree,
   masterTitle,
   onSaveHandler,
@@ -27,6 +28,10 @@ const EditMasterFormBasel = ({
   });
 
   // yup validation
+  const validationLevelOneSchema = yup.object({
+    name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
+    code: yup.string(`masukkan kode`).required(`kode wajib diisi`).max(3),
+  });
   const validationLevelTwoSchema = yup.object({
     name: yup.string(`masukkan nama ${masterTitle}`).required(`Nama ${masterTitle} wajib diisi`),
     isEnable: yup.boolean('harap memilih salah satu status'),
@@ -38,6 +43,17 @@ const EditMasterFormBasel = ({
     idLevelTwo: yup.number(`masukkan nama ${masterTitle}`).required(`Sub kategori wajib diisi`),
   });
 
+  const formikLevelOne = useFormik({
+    initialValues: {
+      code: selected.code,
+      name: selected.name,
+      isEnable: selected?.isEnable,
+    },
+    validationSchema: validationLevelOneSchema,
+    onSubmit: (values) => {
+      onSaveHandler(values);
+    },
+  });
   const formikLevelTwo = useFormik({
     initialValues: {
       name: selected.nama,
@@ -49,7 +65,6 @@ const EditMasterFormBasel = ({
       onSaveHandler(values);
     },
   });
-
   const formikLevelThree = useFormik({
     initialValues: {
       name: selected.nama,
@@ -62,7 +77,7 @@ const EditMasterFormBasel = ({
     },
   });
 
-  const newOption = options.data.map((item) => {
+  const newOption = options?.data?.map((item) => {
     if (levelThree) {
       return {
         id: item.id,
@@ -72,6 +87,64 @@ const EditMasterFormBasel = ({
       return { id: item.id, label: item.nama };
     }
   });
+
+  const category = (
+    <form
+      style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+      onSubmit={formikLevelOne.handleSubmit}
+    >
+      <TextField
+        sx={{ width: '100%' }}
+        id="code"
+        label={`kode ${masterTitle}`}
+        variant="outlined"
+        required
+        value={formikLevelOne.values.code}
+        error={formikLevelOne.touched.code && Boolean(formikLevelOne.errors.code)}
+        onBlur={formikLevelOne.handleBlur}
+        onChange={formikLevelOne.handleChange}
+        helperText={formikLevelOne.touched.code && formikLevelOne.errors.code}
+      />
+
+      <TextField
+        sx={{ width: '100%' }}
+        id="name"
+        label={`nama ${masterTitle}`}
+        variant="outlined"
+        required
+        value={formikLevelOne.values.name}
+        error={formikLevelOne.touched.name && Boolean(formikLevelOne.errors.name)}
+        onBlur={formikLevelOne.handleBlur}
+        onChange={formikLevelOne.handleChange}
+        helperText={formikLevelOne.touched.name && formikLevelOne.errors.name}
+      />
+
+      <div>
+        <Typography>Status {masterTitle}</Typography>
+        <RadioGroup
+          id="isEnable"
+          value={formikLevelOne.values.isEnable}
+          onChange={(e, value) => {
+            value === 'true'
+              ? formikLevelOne.setFieldValue('isEnable', true)
+              : formikLevelOne.setFieldValue('isEnable', false);
+          }}
+          sx={{ flexDirection: 'row' }}
+        >
+          <FormControlLabel value={true} control={<Radio />} label="Aktif" />
+          <FormControlLabel value={false} control={<Radio />} label="Non-Aktif" />
+        </RadioGroup>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+        <Button variant="contained" color="error" onClick={onCloseHandler}>
+          Batal
+        </Button>
+        <Button variant="contained" type="submit">
+          Simpan
+        </Button>
+      </div>
+    </form>
+  );
 
   const subCategory = (
     <form
@@ -218,7 +291,7 @@ const EditMasterFormBasel = ({
     </form>
   );
 
-  return levelThree ? activity : subCategory;
+  return levelOne ? category : levelThree ? activity : subCategory;
 };
 
 export default EditMasterFormBasel;

@@ -13,8 +13,8 @@ import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
 import CaseMasterTable from 'src/components/table/CaseMasterTable';
-import EditMasterFormName from 'src/components/forms/edit-master-form-name';
-import CreateMasterFormName from 'src/components/forms/create-master-form-name';
+import EditMasterFormBasel from 'src/components/forms/edit-master-form-basel';
+import CreateMasterFormBasel from 'src/components/forms/create-master-form-basel';
 
 const LevelOne = (props) => {
   const { masterData, getLevelOne, updateLevelOne, createLevelOne, deleteLevelOne } = props;
@@ -48,8 +48,7 @@ const LevelOne = (props) => {
     setCreateModalOpen(true);
   };
   const onCreateSave = async (data) => {
-    const dataToSend = { name: data.name };
-    await createLevelOne(dataToSend);
+    await createLevelOne(data);
     setCreateModalOpen(false);
   };
 
@@ -57,13 +56,19 @@ const LevelOne = (props) => {
   const onEditHandler = (item) => {
     setSelecetedCase({
       id: item.id,
+      code: item.kode,
       name: item.nama,
       isEnable: item.isEnable,
     });
     setEditModalOpen(true);
   };
   const onEditSave = async (data) => {
-    const dataToSend = { id: selectedCase.id, name: data.name, isEnable: data.isEnable };
+    const dataToSend = {
+      id: selectedCase.id,
+      code: data.code,
+      name: data.name,
+      isEnable: data.isEnable,
+    };
     await updateLevelOne(dataToSend);
     setEditModalOpen(false);
   };
@@ -116,7 +121,8 @@ const LevelOne = (props) => {
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
-        <CreateMasterFormName
+        <CreateMasterFormBasel
+          levelOne
           masterTitle="kategori kejadian"
           onSaveHandler={onCreateSave}
           onCloseHandler={onCloseHandler}
@@ -128,9 +134,10 @@ const LevelOne = (props) => {
         isOpen={editModalOpen}
         onCloseHandler={onCloseHandler}
       >
-        <EditMasterFormName
-          masterTitle="kategori kejadian"
+        <EditMasterFormBasel
+          levelOne
           selected={selectedCase}
+          masterTitle="kategori kejadian"
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
         />

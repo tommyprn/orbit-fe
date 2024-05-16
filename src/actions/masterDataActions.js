@@ -431,6 +431,7 @@ export const updateLevelOne = (payload) => {
 
     const requestBody = {
       id: payload.id,
+      kode: payload.code,
       nama: payload.name,
       isEnable: payload.isEnable,
     };
@@ -492,6 +493,7 @@ export const createLevelOne = (payload) => {
     dispatch(fetchLevelOneStart());
 
     const requestBody = {
+      kode: payload.code,
       nama: payload.name,
     };
 
