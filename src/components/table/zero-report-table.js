@@ -12,6 +12,7 @@ import {
   Typography,
   TableContainer,
 } from '@mui/material';
+import { getMonth } from 'src/utils/get-dropdown-data';
 import { IconDownload } from '@tabler/icons';
 import { useDownloadExcel } from 'react-export-table-to-excel';
 
@@ -25,7 +26,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const ZeroReportTable = ({ data, title, isFinished }) => {
+const ZeroReportTable = ({ data, title, isFinished, selectedMonth }) => {
   const tableRef = useRef(null);
 
   const { onDownload } = useDownloadExcel({
@@ -57,6 +58,11 @@ const ZeroReportTable = ({ data, title, isFinished }) => {
         <TableContainer className="table-filter" ref={tableRef}>
           <Table size="small" aria-label="a dense table">
             <TableHead>
+              <TableRow>
+                <TableCell colSpan={4} sx={{ textAlign: 'center', display: 'none' }}>
+                  {getMonth[selectedMonth]}
+                </TableCell>
+              </TableRow>
               <TableRow>
                 <TableCell>No</TableCell>
                 <TableCell>Region/ Direktorat</TableCell>

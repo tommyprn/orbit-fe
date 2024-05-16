@@ -119,14 +119,20 @@ export const CaseMasterTable = ({
                 </td>
                 <td style={{ width: '25%' }}>
                   <Typography>
-                    {ssl ? item?.kode : item?.nama || item?.id_divisi || item.kodeUnitKerja}
+                    {ssl
+                      ? item?.kode
+                      : item?.nama || item?.id_divisi || item.kodeUnitKerja || item.kodeRegion}
                   </Typography>
                 </td>
                 <td style={{ width: '50%' }}>
                   <Typography>
                     {ssl
                       ? item.nama
-                      : item.deskripsi || item.divisi || item.namaUnitKerja || item.kode}
+                      : item.deskripsi ||
+                        item.divisi ||
+                        item.namaUnitKerja ||
+                        item.kode ||
+                        item.namaRegion}
                   </Typography>
                 </td>
 

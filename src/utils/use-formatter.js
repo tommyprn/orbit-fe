@@ -15,3 +15,7 @@ export const formatText = (data) => {
 export const formatDate = (value) => {
   return dayjs(value).format('DD MMMM YYYY');
 };
+
+export const roundDecimal = (value) => {
+  return Math.round(value * 1000) / 1000;
+};

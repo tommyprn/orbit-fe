@@ -82,10 +82,22 @@ const menuDev = [
         href: '/master/cost-centre',
       },
       {
+        id: '231',
+        title: 'Direktorat',
+        icon: 'IconPoint',
+        href: '/master/directorate',
+      },
+      {
         id: '227',
         title: 'Unit kerja',
         icon: 'IconPoint',
         href: '/master/work-unit',
+      },
+      {
+        id: '230',
+        title: 'Region',
+        icon: 'IconPoint',
+        href: '/master/region',
       },
       {
         id: '228',
@@ -265,7 +277,7 @@ const Dashboard = (props) => {
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
-  const [history, setHistory] = useState({});
+  const [history, setHistory] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   if (process.env.REACT_APP_DEPLOY_STATE === 'false') {

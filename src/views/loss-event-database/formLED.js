@@ -592,6 +592,18 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
+                  Nett loss
+                  <br />
+                  (Nominal realisasi - recovery)
+                </Typography>
+
+                <Typography variant="body1" sx={{ width: '80%', paddingLeft: '16px' }}>
+                  Rp. {formatNumber(formik.values.actualLoss - formik.values.recoveryAmount)}
+                </Typography>
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
                   Cost Centre
                 </Typography>
 

@@ -39,15 +39,15 @@ const BarChart = ({ data, label, title, period, filter }) => {
         fill: false,
         label: 'Frekuensi kejadian',
         order: 0,
-        borderColor: '#FFB1C1',
-        backgroundColor: '#FF6384',
+        borderColor: '#9070a9',
+        backgroundColor: '#4a116f',
         yAxisID: 'frekuensi',
       },
       {
         data: chartValue(getSeries(data, filter)?.realisasiKerugian, period, true),
         label: 'Rata-rata nominal kerugian 1 tahun terakhir (Rp Juta)',
         order: 1,
-        backgroundColor: '#9BD0F5',
+        backgroundColor: '#6ec338',
         yAxisID: 'nominal',
       },
     ],
@@ -65,6 +65,7 @@ const BarChart = ({ data, label, title, period, filter }) => {
         padding: 30,
       },
       datalabels: {
+        color: 'black',
         font: {
           weight: 'bold',
         },
@@ -75,16 +76,16 @@ const BarChart = ({ data, label, title, period, filter }) => {
     scales: {
       nominal: {
         type: 'linear',
-        display: true,
-        position: 'left',
+        display: false,
+        // position: 'left',
       },
       frekuensi: {
         type: 'linear',
-        display: true,
-        position: 'right',
-        grid: {
-          drawOnChartArea: false,
-        },
+        display: false,
+        // position: 'right',
+        // grid: {
+        //   drawOnChartArea: false,
+        // },
       },
     },
   };

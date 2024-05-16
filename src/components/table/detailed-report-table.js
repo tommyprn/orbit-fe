@@ -173,8 +173,6 @@ const DetailedReportTable = ({
     </Workbook>
   );
 
-  console.log(data);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Typography variant="h4">{title}</Typography>
@@ -287,14 +285,13 @@ const DetailedReportTable = ({
 
                 <TableCell>{row?.sumberRecovery}</TableCell>
                 <TableCell>
-                  {row.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
+                  {row.statusLaporan.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
                 </TableCell>
                 <TableCell>
                   <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
                     {row.catatan}
                   </Typography>
                 </TableCell>
-
                 <TableCell>
                   {row.statusLaporan.nama === 'Void' || row.statusLaporan.nama === 'Closed'
                     ? row.statusLaporan.nama

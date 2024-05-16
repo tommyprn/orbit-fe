@@ -11,6 +11,7 @@ import {
   Card,
   Table,
   Paper,
+  styled,
   Button,
   Divider,
   Checkbox,
@@ -47,6 +48,19 @@ const BCrumb = [
     title: 'Mohon pastikan data yang telah anda ubah terisi dengan benar',
   },
 ];
+
+const GroupHeader = styled('div')(({ theme }) => ({
+  position: 'sticky',
+  top: '-8px',
+  padding: '4px 8px',
+  color: theme.palette.primary.main,
+  backgroundColor: theme.palette.primary.light,
+}));
+
+const GroupItems = styled('ul')({
+  padding: '0',
+  backgroundColor: '#ffffff',
+});
 
 const EditFormLED = (props) => {
   const user = JSON.parse(secureLocalStorage.getItem('history'));
@@ -421,6 +435,14 @@ const EditFormLED = (props) => {
                 placeholder="pilih kategori"
               />
             )}
+            renderGroup={(params) => {
+              return (
+                <li key={params.key}>
+                  <GroupHeader>{params.group}</GroupHeader>
+                  <GroupItems>{params.children}</GroupItems>
+                </li>
+              );
+            }}
           />
         </div>
 
@@ -541,6 +563,18 @@ const EditFormLED = (props) => {
             }}
             placeholder="nominal kerugian aktual"
           />
+        </div>
+
+        <div className="form-input-wrapper">
+          <Typography variant="body1" sx={{ width: '20%' }}>
+            Nett loss
+            <br />
+            (Nominal realisasi - recovery)
+          </Typography>
+
+          <Typography variant="body1" sx={{ width: '80%', paddingLeft: '16px' }}>
+            Rp. {formatNumber(formik.values.actualLoss - formik.values.recoveryAmount)}
+          </Typography>
         </div>
 
         <div className="form-input-wrapper">

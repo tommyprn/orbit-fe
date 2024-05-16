@@ -57,6 +57,7 @@ const OfficeReport = (props) => {
               data={report?.zeroReport?.melapor}
               title="Sudah melapor"
               message="Belum ada KCU / unit kerja yang membuat laporan"
+              selectedMonth={monthFilter}
               isFinished
             />
 
@@ -64,6 +65,7 @@ const OfficeReport = (props) => {
               data={report?.zeroReport?.belumMelapor}
               title="Belum melapor"
               message="Seluruh KCU & unit kerja sudah mengumpulkan laporan"
+              selectedMonth={monthFilter}
             />
           </div>
         </Card>

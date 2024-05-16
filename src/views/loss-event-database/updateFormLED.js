@@ -345,6 +345,15 @@ const UpdateFormLED = (props) => {
                   />
                 </div>
               )}
+
+              <DetailWrapper
+                title="Nett loss"
+                content={`Rp. ${formatNumber(
+                  dataLaporan?.nominalRealisasiKerugian - dataLaporan?.nominalRecovery ||
+                    formik.values.actualLoss - formik.values.recoveryAmount,
+                )}`}
+              />
+
               <DetailWrapper
                 title="Cost Centre"
                 content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}

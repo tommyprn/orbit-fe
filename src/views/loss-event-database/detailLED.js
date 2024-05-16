@@ -282,6 +282,13 @@ const DetailLED = (props) => {
               />
 
               <DetailWrapper
+                title="Nett loss"
+                content={`Rp. ${formatNumber(
+                  dataLaporan?.nominalRealisasiKerugian - dataLaporan?.nominalRecovery,
+                )}`}
+              />
+
+              <DetailWrapper
                 title="Cost Centre"
                 content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}
               />

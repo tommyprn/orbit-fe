@@ -20,7 +20,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:last-child td, &:last-child th': {},
 }));
 
-const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) => {
+const ReportFilterTable = ({ data, title, tableRef, isDownload, subHeader, selectedCase }) => {
   const customizer = useSelector((state) => state.customizer);
 
   const tableTitle = {
@@ -65,7 +65,7 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) =
                 return (
                   <TableCell
                     key={i}
-                    colSpan={4}
+                    colSpan={isDownload ? 5 : 4}
                     align="center"
                     sx={{ border: '1px solid #e5eaef' }}
                   >
@@ -86,7 +86,7 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) =
                     </TableCell>
 
                     <TableCell
-                      colSpan={3}
+                      colSpan={isDownload ? 4 : 3}
                       sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}
                     >
                       nominal (Rp)
@@ -110,6 +110,8 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) =
                     <TableCell sx={{ border: '1px solid #e5eaef', textAlign: 'center' }}>
                       Gross loss
                     </TableCell>
+
+                    <TableCell sx={{ display: 'none' }}>Nett loss</TableCell>
                   </Fragment>
                 );
               })}
@@ -135,6 +137,9 @@ const ReportFilterTable = ({ data, title, tableRef, subHeader, selectedCase }) =
                         </TableCell>
                         <TableCell sx={{ textAlign: 'right' }}>
                           {formatNumber(row.realisasiKerugian[i]) || 0}
+                        </TableCell>
+                        <TableCell sx={{ display: 'none' }}>
+                          {formatNumber(row.realisasiKerugian[i] - row.recovery[i]) || 0}
                         </TableCell>
                       </Fragment>
                     );

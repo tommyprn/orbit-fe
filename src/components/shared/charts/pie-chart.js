@@ -1,5 +1,5 @@
 import { Pie } from 'react-chartjs-2';
-import { formatNumber } from 'src/utils/use-formatter';
+import { formatNumber, roundDecimal } from 'src/utils/use-formatter';
 import { Title, Legend, Tooltip, ArcElement, Chart as ChartJS } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
@@ -11,23 +11,16 @@ const PieChart = ({ data, title, chosenMonth }) => {
   const nominal = data
     ?.filter((item) => item.label.toLowerCase() !== 'grand total')
     .map((item) => item.realisasiKerugian[chosenMonth - 1]);
+  const total = data.find((item) => item.label.toLowerCase() === 'grand total')?.realisasiKerugian[
+    chosenMonth - 1
+  ];
 
   const generateData = {
     labels: label,
-    // labels: [
-    //   'Kecurangan Intern (Internal Fraud)',
-    //   'Kecurangan Ekstern (Exsternal Fraud)',
-    //   'Employment Practices and workplace safety',
-    //   'Clients, Products, and Business Practices',
-    //   'Damage to Physical Assets',
-    //   'Business Disruption and System Failure',
-    //   'Execution, Delivery, and Process Management',
-    // ],
     datasets: [
       {
         data: nominal,
-        // data: [10, 13, 19, 21, 52, 34, 21],
-        label: 'Frekuensi kejadian',
+        label: 'Nominal kerugian',
         backgroundColor: [
           'rgba(255, 99, 132)',
           'rgba(54, 162, 235)',
@@ -51,16 +44,17 @@ const PieChart = ({ data, title, chosenMonth }) => {
         padding: 30,
       },
       legend: {
-        display: false,
+        display: true,
+        position: 'right',
       },
       datalabels: {
         formatter: (val, ctx) => {
           if (val !== null && val !== 0) {
             return (
-              ctx.chart.data.labels[ctx.dataIndex] +
-              ': ' +
-              formatNumber(Math.round((val / 1000000) * 1000) / 1000)
+              formatNumber(roundDecimal(val / 1000000)) + ` [${roundDecimal((val / total) * 100)}%]`
             );
+          } else {
+            return null;
           }
         },
         font: {

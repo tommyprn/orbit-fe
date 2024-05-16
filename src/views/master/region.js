@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, Typography } from '@mui/material';
-import { getBranch, updateBranch, deleteBranch, createBranch } from 'src/actions/masterDataActions';
+import { getRegion, createRegion, updateRegion, deleteRegion } from 'src/actions/masterDataActions';
 
 // component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
-import WorkUnitTable from 'src/components/table/workUnitTable';
-import EditWorkUnitForm from 'src/components/forms/edit-work-unit-form';
-import CreateWorkUnitForm from 'src/components/forms/create-work-unit-form';
+import EditMasterForm from 'src/components/forms/edit-master-form';
+import CaseMasterTable from 'src/components/table/CaseMasterTable';
+import CreateMasterForm from 'src/components/forms/create-master-form';
 
-const Branch = (props) => {
-  const { masterData, getBranch, updateBranch, deleteBranch, createBranch } = props;
+const Region = (props) => {
+  const { getRegion, createRegion, updateRegion, deleteRegion, masterData } = props;
   const [keyword, setKeyword] = useState('');
   const [rowPerPage, setRowPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteMOdalOpen] = useState(false);
-  const [selectedUnit, setSelecetedUnit] = useState({
+  const [selectedReg, setSelecetedReg] = useState({
     id: 0,
-    pic: '',
-    code: '',
     name: '',
-    email: '',
     isEnable: true,
   });
 
-  const header = ['No', 'Kode cabang', 'Nama cabang', 'PIC', 'Approver', 'Upper Level', 'Aksi'];
+  const header = ['No', 'Kode Region', 'Nama Region', 'Aksi'];
 
   const BCrumb = [
     {
@@ -38,66 +35,58 @@ const Branch = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getBranch({ perPage: rowPerPage, page: currentPage }, keyword);
+      await getRegion({ perPage: rowPerPage, page: currentPage }, keyword);
     })();
-  }, [rowPerPage, currentPage, keyword]);
+  }, [getRegion, rowPerPage, currentPage, keyword]);
 
   // Create Controller
   const onCreateHandler = () => {
     setCreateModalOpen(true);
   };
   const onCreateSave = async (data) => {
-    await createBranch(data);
+    await createRegion(data);
+
     setCreateModalOpen(false);
   };
 
   // Update Controller
   const onEditHandler = (item) => {
-    setSelecetedUnit({
+    setSelecetedReg({
       id: item.id,
-      pic: item.namaPic,
-      code: item.kodeCabang,
-      name: item.namaCabang,
-      email: item.emailPic,
-      parent: item.indukCabang,
+      code: item.kodeRegion,
+      name: item.namaRegion,
       isEnable: item.isEnable,
-      approver: item.namaApproverCabang,
-      emailApprover: item.emailApproverCabang,
-      emailUpperLevel: item.emailUpperCabang,
     });
     setEditModalOpen(true);
   };
   const onEditSave = async (data) => {
     const dataToSend = {
-      id: selectedUnit.id,
-      pic: data.pic,
-      name: data.name,
+      id: selectedReg.id,
       code: data.code,
-      email: data.email,
-      parent: data.parent,
+      name: data.name,
       isEnable: data.isEnable,
-      approver: data.approver,
-      emailApprover: data.emailApprover,
-      emailUpperLevel: data.emailUpperLevel,
     };
-    await updateBranch(dataToSend);
+    await updateRegion(dataToSend);
+
     setEditModalOpen(false);
   };
 
   // Delete Controller
   const onDeleteHandler = (item) => {
-    setSelecetedUnit({
+    setSelecetedReg({
       id: item.id,
+      name: item.namaRegion,
     });
     setDeleteMOdalOpen(true);
   };
   const onConfirmDelete = async () => {
-    const dataToSend = selectedUnit.id;
-    await deleteBranch(dataToSend);
+    const dataToSend = selectedReg.id;
+    await deleteRegion(dataToSend);
     setDeleteMOdalOpen(false);
   };
+
   const onCloseHandler = () => {
-    setSelecetedUnit({});
+    setSelecetedReg({});
     setEditModalOpen(false);
     setCreateModalOpen(false);
     setDeleteMOdalOpen(false);
@@ -108,18 +97,16 @@ const Branch = (props) => {
   };
 
   return (
-    <PageContainer title="Cabang/ Business Lines" description="Branches Page">
-      {process.env.HEADER_SHOW ? (
-        <Breadcrumb title="Cabang/ Business Lines" items={BCrumb} />
-      ) : null}
+    <PageContainer title="Region" description="Region page">
+      {process.env.HEADER_SHOW ? <Breadcrumb title="Region" items={BCrumb} /> : null}
 
-      <WorkUnitTable
-        title="Data Master Cabang/ Business Lines"
-        master={masterData?.branch}
+      <CaseMasterTable
+        title="Data Master Region"
+        master={masterData?.region}
         header={header}
         onSearch={onSearch}
-        onDelete={onDeleteHandler}
         onUpdate={onEditHandler}
+        onDelete={onDeleteHandler}
         onPageChange={(perPage, page) => {
           setRowPerPage(perPage);
           setCurrentPage(page);
@@ -127,32 +114,32 @@ const Branch = (props) => {
         onOpenHandler={onCreateHandler}
       />
 
-      <SimpleModal title="Tambah Cabang" isOpen={createModalOpen} onCloseHandler={onCloseHandler}>
-        <CreateWorkUnitForm
-          workUnit="branch"
-          masterTitle="Cabang"
+      <SimpleModal title="Tambah region" isOpen={createModalOpen} onCloseHandler={onCloseHandler}>
+        <CreateMasterForm
+          ssl={true}
+          masterTitle="Region"
           onSaveHandler={onCreateSave}
           onCloseHandler={onCloseHandler}
         />
       </SimpleModal>
 
-      <SimpleModal title="Ubah Cabang" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
-        <EditWorkUnitForm
-          workUnit="branch"
-          masterTitle="Cabang"
-          selected={selectedUnit}
+      <SimpleModal title="Ubah region" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
+        <EditMasterForm
+          ssl={true}
+          masterTitle="region"
+          selected={selectedReg}
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
         />
       </SimpleModal>
 
       <SimpleModal
-        title="Hapus Cabang"
+        title="Hapus region"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}
       >
-        <Typography>Apakah kamu yakin mau menghapus unit kerja ini?</Typography>
+        <Typography>Apakah kamu yakin mau menghapus region ini?</Typography>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
         >
@@ -176,11 +163,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getBranch: (pagination, keyword) => dispatch(getBranch(pagination, keyword)),
-    updateBranch: (payload) => dispatch(updateBranch(payload)),
-    deleteBranch: (payload) => dispatch(deleteBranch(payload)),
-    createBranch: (payload) => dispatch(createBranch(payload)),
+    getRegion: (pagination, keyword) => dispatch(getRegion(pagination, keyword)),
+    updateRegion: (payload) => dispatch(updateRegion(payload)),
+    deleteRegion: (payload) => dispatch(deleteRegion(payload)),
+    createRegion: (payload) => dispatch(createRegion(payload)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Branch);
+export default connect(mapStateToProps, mapDispatchToProps)(Region);

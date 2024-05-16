@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, Typography } from '@mui/material';
-import { getBranch, updateBranch, deleteBranch, createBranch } from 'src/actions/masterDataActions';
+import {
+  getWorkUnit,
+  updateWorkUnit,
+  deleteWorkUnit,
+  createWorkUnit,
+} from 'src/actions/masterDataActions';
 
 // component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
@@ -11,8 +16,8 @@ import WorkUnitTable from 'src/components/table/workUnitTable';
 import EditWorkUnitForm from 'src/components/forms/edit-work-unit-form';
 import CreateWorkUnitForm from 'src/components/forms/create-work-unit-form';
 
-const Branch = (props) => {
-  const { masterData, getBranch, updateBranch, deleteBranch, createBranch } = props;
+const WorkUnit = (props) => {
+  const { masterData, getWorkUnit, createWorkUnit, updateWorkUnit, deleteWorkUnit } = props;
   const [keyword, setKeyword] = useState('');
   const [rowPerPage, setRowPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
@@ -28,7 +33,15 @@ const Branch = (props) => {
     isEnable: true,
   });
 
-  const header = ['No', 'Kode cabang', 'Nama cabang', 'PIC', 'Approver', 'Upper Level', 'Aksi'];
+  const header = [
+    'No',
+    'Kode Unit Kerja',
+    'Nama Unit Kerja',
+    'PIC',
+    'Approver',
+    'Upper Level',
+    'Aksi',
+  ];
 
   const BCrumb = [
     {
@@ -38,7 +51,7 @@ const Branch = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getBranch({ perPage: rowPerPage, page: currentPage }, keyword);
+      await getWorkUnit({ perPage: rowPerPage, page: currentPage }, keyword);
     })();
   }, [rowPerPage, currentPage, keyword]);
 
@@ -47,23 +60,22 @@ const Branch = (props) => {
     setCreateModalOpen(true);
   };
   const onCreateSave = async (data) => {
-    await createBranch(data);
+    await createWorkUnit(data);
     setCreateModalOpen(false);
   };
 
   // Update Controller
   const onEditHandler = (item) => {
     setSelecetedUnit({
-      id: item.id,
+      id: item.idUnitKerja,
       pic: item.namaPic,
-      code: item.kodeCabang,
-      name: item.namaCabang,
+      code: item.kodeUnitKerja,
+      name: item.namaUnitKerja,
       email: item.emailPic,
-      parent: item.indukCabang,
       isEnable: item.isEnable,
-      approver: item.namaApproverCabang,
-      emailApprover: item.emailApproverCabang,
-      emailUpperLevel: item.emailUpperCabang,
+      approver: item.namaApproverUnit,
+      emailApprover: item.emailApproverUnit,
+      emailUpperLevel: item.emailUpperUnit,
     });
     setEditModalOpen(true);
   };
@@ -74,26 +86,26 @@ const Branch = (props) => {
       name: data.name,
       code: data.code,
       email: data.email,
-      parent: data.parent,
       isEnable: data.isEnable,
       approver: data.approver,
       emailApprover: data.emailApprover,
       emailUpperLevel: data.emailUpperLevel,
     };
-    await updateBranch(dataToSend);
+
+    await updateWorkUnit(dataToSend);
     setEditModalOpen(false);
   };
 
   // Delete Controller
   const onDeleteHandler = (item) => {
     setSelecetedUnit({
-      id: item.id,
+      id: item.idUnitKerja,
     });
     setDeleteMOdalOpen(true);
   };
   const onConfirmDelete = async () => {
     const dataToSend = selectedUnit.id;
-    await deleteBranch(dataToSend);
+    await deleteWorkUnit(dataToSend);
     setDeleteMOdalOpen(false);
   };
   const onCloseHandler = () => {
@@ -108,14 +120,14 @@ const Branch = (props) => {
   };
 
   return (
-    <PageContainer title="Cabang/ Business Lines" description="Branches Page">
+    <PageContainer title="Unit Kerja/ Business Lines" description="Business Lines Page">
       {process.env.HEADER_SHOW ? (
-        <Breadcrumb title="Cabang/ Business Lines" items={BCrumb} />
+        <Breadcrumb title="Unit Kerja/ Business Lines" items={BCrumb} />
       ) : null}
 
       <WorkUnitTable
-        title="Data Master Cabang/ Business Lines"
-        master={masterData?.branch}
+        title="Data Master Unit Kerja/ Business Lines"
+        master={masterData?.workUnit}
         header={header}
         onSearch={onSearch}
         onDelete={onDeleteHandler}
@@ -127,19 +139,23 @@ const Branch = (props) => {
         onOpenHandler={onCreateHandler}
       />
 
-      <SimpleModal title="Tambah Cabang" isOpen={createModalOpen} onCloseHandler={onCloseHandler}>
+      <SimpleModal
+        title="Tambah Unit Kerja"
+        isOpen={createModalOpen}
+        onCloseHandler={onCloseHandler}
+      >
         <CreateWorkUnitForm
-          workUnit="branch"
-          masterTitle="Cabang"
+          workUnit="unit"
+          masterTitle="unit kerja"
           onSaveHandler={onCreateSave}
           onCloseHandler={onCloseHandler}
         />
       </SimpleModal>
 
-      <SimpleModal title="Ubah Cabang" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
+      <SimpleModal title="Ubah Unit Kerja" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
         <EditWorkUnitForm
-          workUnit="branch"
-          masterTitle="Cabang"
+          workUnit="unit"
+          masterTitle="unit kerja"
           selected={selectedUnit}
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
@@ -147,7 +163,7 @@ const Branch = (props) => {
       </SimpleModal>
 
       <SimpleModal
-        title="Hapus Cabang"
+        title="Hapus Unit Kerja"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}
@@ -176,11 +192,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getBranch: (pagination, keyword) => dispatch(getBranch(pagination, keyword)),
-    updateBranch: (payload) => dispatch(updateBranch(payload)),
-    deleteBranch: (payload) => dispatch(deleteBranch(payload)),
-    createBranch: (payload) => dispatch(createBranch(payload)),
+    getWorkUnit: (pagination, keyword) => dispatch(getWorkUnit(pagination, keyword)),
+    updateWorkUnit: (payload) => dispatch(updateWorkUnit(payload)),
+    deleteWorkUnit: (payload) => dispatch(deleteWorkUnit(payload)),
+    createWorkUnit: (payload) => dispatch(createWorkUnit(payload)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Branch);
+export default connect(mapStateToProps, mapDispatchToProps)(WorkUnit);

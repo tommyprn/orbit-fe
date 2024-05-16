@@ -24,14 +24,9 @@ export const fetchReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllLedReport = (selCase, year, fil, isRegion) => {
+export const getAllLedReport = (selCase, year, array, selected) => {
   const queryString = stringify(
-    {
-      tahun: year,
-      cabang: isRegion ? null : fil,
-      region: isRegion ? fil : null,
-      filter: selCase,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -46,10 +41,20 @@ export const getAllLedReport = (selCase, year, fil, isRegion) => {
       Authorization: 'Bearer ac',
     };
 
+    const requestBody = {
+      tahun: year,
+      cabang: selected === 'branch' ? array : null,
+      region: selected === 'region' ? array : null,
+      filter: selCase,
+      unitKerja: selected === 'division' ? array : null,
+      direktorat: selected === 'directorate' ? array : null,
+    };
+
     try {
       const res = await fetch(API_URL + `get-filter?` + queryString, {
-        method: 'GET',
+        method: 'POST',
         headers: requestHeaders,
+        body: JSON.stringify(requestBody),
       });
       const responseJSON = await res.json();
       if (res.status === 200) {

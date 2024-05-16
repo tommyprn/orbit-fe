@@ -2,46 +2,36 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, Typography } from '@mui/material';
 import {
-  getWorkUnit,
-  updateWorkUnit,
-  deleteWorkUnit,
-  createWorkUnit,
+  getDirectorate,
+  createDirectorate,
+  updateDirectorate,
+  deleteDirectorate,
 } from 'src/actions/masterDataActions';
 
 // component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
-import WorkUnitTable from 'src/components/table/workUnitTable';
-import EditMasterForm from 'src/components/forms/edit-master-form';
-import CreateMasterForm from 'src/components/forms/create-master-form';
+import CaseMasterTable from 'src/components/table/CaseMasterTable';
+import EditMasterFormName from 'src/components/forms/edit-master-form-name';
+import CreateMasterFormName from 'src/components/forms/create-master-form-name';
 
-const WorkUnit = (props) => {
-  const { masterData, getWorkUnit, createWorkUnit, updateWorkUnit, deleteWorkUnit } = props;
+const Directorate = (props) => {
+  const { getDirectorate, createDirectorate, updateDirectorate, deleteDirectorate, masterData } =
+    props;
   const [keyword, setKeyword] = useState('');
   const [rowPerPage, setRowPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteMOdalOpen] = useState(false);
-  const [selectedUnit, setSelecetedUnit] = useState({
+  const [selectedDir, setSelecetedDir] = useState({
     id: 0,
-    pic: '',
-    code: '',
     name: '',
-    email: '',
     isEnable: true,
   });
 
-  const header = [
-    'No',
-    'Kode Unit Kerja',
-    'Nama Unit Kerja',
-    'PIC',
-    'Approver',
-    'Upper Level',
-    'Aksi',
-  ];
+  const header = ['No', 'Penyebab', ' ', 'Aksi'];
 
   const BCrumb = [
     {
@@ -51,65 +41,52 @@ const WorkUnit = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getWorkUnit({ perPage: rowPerPage, page: currentPage }, keyword);
+      await getDirectorate({ perPage: rowPerPage, page: currentPage }, keyword);
     })();
-  }, [rowPerPage, currentPage, keyword]);
+  }, [getDirectorate, rowPerPage, currentPage, keyword]);
 
   // Create Controller
   const onCreateHandler = () => {
     setCreateModalOpen(true);
   };
   const onCreateSave = async (data) => {
-    await createWorkUnit(data);
+    await createDirectorate(data.name);
+
     setCreateModalOpen(false);
   };
 
   // Update Controller
   const onEditHandler = (item) => {
-    setSelecetedUnit({
-      id: item.idUnitKerja,
-      pic: item.namaPic,
-      code: item.kodeUnitKerja,
-      name: item.namaUnitKerja,
-      email: item.emailPic,
+    setSelecetedDir({
+      id: item.id,
+      name: item.nama,
       isEnable: item.isEnable,
-      approver: item.namaApproverUnit,
-      emailApprover: item.emailApproverUnit,
-      emailUpperLevel: item.emailUpperUnit,
     });
     setEditModalOpen(true);
   };
   const onEditSave = async (data) => {
-    const dataToSend = {
-      id: selectedUnit.id,
-      pic: data.pic,
-      name: data.name,
-      code: data.code,
-      email: data.email,
-      isEnable: data.isEnable,
-      approver: data.approver,
-      emailApprover: data.emailApprover,
-      emailUpperLevel: data.emailUpperLevel,
-    };
+    const dataToSend = { id: selectedDir.id, name: data.name, isEnable: data.isEnable };
+    await updateDirectorate(dataToSend);
 
-    await updateWorkUnit(dataToSend);
     setEditModalOpen(false);
   };
 
   // Delete Controller
   const onDeleteHandler = (item) => {
-    setSelecetedUnit({
-      id: item.idUnitKerja,
+    setSelecetedDir({
+      id: item.id,
+      name: item.nama,
     });
     setDeleteMOdalOpen(true);
   };
   const onConfirmDelete = async () => {
-    const dataToSend = selectedUnit.id;
-    await deleteWorkUnit(dataToSend);
+    const dataToSend = selectedDir.id;
+    await deleteDirectorate(dataToSend);
     setDeleteMOdalOpen(false);
   };
+
   const onCloseHandler = () => {
-    setSelecetedUnit({});
+    setSelecetedDir({});
     setEditModalOpen(false);
     setCreateModalOpen(false);
     setDeleteMOdalOpen(false);
@@ -120,18 +97,16 @@ const WorkUnit = (props) => {
   };
 
   return (
-    <PageContainer title="Unit Kerja/ Business Lines" description="Business Lines Page">
-      {process.env.HEADER_SHOW ? (
-        <Breadcrumb title="Unit Kerja/ Business Lines" items={BCrumb} />
-      ) : null}
+    <PageContainer title="Direktorat" description="Directorate page">
+      {process.env.HEADER_SHOW ? <Breadcrumb title="Direktorat" items={BCrumb} /> : null}
 
-      <WorkUnitTable
-        title="Data Master Unit Kerja/ Business Lines"
-        master={masterData?.workUnit}
+      <CaseMasterTable
+        title="Data Master Direktorat"
+        master={masterData?.directorate}
         header={header}
         onSearch={onSearch}
-        onDelete={onDeleteHandler}
         onUpdate={onEditHandler}
+        onDelete={onDeleteHandler}
         onPageChange={(perPage, page) => {
           setRowPerPage(perPage);
           setCurrentPage(page);
@@ -140,35 +115,33 @@ const WorkUnit = (props) => {
       />
 
       <SimpleModal
-        title="Tambah Unit Kerja"
+        title="Tambah direktorat"
         isOpen={createModalOpen}
         onCloseHandler={onCloseHandler}
       >
-        <CreateMasterForm
-          workUnit="unit"
-          masterTitle="unit kerja"
+        <CreateMasterFormName
+          masterTitle="Direktorat"
           onSaveHandler={onCreateSave}
           onCloseHandler={onCloseHandler}
         />
       </SimpleModal>
 
-      <SimpleModal title="Ubah Unit Kerja" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
-        <EditMasterForm
-          workUnit="unit"
-          masterTitle="unit kerja"
-          selected={selectedUnit}
+      <SimpleModal title="Ubah direktorat" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
+        <EditMasterFormName
+          masterTitle="direktorat"
+          selected={selectedDir}
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
         />
       </SimpleModal>
 
       <SimpleModal
-        title="Hapus Unit Kerja"
+        title="Hapus direktorat"
         isOpen={deleteModalOpen}
         onSaveHandler={onConfirmDelete}
         onCloseHandler={onCloseHandler}
       >
-        <Typography>Apakah kamu yakin mau menghapus unit kerja ini?</Typography>
+        <Typography>Apakah kamu yakin mau menghapus direktorat ini?</Typography>
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
         >
@@ -192,11 +165,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getWorkUnit: (pagination, keyword) => dispatch(getWorkUnit(pagination, keyword)),
-    updateWorkUnit: (payload) => dispatch(updateWorkUnit(payload)),
-    deleteWorkUnit: (payload) => dispatch(deleteWorkUnit(payload)),
-    createWorkUnit: (payload) => dispatch(createWorkUnit(payload)),
+    getDirectorate: (pagination, keyword) => dispatch(getDirectorate(pagination, keyword)),
+    updateDirectorate: (payload) => dispatch(updateDirectorate(payload)),
+    deleteDirectorate: (payload) => dispatch(deleteDirectorate(payload)),
+    createDirectorate: (payload) => dispatch(createDirectorate(payload)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkUnit);
+export default connect(mapStateToProps, mapDispatchToProps)(Directorate);

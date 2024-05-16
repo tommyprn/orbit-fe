@@ -1447,3 +1447,303 @@ export const createBranch = (payload) => {
     }
   };
 };
+
+//============================== DIRECTORATE =================================
+
+export const FETCH_DIRECTORATE_REQUEST = 'FETCH_DIRECTORATE_REQUEST';
+export const FETCH_DIRECTORATE_SUCCESS = 'FETCH_DIRECTORATE_SUCCESS';
+export const FETCH_DIRECTORATE_FAILURE = 'FETCH_DIRECTORATE_FAILURE';
+
+export const fetchDirectorateStart = () => ({
+  type: FETCH_DIRECTORATE_REQUEST,
+});
+
+export const fetchDirectorateSuccess = (data) => ({
+  type: FETCH_DIRECTORATE_SUCCESS,
+  payload: data,
+});
+
+export const fetchDirectorateFailure = (error) => ({
+  type: FETCH_DIRECTORATE_FAILURE,
+  payload: error,
+});
+
+export const getDirectorate = (pagination, keyword) => {
+  const queryString = stringify(
+    {
+      pageSize: pagination?.perPage,
+      pageNumber: pagination?.page,
+      keyword: keyword,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchDirectorateStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-direktorat?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchDirectorateSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchDirectorateFailure(err));
+    }
+  };
+};
+
+export const updateDirectorate = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchDirectorateStart());
+    const requestBody = {
+      id: payload.id,
+      nama: payload.name,
+      isEnable: payload.isEnable,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'update-direktorat?', {
+        method: 'PUT',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchDirectorateSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchDirectorateFailure(err));
+    }
+  };
+};
+
+export const deleteDirectorate = (id) => {
+  return async (dispatch) => {
+    dispatch(fetchDirectorateStart());
+
+    const requestBody = {};
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `delete-direktorat?id=${id}`, {
+        method: 'DELETE',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchDirectorateSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchDirectorateFailure(err));
+    }
+  };
+};
+
+export const createDirectorate = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchDirectorateStart());
+    const requestBody = {
+      nama: payload,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'save-direktorat?', {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchDirectorateSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchDirectorateFailure(err));
+    }
+  };
+};
+
+//============================== REGION =================================
+
+export const FETCH_REGION_REQUEST = 'FETCH_REGION_REQUEST';
+export const FETCH_REGION_SUCCESS = 'FETCH_REGION_SUCCESS';
+export const FETCH_REGION_FAILURE = 'FETCH_REGION_FAILURE';
+
+export const fetchRegionStart = () => ({
+  type: FETCH_REGION_REQUEST,
+});
+
+export const fetchRegionSuccess = (data) => ({
+  type: FETCH_REGION_SUCCESS,
+  payload: data,
+});
+
+export const fetchRegionFailure = (error) => ({
+  type: FETCH_REGION_FAILURE,
+  payload: error,
+});
+
+export const getRegion = (pagination, keyword) => {
+  const queryString = stringify(
+    {
+      pageSize: pagination?.perPage,
+      pageNumber: pagination?.page,
+      keyword: keyword,
+    },
+    {
+      arrayFormat: 'comma',
+      encode: false,
+    },
+  );
+
+  return async (dispatch) => {
+    dispatch(fetchRegionStart());
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `get-all-region?` + queryString, {
+        method: 'GET',
+        headers: requestHeaders,
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchRegionSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchRegionFailure(err));
+    }
+  };
+};
+
+export const updateRegion = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchRegionStart());
+    const requestBody = {
+      isEnable: payload.isEnable,
+      id: payload.id,
+      kodeRegion: payload.code,
+      namaRegion: payload.name,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'update-region?', {
+        method: 'PUT',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchRegionSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchRegionFailure(err));
+    }
+  };
+};
+
+export const deleteRegion = (id) => {
+  return async (dispatch) => {
+    dispatch(fetchRegionStart());
+
+    const requestBody = {};
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + `delete-region?id=${id}`, {
+        method: 'DELETE',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchRegionSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchRegionFailure(err));
+    }
+  };
+};
+
+export const createRegion = (payload) => {
+  return async (dispatch) => {
+    dispatch(fetchRegionStart());
+    const requestBody = {
+      namaRegion: payload.name,
+      kodeRegion: payload.code,
+    };
+
+    const requestHeaders = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ac',
+    };
+
+    try {
+      const res = await fetch(API_URL + 'save-region?', {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+      });
+      const responseJSON = await res.json();
+      if (res.status === 200) {
+        dispatch(fetchRegionSuccess(responseJSON));
+      }
+      return responseJSON;
+    } catch (err) {
+      console.log(err);
+      dispatch(fetchRegionFailure(err));
+    }
+  };
+};

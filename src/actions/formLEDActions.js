@@ -42,18 +42,19 @@ export const createFormLed = (payload, user) => {
 
     const formData = new FormData();
 
-    formData.append('ssl', payload.costCentre);
     formData.append('nip', user.nip);
     formData.append('role', user.role);
-    formData.append('dampak', payload.impact);
-    formData.append('kronologi', payload.chronology);
-    formData.append('aktivitas', payload.caseCategory);
     formData.append('kodeCabang', user.branchCode);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
+    formData.append('kodeUnitKerja', user.division);
+
+    formData.append('ssl', payload.costCentre);
+    formData.append('dampak', payload.impact);
+    formData.append('kronologi', payload.chronology);
+    formData.append('aktivitas', payload.caseCategory);
     formData.append('tanggalLapor', payload.reportDate);
     formData.append('tindakLanjut', payload.followUp);
-    formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
     formData.append('tanggalKejadian', payload.incidentDate);
@@ -63,6 +64,7 @@ export const createFormLed = (payload, user) => {
     formData.append('kronologiSingkat', payload.brief);
     formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('nominalRealisasiKerugian', payload.actualLoss);
+
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
         if (actionKey === 'file' && actionValue !== '') {
@@ -146,6 +148,7 @@ export const editFormLed = (payload, user) => {
     formData.append('penyebabKejadian', payload.caseCause);
     formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('nominalRealisasiKerugian', payload.actualLoss);
+
     payload.actionPlan.forEach((action, index) => {
       Object.entries(action).forEach(([actionKey, actionValue]) => {
         if (actionKey === 'file' && typeof actionValue !== 'string') {

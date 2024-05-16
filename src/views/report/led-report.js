@@ -1,25 +1,19 @@
-import React, { useEffect, useState, useRef, Fragment, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { chartValue } from 'src/utils/use-chart-utils';
 import { getDropdown } from 'src/actions/masterDataActions';
-import { IconDownload } from '@tabler/icons';
 import { getAllLedReport } from 'src/actions/reportActions';
 import { useDownloadExcel } from 'react-export-table-to-excel';
 import { exportComponentAsJPEG } from 'react-component-export-image';
-import { geoOpt, periodOpt, caseOpt, month, getYearOpt } from '../../utils/get-dropdown-data';
-import {
-  Button,
-  Switch,
-  TextField,
-  Autocomplete,
-  Typography,
-  FormControlLabel,
-} from '@mui/material';
+import { IconDownload, IconFilter } from '@tabler/icons';
+import { periodOpt, caseOpt, month, getYearOpt } from '../../utils/get-dropdown-data';
+import { Button, TextField, Typography, IconButton, Autocomplete } from '@mui/material';
 
 // component
 import BarChart from 'src/components/shared/charts/bar-chart';
 import PieChart from 'src/components/shared/charts/pie-chart';
+import FilterModal from 'src/components/modal/filter-modal';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import ReportFilterTable from 'src/components/table/report-filter-table';
@@ -31,9 +25,11 @@ const LedReport = (props) => {
   const tableRef = useRef(null);
   const chartRef = useRef();
 
-  const [filter, setFilter] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const [line, setLine] = useState([]);
   const [period, setPeriod] = useState('triwulan');
-  const [isRegion, setIsRegion] = useState(false);
+  const [isDownload, setIsDownload] = useState(false);
+  const [selectedLine, setSelectedLine] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedCase, setSelectedCase] = useState('kategori');
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
@@ -42,9 +38,9 @@ const LedReport = (props) => {
   useEffect(() => {
     (async () => {
       await getDropdown();
-      await getAllLedReport(selectedCase, selectedYear, filter, isRegion);
+      await getAllLedReport(selectedCase, selectedYear, line, selectedLine);
     })();
-  }, [filter, selectedYear, selectedCase]);
+  }, [selectedYear, selectedCase, line, selectedLine]);
 
   const axis = {
     month: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -94,12 +90,16 @@ const LedReport = (props) => {
   });
 
   const handleDownloadTable = () => {
-    onDownload();
+    setIsDownload(true);
+    setTimeout(() => {
+      onDownload();
+      setIsDownload(false);
+    }, [100]);
   };
 
   const handleDOwnloadGraph = () => {
     exportComponentAsJPEG(chartRef, {
-      fileName: `BarChart-${selectedType}-${selectedYear}`,
+      fileName: `${period !== 'month' ? 'BarChart' : 'PieChart'}-${selectedType}-${selectedYear}`,
       html2CanvasOptions: { height: 500 },
     });
   };
@@ -108,22 +108,31 @@ const LedReport = (props) => {
     return report?.report.filter((item) => item.label !== 'Grand Total').map((item) => item.label);
   }, [report?.report]);
 
-  const onCheck = () => {
-    setIsRegion(!isRegion);
+  const openModal = () => {
+    setIsOpen(true);
   };
+
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  console.log(selectedLine);
 
   return (
     <PageContainer title="Led Report" description="Led Report Page">
+      <FilterModal
+        data={dropdown}
+        isOpen={isOpen}
+        setLine={setLine}
+        onCloseHandler={closeModal}
+        setSelectedLine={setSelectedLine}
+      />
+
       <DashboardCard>
         <div>
           <Typography variant="h6" sx={{ marginBottom: '16px' }}>
             Laporan LED
           </Typography>
-
-          <FormControlLabel
-            control={<Switch checked={!isRegion} onChange={onCheck} />}
-            label={!isRegion ? 'Dropdown Cabang' : 'Dropdown Region'}
-          />
 
           <div
             style={{
@@ -134,21 +143,10 @@ const LedReport = (props) => {
             }}
           >
             <div style={{ display: 'flex', gap: '16px' }}>
-              <Autocomplete
-                sx={{ width: '300px' }}
-                options={geoOpt(!isRegion ? dropdown.branch : dropdown.region)}
-                onChange={(event, newValue) => {
-                  if (newValue !== null) {
-                    setFilter(newValue.id);
-                  } else {
-                    setFilter('');
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                renderInput={(params) => (
-                  <TextField {...params} label={!isRegion ? 'filter cabang' : 'filter region'} />
-                )}
-              />
+              <IconButton color="#4a116f" size="large" onClick={openModal}>
+                <IconFilter />
+              </IconButton>
+
               <Autocomplete
                 sx={{ width: '200px' }}
                 options={caseOpt}
@@ -207,6 +205,7 @@ const LedReport = (props) => {
             data={tableValue(report?.report)}
             title={period}
             tableRef={tableRef}
+            isDownload={isDownload}
             subHeader={period !== 'month' ? axis[period] : [axis[period][selectedMonth - 1]]}
             selectedCase={selectedCase}
           />
@@ -243,39 +242,28 @@ const LedReport = (props) => {
           ref={chartRef}
         >
           {period !== 'month' ? (
-            <Fragment>
-              <div
-                style={{
-                  display: 'flex',
-                  maxWidth: '1000px',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography
-                  sx={{ transform: 'rotate(270deg)', fontSize: '12px', fontWeight: 'bold' }}
-                >
-                  Nominal
-                </Typography>
-                <BarChart
-                  data={report?.report}
-                  label={axis[period]}
-                  title={`${selectedType} ${selectedYear}`}
-                  period={period}
-                  filter={selectedType}
-                />
-                <Typography
-                  sx={{ transform: 'rotate(90deg)', fontSize: '12px', fontWeight: 'bold' }}
-                >
-                  Frekuensi
-                </Typography>
-              </div>
-            </Fragment>
+            <div
+              style={{
+                display: 'flex',
+                maxWidth: '1000px',
+                alignItems: 'center',
+              }}
+            >
+              <BarChart
+                data={report?.report}
+                label={axis[period]}
+                title={`${selectedType} ${selectedYear}`}
+                period={period}
+                filter={selectedType}
+              />
+            </div>
           ) : (
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'center',
                 width: '1000px',
+                height: '500px',
               }}
             >
               <PieChart
@@ -303,8 +291,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getDropdown: () => dispatch(getDropdown()),
-    getAllLedReport: (selCase, fil, period, isRegion) =>
-      dispatch(getAllLedReport(selCase, fil, period, isRegion)),
+    getAllLedReport: (selCase, year, line, selectedLine) =>
+      dispatch(getAllLedReport(selCase, year, line, selectedLine)),
   };
 };
 
