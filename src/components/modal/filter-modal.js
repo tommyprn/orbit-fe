@@ -57,7 +57,6 @@ const FilterModal = ({ data, isOpen, setLine, onCloseHandler, setSelectedLine })
     setRegion([]);
     setDivison([]);
     setDirectorate([]);
-    setSelectedLine('');
   };
 
   return (
@@ -84,14 +83,14 @@ const FilterModal = ({ data, isOpen, setLine, onCloseHandler, setSelectedLine })
 
         <div style={{ display: 'flex', gap: 16 }}>
           <MultiSelect
-            data={data.branch}
+            data={data?.branch}
             label="Cabang"
             setItem={setBranch}
             stateValue={branch}
             disabled={filter !== 'branch'}
           />
           <MultiSelect
-            data={data.region}
+            data={data?.region}
             label="Region"
             setItem={setRegion}
             stateValue={region}
@@ -107,14 +106,14 @@ const FilterModal = ({ data, isOpen, setLine, onCloseHandler, setSelectedLine })
 
         <div style={{ display: 'flex', gap: 16 }}>
           <MultiSelect
-            data={data.directorate}
+            data={data?.directorate}
             label="Direktorat"
             setItem={setDirectorate}
             stateValue={directorate}
             disabled={filter !== 'directorate'}
           />
           <MultiSelect
-            data={data.workUnit}
+            data={data?.workUnit}
             label="Divisi"
             setItem={setDivison}
             stateValue={division}

@@ -277,7 +277,7 @@ const DetailLED = (props) => {
               />
 
               <DetailWrapper
-                title="Nominal realisasi kerugian"
+                title="Gross loss"
                 content={`Rp. ${formatNumber(dataLaporan?.nominalRealisasiKerugian)}`}
               />
 

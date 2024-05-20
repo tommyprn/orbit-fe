@@ -552,7 +552,7 @@ const CreateFormLED = (props) => {
                   }
                   onChange={(e) => {
                     const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                    formik.setFieldValue('recoveryAmount', newValue);
+                    formik.setFieldValue('recoveryAmount', Number(newValue));
                   }}
                   helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
                   placeholder="nominal jumlah pemulihan"
@@ -564,7 +564,7 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Nominal realisasi kerugian
+                  Gross loss
                 </Typography>
 
                 <TextField
@@ -580,7 +580,7 @@ const CreateFormLED = (props) => {
                   }
                   onChange={(e) => {
                     const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                    formik.setFieldValue('actualLoss', newValue);
+                    formik.setFieldValue('actualLoss', Number(newValue));
                   }}
                   helperText={formik.touched.actualLoss && formik.errors.actualLoss}
                   InputProps={{
@@ -594,7 +594,7 @@ const CreateFormLED = (props) => {
                 <Typography variant="body1" sx={{ width: '20%' }}>
                   Nett loss
                   <br />
-                  (Nominal realisasi - recovery)
+                  (Gross loss - recovery)
                 </Typography>
 
                 <Typography variant="body1" sx={{ width: '80%', paddingLeft: '16px' }}>

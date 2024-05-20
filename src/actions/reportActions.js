@@ -43,11 +43,11 @@ export const getAllLedReport = (selCase, year, array, selected) => {
 
     const requestBody = {
       tahun: year,
-      cabang: selected === 'branch' ? array : null,
-      region: selected === 'region' ? array : null,
+      cabang: selected === 'branch' && array.length > 0 ? array : null,
+      region: selected === 'region' && array.length > 0 ? array : null,
       filter: selCase,
-      unitKerja: selected === 'division' ? array : null,
-      direktorat: selected === 'directorate' ? array : null,
+      unitKerja: selected === 'division' && array.length > 0 ? array : null,
+      direktorat: selected === 'directorate' && array.length > 0 ? array : null,
     };
 
     try {

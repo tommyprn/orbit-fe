@@ -29,14 +29,17 @@ export const validationSchema = yup.object({
     is: 'Risk Event',
     then: yup.string().required('potensi kerugian wajib diisi'),
   }),
-  recoveryAmount: yup.string(`masukkan nominal pemulihan dana`).when('caseStatus', {
+  recoveryAmount: yup.number(`masukkan nominal pemulihan dana`).when('caseStatus', {
     is: 'Loss Event',
-    then: yup.string().required('nominal recovery wajib diisi'),
+    then: yup.number().required('nominal recovery wajib diisi'),
   }),
-  actualLoss: yup.string(`masukkan nominal kerugian aktual`).when('caseStatus', {
-    is: 'Loss Event',
-    then: yup.string().required('kerugian aktual wajib diisi'),
-  }),
+  actualLoss: yup
+    .number(`masukkan nominal kerugian aktual`)
+    .moreThan(yup.ref('recoveryAmount'), 'nilai harus lebih besar dari recovery')
+    .when('caseStatus', {
+      is: 'Loss Event',
+      then: yup.number().required('kerugian aktual wajib diisi'),
+    }),
   costCentre: yup
     .number(`masukkan data cost centre`)
     .typeError('harap pilih cost centre')

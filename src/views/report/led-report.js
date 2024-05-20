@@ -116,8 +116,6 @@ const LedReport = (props) => {
     setIsOpen(false);
   };
 
-  console.log(selectedLine);
-
   return (
     <PageContainer title="Led Report" description="Led Report Page">
       <FilterModal

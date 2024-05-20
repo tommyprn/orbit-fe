@@ -60,7 +60,7 @@ const ZeroReportTable = ({ data, title, isFinished, selectedMonth }) => {
             <TableHead>
               <TableRow>
                 <TableCell colSpan={4} sx={{ textAlign: 'center', display: 'none' }}>
-                  {getMonth[selectedMonth]}
+                  {getMonth[selectedMonth]} {dayjs().year()}
                 </TableCell>
               </TableRow>
               <TableRow>

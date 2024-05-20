@@ -303,7 +303,7 @@ const UpdateFormLED = (props) => {
                     variant="outlined"
                     onChange={(e) => {
                       const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                      formik.setFieldValue('recoveryAmount', newValue);
+                      formik.setFieldValue('recoveryAmount', Number(newValue));
                     }}
                     helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
                     placeholder="nominal jumlah pemulihan"
@@ -322,7 +322,7 @@ const UpdateFormLED = (props) => {
               ) : (
                 <div className="form-input-wrapper">
                   <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                    Nominal realisasi kerugian
+                    Gross loss
                   </Typography>
 
                   <TextField
@@ -335,7 +335,7 @@ const UpdateFormLED = (props) => {
                     variant="outlined"
                     onChange={(e) => {
                       const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                      formik.setFieldValue('actualLoss', newValue);
+                      formik.setFieldValue('actualLoss', Number(newValue));
                     }}
                     helperText={formik.touched.actualLoss && formik.errors.actualLoss}
                     InputProps={{
@@ -349,8 +349,7 @@ const UpdateFormLED = (props) => {
               <DetailWrapper
                 title="Nett loss"
                 content={`Rp. ${formatNumber(
-                  dataLaporan?.nominalRealisasiKerugian - dataLaporan?.nominalRecovery ||
-                    formik.values.actualLoss - formik.values.recoveryAmount,
+                  formik.values.actualLoss - formik.values.recoveryAmount,
                 )}`}
               />
 
@@ -541,7 +540,12 @@ const UpdateFormLED = (props) => {
               </Button>
 
               {user.role === 'inputer' ? (
-                <Button variant="contained" color="primary" type="submit" disabled={!formik.dirty}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  disabled={!formik.isValid || !formik.dirty}
+                >
                   Submit
                 </Button>
               ) : (

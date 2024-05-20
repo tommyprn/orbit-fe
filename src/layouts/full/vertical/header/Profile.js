@@ -80,10 +80,7 @@ const Profile = () => {
               display="flex"
               alignItems="center"
               gap={1}
-            >
-              <IconMail width={15} height={15} />
-              info@modernize.com
-            </Typography>
+            ></Typography>
           </Box>
         </Stack>
         <Divider />
