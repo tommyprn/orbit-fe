@@ -302,6 +302,7 @@ export const getAllList = (pagination, keyword, user) => {
       pageSize: pagination?.perPage,
       idLaporan: keyword,
       pageNumber: pagination?.page,
+      kodeCabang: user.branchCode,
       kodeUnitKerja: user.division,
     },
     {
@@ -444,6 +445,7 @@ export const approveIRM = (id, user) => {
       id,
       nip: user.nip,
       nama: user.name,
+      role: user.role,
     };
 
     try {
@@ -534,6 +536,7 @@ export const getAllInbox = (pagination, keyword, user) => {
       pageSize: pagination?.perPage,
       idLaporan: keyword,
       pageNumber: pagination?.page,
+      kodeCabang: user.branchCode,
       kodeUnitKerja: user.division,
     },
     {

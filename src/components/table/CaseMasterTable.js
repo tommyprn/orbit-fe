@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-expressions */
+import secureLocalStorage from 'react-secure-storage';
 import { useState } from 'react';
 import { IconTrash, IconEdit, IconPlus } from '@tabler/icons';
 import { Button, Typography, IconButton, TablePagination } from '@mui/material';
@@ -20,6 +20,9 @@ export const CaseMasterTable = ({
   onPageChange,
   onOpenHandler,
 }) => {
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
+  const isAdmin = role === 'admin';
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -53,7 +56,7 @@ export const CaseMasterTable = ({
           variant="contained"
           startIcon={<IconPlus />}
           onClick={onOpenHandler}
-          disabled={disabled}
+          disabled={disabled || !isAdmin}
         >
           Add
         </Button>
@@ -137,14 +140,18 @@ export const CaseMasterTable = ({
                 </td>
 
                 <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
-                  <IconButton aria-label="edit" onClick={() => onUpdate(item)} disabled={disabled}>
+                  <IconButton
+                    aria-label="edit"
+                    onClick={() => onUpdate(item)}
+                    disabled={disabled || !isAdmin}
+                  >
                     <IconEdit />
                   </IconButton>
                   <IconButton
                     aria-label="delete"
                     color="error"
                     onClick={() => onDelete(item)}
-                    disabled={disabled}
+                    disabled={disabled || !isAdmin}
                   >
                     <IconTrash />
                   </IconButton>

@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import './quill-text.css';
 
 const QuillTextField = (props) => {
-  const { id, value, onChange, isError, helperText } = props;
+  const { id, value, width, onChange, isError, helperText } = props;
   const [text, setText] = useState(value);
   const [isTouched, setIsTouched] = useState(false);
 
@@ -24,15 +24,15 @@ const QuillTextField = (props) => {
   }, [value]);
 
   return (
-    <div className="quill-text-container">
-      <div style={{ height: '145px' }}>
+    <div style={{ width: width ? width : '80%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ height: '136px' }}>
         <TextField id={id} sx={{ display: 'none' }} value={text} />
 
         <ReactQuill
           theme="snow"
           value={text}
           onChange={handleQuillChange}
-          style={{ width: '100%', height: '100px' }}
+          style={{ width: '100%', height: '92px' }}
         />
       </div>
       {error && isTouched ? <p className="helper-text">{helperText}</p> : null}

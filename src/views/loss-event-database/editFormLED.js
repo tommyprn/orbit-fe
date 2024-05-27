@@ -81,6 +81,7 @@ const EditFormLED = (props) => {
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
 
+  const [nettLossNotif, setNetLossNotif] = useState(false);
   const [workUnitValue, setWorkUnitValue] = useState([{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]);
   const [costCentreValue, setCostCentreValue] = useState({
     id: 0,
@@ -528,6 +529,11 @@ const EditFormLED = (props) => {
             onChange={(e) => {
               const newValue = e.target.value.replace(/[^0-9.]/g, '');
               formik.setFieldValue('recoveryAmount', Number(newValue));
+              if (newValue > formik.values.actualLoss) {
+                setNetLossNotif(true);
+              } else {
+                setNetLossNotif(false);
+              }
             }}
             helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
             placeholder="nominal jumlah pemulihan"
@@ -547,7 +553,9 @@ const EditFormLED = (props) => {
             id="actualLoss"
             type="text"
             value={formatNumber(formik.values.actualLoss)}
-            error={formik.touched.actualLoss && Boolean(formik.errors.actualLoss)}
+            error={
+              (formik.touched.actualLoss && Boolean(formik.errors.actualLoss)) || nettLossNotif
+            }
             onBlur={formik.handleBlur}
             variant="outlined"
             disabled={
@@ -556,8 +564,19 @@ const EditFormLED = (props) => {
             onChange={(e) => {
               const newValue = e.target.value.replace(/[^0-9.]/g, '');
               formik.setFieldValue('actualLoss', Number(newValue));
+              if (newValue < formik.values.recoveryAmount) {
+                setNetLossNotif(true);
+              } else {
+                setNetLossNotif(false);
+              }
             }}
-            helperText={formik.touched.actualLoss && formik.errors.actualLoss}
+            helperText={
+              nettLossNotif
+                ? 'nominal gross harus melebihi recovery'
+                : formik.touched.actualLoss
+                ? formik.errors.actualLoss
+                : ''
+            }
             InputProps={{
               startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
             }}
@@ -894,7 +913,7 @@ const EditFormLED = (props) => {
                     variant="contained"
                     color="primary"
                     type="submit"
-                    disabled={!formik.isValid || !formik.dirty}
+                    disabled={!formik.isValid || !formik.dirty || nettLossNotif}
                   >
                     Submit
                   </Button>
