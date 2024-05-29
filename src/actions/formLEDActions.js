@@ -44,10 +44,13 @@ export const createFormLed = (payload, user) => {
 
     formData.append('nip', user.nip);
     formData.append('role', user.role);
-    formData.append('kodeCabang', user.branchCode);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
-    formData.append('kodeUnitKerja', user.division);
+    if (user.division === 'CABANG') {
+      formData.append('kodeCabang', user.branchCode);
+    } else {
+      formData.append('kodeUnitKerja', user.division);
+    }
 
     formData.append('ssl', payload.costCentre);
     formData.append('dampak', payload.impact);
@@ -124,10 +127,13 @@ export const editFormLed = (payload, user) => {
     const formData = new FormData();
     formData.append('nip', user.nip);
     formData.append('role', user.role);
-    formData.append('kodeCabang', user.branchCode);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
-    formData.append('kodeUnitKerja', user.division);
+    if (user.division === 'CABANG') {
+      formData.append('kodeCabang', user.branchCode);
+    } else {
+      formData.append('kodeUnitKerja', user.division);
+    }
 
     formData.append('id', payload.id);
     formData.append('ssl', payload.costCentre);
@@ -487,9 +493,9 @@ export const rejectIRM = (id, user, comment) => {
     const requestBody = {
       id: id,
       nip: user.nip,
+      role: user.role,
       nama: user.name,
       keterangan: comment,
-      // role: user.role,
     };
 
     try {

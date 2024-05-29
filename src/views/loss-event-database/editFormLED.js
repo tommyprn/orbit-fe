@@ -899,7 +899,7 @@ const EditFormLED = (props) => {
                 Kembali
               </Button>
 
-              {user.role === 'inputer' ? (
+              {user.role.toLowerCase() === 'inputer' ? (
                 <>
                   <Button
                     variant="contained"

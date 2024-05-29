@@ -182,6 +182,38 @@ const menuDev = [
       },
     ],
   },
+  {
+    id: '28',
+    title: 'RCSA',
+    icon: 'IconReport',
+    href: '/RCSA',
+    children: [
+      {
+        id: '281',
+        title: 'Risk Form',
+        icon: 'IconPoint',
+        href: '/RCSA/risk-form',
+      },
+      {
+        id: '282',
+        title: 'Control Form',
+        icon: 'IconPoint',
+        href: '/RCSA/control',
+      },
+      {
+        id: '283',
+        title: 'Control Testing',
+        icon: 'IconPoint',
+        href: '/RCSA/testing',
+      },
+      {
+        id: '284',
+        title: 'Laporan RCSA',
+        icon: 'IconPoint',
+        href: '/RCSA/report',
+      },
+    ],
+  },
 ];
 
 const userDev = {

@@ -158,9 +158,8 @@ const ListLED = (props) => {
                               {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
                             </TableCell>
                             <TableCell>{row.statusLaporan.nama}</TableCell>
-                            <TableCell>
+                            <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                               <Button
-                                sx={{ marginRight: 1 }}
                                 size="small"
                                 color="primary"
                                 variant="contained"

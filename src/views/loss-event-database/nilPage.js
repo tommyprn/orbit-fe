@@ -175,11 +175,11 @@ const NilPage = (props) => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SearchBar onSubmit={(val) => onSearch(val)} />
             <div />
-            {user.role === 'approver' ? (
+            {user.role.toLowerCase() === 'approver' ? (
               <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
                 Submit laporan nihil
               </Button>
-            ) : user.role === 'IRM' ? (
+            ) : user.role.toLowerCase() === 'verifikator' ? (
               <Button variant="contained" onClick={openWorkingDaysModal}>
                 Ubah periode pembuatan laporan nihil
               </Button>

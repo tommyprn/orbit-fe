@@ -66,6 +66,7 @@ const DetailLED = (props) => {
 
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
+  const statusLaporan = dataLaporan?.statusLaporanEntity?.nama;
 
   const [rejectModal, setRejectModal] = useState(false);
   const [approveModal, setApproveModal] = useState(false);
@@ -79,7 +80,6 @@ const DetailLED = (props) => {
   const backHandler = () => {
     navigate(-1);
   };
-
   // reject function
   const onRejectReport = () => {
     setRejectModal(true);
@@ -87,9 +87,9 @@ const DetailLED = (props) => {
 
   const onRejectConfirm = async (comment) => {
     let res;
-    if (dataLaporan?.statusLaporanEntity?.nama === 'Recorded') {
+    if (statusLaporan === 'Recorded') {
       res = await sendBackLED(detail.laporanLed.id, user, comment);
-    } else if (user.role === 'IRM' && dataLaporan?.statusLaporanEntity?.nama === 'On Progress') {
+    } else {
       res = await rejectIRM(detail.laporanLed.id, user, comment);
     }
 
@@ -131,9 +131,9 @@ const DetailLED = (props) => {
   };
   const onApproveConfirm = async () => {
     let res;
-    if (dataLaporan?.statusLaporanEntity?.nama === 'Recorded') {
+    if (statusLaporan === 'Recorded') {
       res = await approveLED(detail.laporanLed.id, user);
-    } else if (dataLaporan?.statusLaporanEntity?.nama === 'On Progress') {
+    } else {
       res = await approveIRM(detail.laporanLed.id, user);
     }
 
@@ -149,11 +149,11 @@ const DetailLED = (props) => {
     setApproveModal(false);
   };
 
-  const hideButton =
-    user?.role === 'inputer' ||
-    (dataLaporan?.statusLaporanEntity?.nama !== 'Recorded' && user?.role === 'approver') ||
-    dataLaporan?.statusLaporanEntity?.nama === 'Closed' ||
-    dataLaporan?.statusLaporanEntity?.nama === 'Need Update';
+  const role = user?.role.toLowerCase();
+  const showButton =
+    (role === 'approver' && statusLaporan === 'Recorded') ||
+    (role === 'verifikator' && statusLaporan === 'On Progress') ||
+    (role === 'irmapproval' && statusLaporan === 'Pending Closed');
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -405,27 +405,21 @@ const DetailLED = (props) => {
                 Kembali
               </Button>
 
-              {hideButton ? null : (
+              {showButton ? (
                 <>
-                  <Button variant="contained" color="error" onClick={onRejectReport}>
-                    {dataLaporan?.statusLaporanEntity?.nama === 'On Progress' ? 'Void ' : 'Revisi '}
-                    Laporan
-                  </Button>
-
-                  {dataLaporan?.statusLaporanEntity?.nama === 'On Progress' ? (
-                    <Button variant="contained" color="warning" onClick={onSendBack}>
-                      Revisi Laporan
+                  {role === 'irmapproval' ? null : (
+                    <Button variant="contained" color="error" onClick={onRejectReport}>
+                      {statusLaporan === 'On Progress' ? 'Void ' : 'Revisi '}
+                      Laporan
                     </Button>
-                  ) : null}
+                  )}
 
                   <Button variant="contained" onClick={onApproveReport}>
-                    {dataLaporan?.statusLaporanEntity?.nama === 'On Progress'
-                      ? 'Terima '
-                      : 'Setujui '}
+                    {statusLaporan === 'On Progress' ? 'Terima ' : 'Setujui '}
                     Laporan
                   </Button>
                 </>
-              )}
+              ) : null}
             </div>
           </div>
         )}

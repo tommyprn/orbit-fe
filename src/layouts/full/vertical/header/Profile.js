@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Menu, Button, Avatar, Divider, Typography, IconButton } from '@mui/material';
 import secureLocalStorage from 'react-secure-storage';
-
 import { Stack } from '@mui/system';
-import { IconMail, IconLogout } from '@tabler/icons';
+import { IconLogout, IconUserCircle } from '@tabler/icons';
+import { Box, Menu, Button, Avatar, Divider, Typography, IconButton } from '@mui/material';
 
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
@@ -38,13 +37,14 @@ const Profile = () => {
         onClick={handleClick2}
       >
         <Avatar
-          src={ProfileImg}
           alt={ProfileImg}
           sx={{
             width: 35,
             height: 35,
           }}
-        />
+        >
+          {users?.nameUser[0]}
+        </Avatar>
       </IconButton>
       {/* ------------------------------------------- */}
       {/* Message Dropdown */}
@@ -66,21 +66,27 @@ const Profile = () => {
       >
         <Typography variant="h5">User Profile</Typography>
         <Stack direction="row" py={3} spacing={2} alignItems="center">
-          <Avatar src={ProfileImg} alt={ProfileImg} sx={{ width: 95, height: 95 }} />
-          <Box>
-            <Typography variant="subtitle2" color="textPrimary" fontWeight={600}>
+          <IconUserCircle width={120} height={120} strokeWidth={1} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <Typography
+              sx={{ marginBottom: '1px' }}
+              variant="h6"
+              color="textPrimary"
+              fontWeight={600}
+            >
               {users?.nameUser}
             </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              {users?.nikUser} - {users?.divisiUser}
+            <Typography variant="body" color="textSecondary">
+              {users?.nikUser}
             </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              display="flex"
-              alignItems="center"
-              gap={1}
-            ></Typography>
+            <Typography variant="body" color="textSecondary">
+              {users?.namaCabangUser.charAt(0) + users?.namaCabangUser.substring(1).toLowerCase()} -{' '}
+              {users?.namaCabangKcuUser.charAt(0) +
+                users?.namaCabangKcuUser.substring(1).toLowerCase()}
+            </Typography>
+            <Typography variant="body" color="textSecondary">
+              {users?.emailUser}
+            </Typography>
           </Box>
         </Stack>
         <Divider />

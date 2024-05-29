@@ -38,6 +38,11 @@ const TopIssueReport = Loadable(lazy(() => import('../views/report/top-issue')))
 const DatabaseReport = Loadable(lazy(() => import('../views/report/database-report')));
 const IrmActionReport = Loadable(lazy(() => import('../views/report/irm-action-report')));
 
+/* ****RCSA Pages***** */
+const RiskFormPage = Loadable(
+  lazy(() => import('../views/risk-control-self-assestment/risk-form')),
+);
+
 /* ****404 Pages***** */
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
 
@@ -80,6 +85,12 @@ const Router = [
       { path: '/report/database', exact: true, element: <DatabaseReport /> },
       { path: '/report/top-issue', exact: true, element: <TopIssueReport /> },
       { path: '/report/irm-action', exact: true, element: <IrmActionReport /> },
+
+      // ============================== REPORT ROUTES =====================================
+      { path: '/RCSA/report', exact: true, element: <LedReport /> },
+      { path: '/RCSA/control', exact: true, element: <LedReport /> },
+      { path: '/RCSA/testing', exact: true, element: <LedReport /> },
+      { path: '/RCSA/risk-form', exact: true, element: <RiskFormPage /> },
 
       // ============================== ERROR PAGE =====================================
       { path: '/404', element: <Navigate to="/auth/404" /> },

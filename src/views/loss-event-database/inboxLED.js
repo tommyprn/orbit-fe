@@ -67,14 +67,14 @@ const InboxLED = (props) => {
   };
 
   const onEdit = (id, status) => {
-    if (user.role === 'inputer') {
+    if (user.role.toLowerCase() === 'inputer') {
       if (status === 'Draft' || status === 'Need Update') {
         navigation(`/LED/edit-report/${id}`);
       } else {
         navigation(`/LED/update-report/${id}`);
       }
     }
-    if (user.role === 'approver') {
+    if (user.role.toLowerCase() === 'approver') {
       navigation(`/LED/detail-report/${id}`);
     }
   };
@@ -163,9 +163,8 @@ const InboxLED = (props) => {
                               {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
                             </TableCell>
                             <TableCell>{row?.statusLaporan?.nama}</TableCell>
-                            <TableCell>
+                            <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                               <Button
-                                sx={{ marginRight: '8px' }}
                                 size="small"
                                 color="primary"
                                 variant="contained"
@@ -176,9 +175,8 @@ const InboxLED = (props) => {
                               >
                                 Detail
                               </Button>
-                              {user.role === 'inputer' ? (
+                              {user.role.toLowerCase() === 'inputer' ? (
                                 <Button
-                                  sx={{ marginRight: '8px' }}
                                   size="small"
                                   color="warning"
                                   variant="contained"

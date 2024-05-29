@@ -80,10 +80,10 @@ const SidebarItems = () => {
       {process.env.REACT_APP_DEPLOY_STATE === 'false' ? (
         <>
           <ButtonGroup sx={{ width: '100%' }} variant="outlined" orientation="vertical">
-            <Button onClick={() => onClick('inputer')}>Inputer</Button>
-            <Button onClick={() => onClick('approver')}>Approver</Button>
-            <Button onClick={() => onClick('admin')}>Admin</Button>
-            <Button onClick={() => onClick('verifikator')}>Verifikator</Button>
+            <Button onClick={() => onClick('Inputer')}>Inputer</Button>
+            <Button onClick={() => onClick('Approver')}>Approver</Button>
+            <Button onClick={() => onClick('Admin')}>Admin</Button>
+            <Button onClick={() => onClick('Verifikator')}>Verifikator</Button>
             <Button onClick={() => onClick('IRMApproval')}>IRM Approval</Button>
           </ButtonGroup>
           <Typography sx={{ color: 'black', marginTop: '8px' }}>
