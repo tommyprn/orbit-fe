@@ -12,5 +12,6 @@ export const chunkArray = (arr, amount) => {
 
 export const dateDiff = (start, end) => {
   const diff = dayjs(start).diff(end, 'day');
+
   return diff;
 };

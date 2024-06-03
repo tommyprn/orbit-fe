@@ -21,7 +21,7 @@ export const WorkUnitTable = ({
   onOpenHandler,
 }) => {
   const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
-  const isAdmin = role === 'admin';
+  const isAdmin = role.toLowerCase() === 'admin';
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

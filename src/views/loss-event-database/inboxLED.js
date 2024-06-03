@@ -175,7 +175,7 @@ const InboxLED = (props) => {
                               >
                                 Detail
                               </Button>
-                              {user.role.toLowerCase() === 'inputer' ? (
+                              {user.role?.toLowerCase() === 'inputer' ? (
                                 <Button
                                   size="small"
                                   color="warning"

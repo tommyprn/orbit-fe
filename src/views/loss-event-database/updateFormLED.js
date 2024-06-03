@@ -124,12 +124,9 @@ const UpdateFormLED = (props) => {
       const res = await editFormLed(values, user);
       if (res.responseCode === 200) {
         navigate('/LED/list');
-        showToast('success', 'berhasil submit laporan');
+        showToast('success', 'laporan berhasil disubmit');
       } else {
-        showToast(
-          'error',
-          'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda',
-        );
+        showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
       }
     },
   });
@@ -142,9 +139,9 @@ const UpdateFormLED = (props) => {
     const res = await approveLED(id, user);
     if (res.responseCode === 200) {
       navigate('/LED/list');
-      showToast('success', 'berhasil submit laporan');
+      showToast('success', 'laporan berhasil di approve');
     } else {
-      showToast('error', 'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda');
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -291,43 +288,6 @@ const UpdateFormLED = (props) => {
               ) : (
                 <div className="form-input-wrapper">
                   <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                    Nominal recovery
-                  </Typography>
-
-                  <TextField
-                    sx={{ width: '80%' }}
-                    id="recoveryAmount"
-                    type="text"
-                    value={formatNumber(formik.values.recoveryAmount)}
-                    error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
-                    onBlur={formik.handleBlur}
-                    variant="outlined"
-                    onChange={(e) => {
-                      const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                      formik.setFieldValue('recoveryAmount', Number(newValue));
-                      if (newValue > formik.values.actualLoss) {
-                        setNetLossNotif(true);
-                      } else {
-                        setNetLossNotif(false);
-                      }
-                    }}
-                    helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
-                    placeholder="nominal jumlah pemulihan"
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
-                    }}
-                  />
-                </div>
-              )}
-
-              {caseStatusValue.label !== 'Loss Event' ? (
-                <DetailWrapper
-                  title="Nominal recovery"
-                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
-                />
-              ) : (
-                <div className="form-input-wrapper">
-                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                     Gross loss
                   </Typography>
 
@@ -362,6 +322,43 @@ const UpdateFormLED = (props) => {
                       startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
                     }}
                     placeholder="nominal kerugian aktual"
+                  />
+                </div>
+              )}
+
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <DetailWrapper
+                  title="Nominal recovery"
+                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
+                />
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Nominal recovery
+                  </Typography>
+
+                  <TextField
+                    sx={{ width: '80%' }}
+                    id="recoveryAmount"
+                    type="text"
+                    value={formatNumber(formik.values.recoveryAmount)}
+                    error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
+                    onBlur={formik.handleBlur}
+                    variant="outlined"
+                    onChange={(e) => {
+                      const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                      formik.setFieldValue('recoveryAmount', Number(newValue));
+                      if (newValue > formik.values.actualLoss) {
+                        setNetLossNotif(true);
+                      } else {
+                        setNetLossNotif(false);
+                      }
+                    }}
+                    helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
+                    placeholder="nominal jumlah pemulihan"
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                    }}
                   />
                 </div>
               )}
@@ -433,7 +430,7 @@ const UpdateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindak Lanjut
+                  Tindakan yang dilakukan
                 </Typography>
               </div>
 
@@ -559,7 +556,7 @@ const UpdateFormLED = (props) => {
                 Kembali
               </Button>
 
-              {user.role.toLowerCase() === 'inputer' ? (
+              {user.role?.toLowerCase() === 'inputer' ? (
                 <Button
                   variant="contained"
                   color="primary"

@@ -37,11 +37,14 @@ export const validationSchema = yup.object({
     is: 'Loss Event',
     then: yup.number().required('kerugian aktual wajib diisi'),
   }),
-  costCentre: yup
-    .number(`masukkan data cost centre`)
-    .typeError('harap pilih cost centre')
-    .required(`harap pilih cost centre`),
-  recoverySource: yup.string(`masukkan sumber recovery`).required(`sumber recovery wajib diisi`),
+  costCentre: yup.number(`masukkan data cost centre`).when(['actualLoss', 'recoveryAmount'], {
+    is: (gross, rec) => gross + rec > 0,
+    then: yup.number().typeError('harap pilih cost centre').required(`harap pilih cost centre`),
+  }),
+  recoverySource: yup.string(`masukkan sumber recovery`).when('recoveryAmount', {
+    is: (val) => val > 0,
+    then: yup.string().required(`sumber recovery wajib diisi`),
+  }),
   followUp: yup.string(`masukkan sumber recovery`).required(`tindak lanjut wajib diisi`),
 
   //action plan

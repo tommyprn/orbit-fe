@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import secureLocalStorage from 'react-secure-storage';
 import { dateDiff } from 'src/utils/use-calculate';
 import { useFormik } from 'formik';
@@ -142,7 +143,7 @@ const CreateFormLED = (props) => {
       caseStatus: 0,
       costCentre: 0,
       chronology: '',
-      reportDate: '',
+      reportDate: dayjs().toString(),
       actualLoss: '0',
       incidentDate: '',
       caseCategory: 0,
@@ -158,10 +159,7 @@ const CreateFormLED = (props) => {
         navigate('/LED/list');
         showToast('success', 'berhasil submit laporan');
       } else {
-        showToast(
-          'error',
-          'terjadi kesalahan saat mensubmit laporan, mohon cek kembali input anda',
-        );
+        showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
       }
     },
   });
@@ -201,12 +199,9 @@ const CreateFormLED = (props) => {
     const res = await createDraftLed(formik.values, user);
     if (res?.responseCode === 200) {
       navigate('/LED/inbox');
-      showToast('success', 'laporan disimpan sebagai draft');
+      showToast('success', 'laporan berhasil disimpan');
     } else {
-      showToast(
-        'error',
-        'terjadi kesalahan laporan tidak dapat disimpan, mohon mencoba beberapa saat lagi',
-      );
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -233,9 +228,6 @@ const CreateFormLED = (props) => {
           <Spinner />
         ) : (
           <form onSubmit={formik.handleSubmit} className="form-sheet">
-            {/* <div className="form-title">
-              <Typography variant="h4">Incident Number: IN-ITY-00001</Typography>
-            </div> */}
             <>
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
@@ -305,73 +297,60 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tanggal lapor
+                  Tanggal
                 </Typography>
 
-                <DatePicker
-                  id="reportDate"
-                  sx={{ width: '80%' }}
-                  format=" DD - MMM - YYYY"
-                  error={formik.touched.reportDate && Boolean(formik.errors.reportDate)}
-                  onBlur={formik.handleBlur}
-                  onChange={(value) => {
-                    formik.setFieldValue('reportDate', String(value));
-                    const diff = dateDiff(value, formik.values.incidentDate);
-                    if (diff > 5) {
-                      setSLANotif('kejadian ini sudah melewati SLA');
-                    } else {
-                      setSLANotif('');
-                    }
-                  }}
-                  helperText={formik.touched.reportDate && formik.errors.reportDate}
-                />
-              </div>
+                <div className="input-date-section">
+                  <div className="form-input-date-wrapper">
+                    <Typography variant="body1">Tanggal lapor</Typography>
 
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tanggal kejadian
-                </Typography>
+                    <TextField id="reportDate" value={dayjs().format('DD - MMM - YYYY')} disabled />
+                  </div>
 
-                <div style={{ width: '80%' }}>
-                  <DatePicker
-                    id="incidentDate"
-                    sx={{ width: '100%' }}
-                    format=" DD - MMM - YYYY"
-                    error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
-                    onBlur={formik.handleBlur}
-                    onChange={(value) => {
-                      formik.setFieldValue('incidentDate', String(value));
-                      const diff = dateDiff(value, formik.values.reportDate);
-                      if (diff > 5) {
-                        setSLANotif('kejadian ini sudah melewati SLA');
-                      } else {
-                        setSLANotif('');
-                      }
-                    }}
-                    helperText={formik.touched.incidentDate && formik.errors.incidentDate}
-                  />
-                  {slaNotif ? (
-                    <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
-                      {slaNotif}
-                    </Typography>
-                  ) : null}
+                  <div className="form-input-date-wrapper">
+                    <Typography variant="body1">Tanggal kejadian</Typography>
+
+                    <>
+                      <DatePicker
+                        id="incidentDate"
+                        format="DD - MMM - YYYY"
+                        error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
+                        onBlur={formik.handleBlur}
+                        slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
+                        helperText={formik.touched.incidentDate && formik.errors.incidentDate}
+                        onChange={(value) => {
+                          formik.setFieldValue('incidentDate', String(value));
+                          const diff = dateDiff(formik.values.reportDate, value);
+                          console.log(diff);
+                          if (diff > 5) {
+                            setSLANotif('kejadian ini sudah melewati SLA');
+                          } else {
+                            setSLANotif('');
+                          }
+                        }}
+                      />
+                      {slaNotif ? (
+                        <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
+                          {slaNotif}
+                        </Typography>
+                      ) : null}
+                    </>
+                  </div>
+
+                  <div className="form-input-date-wrapper">
+                    <Typography variant="body1">Tanggal identifikasi</Typography>
+
+                    <DatePicker
+                      id="identifiedDate"
+                      format="DD - MMM - YYYY"
+                      error={formik.touched.identifiedDate && Boolean(formik.errors.identifiedDate)}
+                      onBlur={formik.handleBlur}
+                      onChange={(value) => formik.setFieldValue('identifiedDate', String(value))}
+                      slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
+                      helperText={formik.touched.identifiedDate && formik.errors.identifiedDate}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tanggal identifikasi
-                </Typography>
-
-                <DatePicker
-                  id="identifiedDate"
-                  sx={{ width: '80%' }}
-                  format=" DD - MMM - YYYY"
-                  error={formik.touched.identifiedDate && Boolean(formik.errors.identifiedDate)}
-                  onBlur={formik.handleBlur}
-                  onChange={(value) => formik.setFieldValue('identifiedDate', String(value))}
-                  helperText={formik.touched.identifiedDate && formik.errors.identifiedDate}
-                />
               </div>
 
               <div className="form-input-wrapper">
@@ -537,39 +516,6 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Nominal recovery
-                </Typography>
-
-                <TextField
-                  sx={{ width: '80%' }}
-                  id="recoveryAmount"
-                  type="text"
-                  value={formatNumber(formik.values.recoveryAmount)}
-                  error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
-                  onBlur={formik.handleBlur}
-                  variant="outlined"
-                  disabled={
-                    caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
-                  }
-                  onChange={(e) => {
-                    const newValue = e.target.value.replace(/[^0-9.]/g, '');
-                    formik.setFieldValue('recoveryAmount', Number(newValue));
-                    if (newValue > formik.values.actualLoss) {
-                      setNetLossNotif(true);
-                    } else {
-                      setNetLossNotif(false);
-                    }
-                  }}
-                  helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
-                  placeholder="nominal jumlah pemulihan"
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
-                  }}
-                />
-              </div>
-
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
                   Gross loss
                 </Typography>
 
@@ -607,6 +553,39 @@ const CreateFormLED = (props) => {
                     startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
                   }}
                   placeholder="nominal kerugian aktual"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Nominal recovery
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="recoveryAmount"
+                  type="text"
+                  value={formatNumber(formik.values.recoveryAmount)}
+                  error={formik.touched.recoveryAmount && Boolean(formik.errors.recoveryAmount)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  disabled={
+                    caseStatusValue.label === 'Risk Event' || caseStatusValue.label === 'Near Miss'
+                  }
+                  onChange={(e) => {
+                    const newValue = e.target.value.replace(/[^0-9.]/g, '');
+                    formik.setFieldValue('recoveryAmount', Number(newValue));
+                    if (newValue > formik.values.actualLoss) {
+                      setNetLossNotif(true);
+                    } else {
+                      setNetLossNotif(false);
+                    }
+                  }}
+                  helperText={formik.touched.recoveryAmount && formik.errors.recoveryAmount}
+                  placeholder="nominal jumlah pemulihan"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">Rp.</InputAdornment>,
+                  }}
                 />
               </div>
 
@@ -708,7 +687,7 @@ const CreateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindak Lanjut
+                  Tindakan yang dilakukan
                 </Typography>
 
                 <Button variant="contained" onClick={addRow}>
@@ -832,6 +811,7 @@ const CreateFormLED = (props) => {
                                 onBlur={formik.handleBlur}
                                 format=" DD - MMM - YYYY"
                                 variant="standard"
+                                slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
                                 onChange={(value) =>
                                   formik.setFieldValue(
                                     `actionPlan.${index}.targetDate`,

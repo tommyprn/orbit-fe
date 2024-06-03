@@ -225,14 +225,14 @@ const userDev = {
   nameUser: 'Yanto',
   emailUser: 'test@mail.com',
   divisiUser: 'CABANG',
-  kodeCabangUser: '512',
+  kodeCabangUser: '301',
   kodeRegionUser: '004',
-  namaCabangUser: 'TEGAL',
+  namaCabangUser: 'KP0 Muamalat Tower',
   departementUser: 'CABANG',
   statusCabangUser: 'KCP',
   idDepartementUser: '4',
-  kodeCabangKcuUser: '511',
-  namaCabangKcuUser: 'PEKALONGAN',
+  kodeCabangKcuUser: '301',
+  namaCabangKcuUser: 'KP0 Muamalat Tower',
   apps: [
     {
       id: 1,
@@ -422,7 +422,7 @@ const Dashboard = (props) => {
                             >
                               Detail
                             </Button>
-                            {user.role === 'inputer' ? (
+                            {user.role?.toLowerCase() === 'inputer' ? (
                               <Button
                                 sx={{ marginRight: '8px' }}
                                 size="small"

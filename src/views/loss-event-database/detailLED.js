@@ -95,9 +95,9 @@ const DetailLED = (props) => {
 
     if (res?.responseCode === 200) {
       navigate('/LED/list');
-      showToast('success', 'Laporan dikirim kembali ke RTU');
+      showToast('success', 'laporan berhasil dikirim kembali ke RTU');
     } else {
-      showToast('error', 'gagal mengubah status laporan, mohon coba beberapa saat lagi');
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -115,9 +115,9 @@ const DetailLED = (props) => {
 
     if (res?.responseCode === 200) {
       navigate('/LED/list');
-      showToast('success', 'Laporan dikirim kembali ke RTU');
+      showToast('success', 'laporan berhasil dikirim kembali ke RTU');
     } else {
-      showToast('error', 'gagal mengubah status laporan, mohon coba beberapa saat lagi');
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -141,7 +141,7 @@ const DetailLED = (props) => {
       navigate('/LED/list');
       showToast('success', 'berhasil mengubah status laporan');
     } else {
-      showToast('error', 'gagal mengubah status laporn, mohon coba beberapa saat lagi');
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -407,6 +407,12 @@ const DetailLED = (props) => {
 
               {showButton ? (
                 <>
+                  {role !== 'verifikator' ? null : (
+                    <Button variant="contained" color="warning" onClick={onSendBack}>
+                      Revisi Laporan
+                    </Button>
+                  )}
+
                   {role === 'irmapproval' ? null : (
                     <Button variant="contained" color="error" onClick={onRejectReport}>
                       {statusLaporan === 'On Progress' ? 'Void ' : 'Revisi '}

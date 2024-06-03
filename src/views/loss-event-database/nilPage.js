@@ -98,10 +98,7 @@ const NilPage = (props) => {
     if (res?.responseCode === 200) {
       showToast('success', 'berhasil submit laporan nihil');
     } else {
-      showToast(
-        'error',
-        'terjadi kesalahan saat membuat laporan nihil, mohon coba beberapa saat lagi',
-      );
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -117,7 +114,7 @@ const NilPage = (props) => {
     if (res?.responseCode === 200) {
       showToast('success', 'berhasil mengubah hari kerja laporan nihil');
     } else {
-      showToast('error', 'terjadi kesalahan saat mengubah request, mohon coba beberapa saat lagi');
+      showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
 
@@ -175,11 +172,11 @@ const NilPage = (props) => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <SearchBar onSubmit={(val) => onSearch(val)} />
             <div />
-            {user.role.toLowerCase() === 'approver' ? (
+            {user.role?.toLowerCase() === 'approver' ? (
               <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
                 Submit laporan nihil
               </Button>
-            ) : user.role.toLowerCase() === 'verifikator' ? (
+            ) : user.role?.toLowerCase() === 'verifikator' ? (
               <Button variant="contained" onClick={openWorkingDaysModal}>
                 Ubah periode pembuatan laporan nihil
               </Button>

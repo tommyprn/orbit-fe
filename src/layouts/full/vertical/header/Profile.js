@@ -7,6 +7,7 @@ import { Box, Menu, Button, Avatar, Divider, Typography, IconButton } from '@mui
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
 const users = JSON.parse(secureLocalStorage.getItem('user'));
+const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -74,18 +75,24 @@ const Profile = () => {
               color="textPrimary"
               fontWeight={600}
             >
-              {users?.nameUser}
+              {users?.nikUser} - {users?.nameUser}
             </Typography>
+            {users.divisiUser === 'CABANG' ? (
+              <Typography variant="body" color="textSecondary">
+                {users?.namaCabangUser.charAt(0) + users?.namaCabangUser.substring(1).toLowerCase()}{' '}
+                -{' '}
+                {users?.namaCabangKcuUser.charAt(0) +
+                  users?.namaCabangKcuUser.substring(1).toLowerCase()}
+              </Typography>
+            ) : (
+              <Typography variant="body" color="textSecondary">
+                {users?.departementUser.charAt(0) +
+                  users?.departementUser.substring(1).toLowerCase()}{' '}
+                - {users?.divisiUser.charAt(0) + users?.divisiUser.substring(1).toLowerCase()}
+              </Typography>
+            )}
             <Typography variant="body" color="textSecondary">
-              {users?.nikUser}
-            </Typography>
-            <Typography variant="body" color="textSecondary">
-              {users?.namaCabangUser.charAt(0) + users?.namaCabangUser.substring(1).toLowerCase()} -{' '}
-              {users?.namaCabangKcuUser.charAt(0) +
-                users?.namaCabangKcuUser.substring(1).toLowerCase()}
-            </Typography>
-            <Typography variant="body" color="textSecondary">
-              {users?.emailUser}
+              {role}
             </Typography>
           </Box>
         </Stack>
