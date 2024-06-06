@@ -92,7 +92,8 @@ const UpdateFormLED = (props) => {
       chronology: dataLaporan?.kronologi,
       reportDate: dayjs(dataLaporan?.tanggalLapor),
       actualLoss: String(dataLaporan?.nominalRealisasiKerugian),
-      incidentDate: dayjs(dataLaporan?.tanggalKejadian),
+      incidentEndDate: dayjs(dataLaporan?.tanggalKejadianEnd),
+      incidentStartDate: dayjs(dataLaporan?.tanggalKejadianStart),
       caseCategory: dataLaporan?.aktivitasEntity?.id,
       potentialLoss: String(dataLaporan?.potensiKerugian),
       identifiedDate: dayjs(dataLaporan?.tanggalIdentifikasi),
@@ -197,18 +198,7 @@ const UpdateFormLED = (props) => {
                 />
               </div>
 
-              {caseStatusValue.label !== 'Loss Event' ? (
-                <div className="detail-wrapper">
-                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                    Kronologi
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ width: '80%' }}
-                    dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
-                  />
-                </div>
-              ) : (
+              {caseStatusValue.label === 'Loss Event' ? (
                 <div className="form-input-wrapper">
                   <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                     Kronologi
@@ -220,6 +210,17 @@ const UpdateFormLED = (props) => {
                     isError={formik.errors}
                     onChange={(val) => formik.setFieldValue('chronology', val)}
                     helperText="kronologi kejadian wajib diisi"
+                  />
+                </div>
+              ) : (
+                <div className="detail-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Kronologi
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ width: '80%' }}
+                    dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
                   />
                 </div>
               )}
@@ -399,7 +400,7 @@ const UpdateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tindak lanjut
+                  Tindakan yang dilakukan
                 </Typography>
 
                 <QuillTextField
@@ -430,7 +431,7 @@ const UpdateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindakan yang dilakukan
+                  Tindak Lanjut
                 </Typography>
               </div>
 

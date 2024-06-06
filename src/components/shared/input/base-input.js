@@ -4,28 +4,30 @@ import { Typography, TextField, Autocomplete } from '@mui/material';
 // component
 import QuillTextField from 'src/components/forms/quil-text/quill-text';
 
-const BaseInput = ({ id, type, title, formik, option, ...props }) => {
+const BaseInput = ({ id, type, title, formik, option, helperText, placeholder, ...props }) => {
   const Basic = (
     <TextField
       {...props}
+      sx={{ minWidth: '200px' }}
       id={id}
       size="small"
-      value={formik.values.brief}
-      error={formik.touched.brief && Boolean(formik.errors.brief)}
+      value={formik.values[id]}
+      error={formik.touched[id] && Boolean(formik.errors[id])}
       onBlur={formik.handleBlur}
       onChange={formik.handleChange}
-      helperText={formik.touched.brief && formik.errors.brief}
+      helperText={formik.touched[id] && formik.errors[id]}
+      placeholder={placeholder}
     />
   );
 
   const QuillText = (
     <QuillTextField
       id={id}
-      value={formik.values.chronology}
+      value={formik.values[id]}
       width="100%"
       isError={formik.errors}
       onChange={(val) => formik.setFieldValue(id, val)}
-      helperText="Kolom ini wajib diisi"
+      helperText={helperText}
     />
   );
 
@@ -33,17 +35,14 @@ const BaseInput = ({ id, type, title, formik, option, ...props }) => {
     <Autocomplete
       disablePortal
       id={id}
+      sx={{ minWidth: '200px' }}
       size="small"
       value={formik.values.id}
-      options={createOption(option)}
+      options={option}
       onChange={(event, newValue) => {
         if (newValue !== null) {
-          // setCaseStatusValue(newValue);
           formik.setFieldValue(id, newValue.id);
         }
-        // else {
-        // setCaseStatusValue({ id: 0, label: '' });
-        // }
       }}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       renderInput={(params) => (
@@ -54,7 +53,7 @@ const BaseInput = ({ id, type, title, formik, option, ...props }) => {
           error={formik.touched[id] && Boolean(formik.errors[id])}
           onBlur={formik.handleBlur}
           helperText={formik.touched[id] && formik.errors[id]}
-          placeholder="pilih status kejadian"
+          placeholder={placeholder}
         />
       )}
     />
@@ -76,6 +75,7 @@ const BaseInput = ({ id, type, title, formik, option, ...props }) => {
     <div
       style={{
         gap: '8px',
+        height: type === 'quill' ? 'auto' : '4rem',
         display: 'flex',
         flexDirection: 'column',
       }}

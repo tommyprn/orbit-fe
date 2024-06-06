@@ -15,3 +15,25 @@ export const dateDiff = (start, end) => {
 
   return diff;
 };
+
+export const getRiskRating = (impact, likelihood) => {
+  const sumValue = impact * likelihood;
+
+  if (impact === 1 && likelihood === 4) {
+    return 'M';
+  } else if (impact === 5 && likelihood === 2) {
+    return 'M';
+  } else if (sumValue === 5) {
+    return 'M';
+  } else if (sumValue <= 2) {
+    return 'I';
+  } else if (sumValue <= 6) {
+    return 'L';
+  } else if (sumValue >= 10 && sumValue <= 19) {
+    return 'H';
+  } else if (sumValue >= 20) {
+    return 'VH';
+  } else {
+    return 'M';
+  }
+};

@@ -23,10 +23,10 @@ const SliderInput = ({ id, title, formik, ...props }) => {
         min={1}
         max={5}
         step={1}
-        defaultValue={1}
         onChange={(e) => formik.setFieldValue(id, e.target.value)}
-        valueLabelDisplay="auto"
+        defaultValue={1}
         getAriaValueText={valuetext}
+        valueLabelDisplay="on"
         {...props}
       />
     </div>

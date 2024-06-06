@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 
-// const API_URL ='http://10.55.54.161:30090/api/v1/'
+// const API_URL = 'http://10.55.54.161:30090/api/v1/';
 const API_URL =
   process.env.REACT_APP_DEPLOY_STATE === 'true'
     ? 'http://10.55.54.161:30090/api/v1/'
@@ -87,7 +87,7 @@ export const fetchZeroReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllOfficeReport = (month, keyword) => {
+export const getAllOfficeReport = (month, keyword, search) => {
   const queryString = stringify(
     {
       bulan: month,
@@ -355,11 +355,14 @@ export const fetchAllActionPlanReportSuccess = (data) => ({
   payload: data,
 });
 
-export const getAllDatabaseReport = (start, end) => {
+export const getAllDatabaseReport = (start, end, user) => {
   const queryString = stringify(
     {
+      role: user.role,
       endDate: end,
       startDate: start,
+      kodeCabang: user.branchCode,
+      kodeUnitKerja: user.division,
     },
     {
       arrayFormat: 'comma',
@@ -393,11 +396,14 @@ export const getAllDatabaseReport = (start, end) => {
   };
 };
 
-export const getAllActionPlanReport = (start, end) => {
+export const getAllActionPlanReport = (start, end, user) => {
   const queryString = stringify(
     {
+      role: user.role,
       endDate: end,
       startDate: start,
+      kodeCabang: user.branchCode,
+      kodeUnitKerja: user.division,
     },
     {
       arrayFormat: 'comma',

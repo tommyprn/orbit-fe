@@ -10,7 +10,8 @@ export const validationSchema = yup.object({
     .string(`masukkan kronologi singkat kejadian`)
     .required(`kronologi singkat wajib diisi`),
   reportDate: yup.string(`input tanggal`).required(`tanggal laporan wajib diisi`),
-  incidentDate: yup.string(`input tanggal`).required(`tanggal insiden wajib diisi`),
+  incidentStartDate: yup.string(`input tanggal`).required(`tanggal insiden wajib diisi`),
+  incidentEndDate: yup.string(`input tanggal`).required(`tanggal insiden wajib diisi`),
   identifiedDate: yup.string(`input tanggal`).required(`tanggal identifikasi wajib diisi`),
   impact: yup.string(`masukkan dampak dari kejadian`).required(`dampak permasalahan wajib diisi`),
   caseCause: yup
@@ -37,10 +38,13 @@ export const validationSchema = yup.object({
     is: 'Loss Event',
     then: yup.number().required('kerugian aktual wajib diisi'),
   }),
-  costCentre: yup.number(`masukkan data cost centre`).when(['actualLoss', 'recoveryAmount'], {
-    is: (gross, rec) => gross + rec > 0,
-    then: yup.number().typeError('harap pilih cost centre').required(`harap pilih cost centre`),
-  }),
+  costCentre: yup
+    .number(`masukkan data cost centre`)
+    .nullable()
+    .when(['actualLoss', 'recoveryAmount'], {
+      is: (gross, rec) => gross - rec > 0,
+      then: yup.number().typeError('harap pilih cost centre').required(`harap pilih cost centre`),
+    }),
   recoverySource: yup.string(`masukkan sumber recovery`).when('recoveryAmount', {
     is: (val) => val > 0,
     then: yup.string().required(`sumber recovery wajib diisi`),

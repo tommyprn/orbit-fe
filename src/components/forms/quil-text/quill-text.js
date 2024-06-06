@@ -10,7 +10,6 @@ const QuillTextField = (props) => {
   const [isTouched, setIsTouched] = useState(false);
 
   const handleQuillChange = (content) => {
-    setIsTouched(true);
     setText(content);
     if (onChange) {
       onChange(content);
@@ -24,15 +23,23 @@ const QuillTextField = (props) => {
   }, [value]);
 
   return (
-    <div style={{ width: width ? width : '80%', display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{
+        width: width ? width : '80%',
+        minWidth: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <div style={{ height: '136px' }}>
         <TextField id={id} sx={{ display: 'none' }} value={text} />
 
         <ReactQuill
           theme="snow"
           value={text}
-          onChange={handleQuillChange}
           style={{ width: '100%', height: '92px' }}
+          onBlur={() => setIsTouched(true)}
+          onChange={handleQuillChange}
         />
       </div>
       {error && isTouched ? <p className="helper-text">{helperText}</p> : null}

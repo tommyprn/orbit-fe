@@ -118,6 +118,7 @@ const ReportStatus = (props) => {
         header={header}
         onSearch={onSearch}
         onUpdate={onEditHandler}
+        disabled={true}
         onDelete={onDeleteHandler}
         onPageChange={(perPage, page) => {
           setRowPerPage(perPage);

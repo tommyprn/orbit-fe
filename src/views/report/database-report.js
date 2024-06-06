@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
+import secureLocalStorage from 'react-secure-storage';
 import { connect } from 'react-redux';
 import { getAllDatabaseReport, getAllActionPlanReport } from 'src/actions/reportActions';
 
@@ -13,19 +14,28 @@ import './report.css';
 
 const DatabaseReport = (props) => {
   const { report, getAllDatabaseReport, getAllActionPlanReport } = props;
+  const user = JSON.parse(secureLocalStorage.getItem('user'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
   const [endDate, setEndDate] = useState(dayjs());
   const [startDate, setStartDate] = useState(dayjs().subtract(5, 'day'));
 
   useEffect(() => {
     (async () => {
+      const userSent = {
+        role: role,
+        division: user.divisiUser,
+        branchCode: user.kodeCabangKcuUser,
+      };
       await getAllDatabaseReport(
         dayjs(startDate).format('DD-MM-YYYY'),
         dayjs(endDate).format('DD-MM-YYYY'),
+        userSent,
       );
       await getAllActionPlanReport(
         dayjs(startDate).format('DD-MM-YYYY'),
         dayjs(endDate).format('DD-MM-YYYY'),
+        userSent,
       );
     })();
   }, [endDate, startDate]);
@@ -59,8 +69,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllDatabaseReport: (start, end) => dispatch(getAllDatabaseReport(start, end)),
-    getAllActionPlanReport: (start, end) => dispatch(getAllActionPlanReport(start, end)),
+    getAllDatabaseReport: (start, end, user) => dispatch(getAllDatabaseReport(start, end, user)),
+    getAllActionPlanReport: (start, end, user) =>
+      dispatch(getAllActionPlanReport(start, end, user)),
   };
 };
 

@@ -20,7 +20,7 @@ import { getZeroReport, createZeroReport, updateWorkingDays } from 'src/actions/
 import secureLocalStorage from 'react-secure-storage';
 
 // component
-import SearchBar from 'src/components/search-bar/SearchBar';
+// import SearchBar from 'src/components/search-bar/SearchBar';
 import SimpleModal from 'src/components/modal/simpleModal';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
@@ -50,7 +50,7 @@ const NilPage = (props) => {
   const user = JSON.parse(secureLocalStorage.getItem('history'));
 
   const [page, setPage] = useState(0);
-  const [keyword, setKeyword] = useState('');
+  // const [keyword, setKeyword] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [workingDays, setWorkingDays] = useState(false);
   const [workingDaysModal, setWorkingDaysModal] = useState(false);
@@ -58,9 +58,9 @@ const NilPage = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getZeroReport({ page, perPage: rowsPerPage }, keyword, user);
+      await getZeroReport({ page, perPage: rowsPerPage }, user);
     })();
-  }, [page, keyword, rowsPerPage]);
+  }, [page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,9 +72,9 @@ const NilPage = (props) => {
     setPage(0);
   };
 
-  const onSearch = (values) => {
-    setKeyword(values);
-  };
+  // const onSearch = (values) => {
+  //   setKeyword(values);
+  // };
 
   const onClose = () => {
     setWorkingDaysModal(false);
@@ -119,7 +119,7 @@ const NilPage = (props) => {
   };
 
   const data = LED.nil;
-
+  console.log(user);
   return (
     <PageContainer titdatae="Laporan Nihil" description="zero report Page">
       <Breadcrumb title="Laporan Nihil" items={BCrumb} />
@@ -146,7 +146,11 @@ const NilPage = (props) => {
         isOpen={workingDaysModal}
         onCloseHandler={onClose}
       >
-        <TextField onChange={(e) => setWorkingDays(e.target.value)} sx={{ width: '100%' }} />
+        <TextField
+          defaultValue={LED?.workDays}
+          onChange={(e) => setWorkingDays(e.target.value)}
+          sx={{ width: '100%' }}
+        />
 
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
@@ -170,7 +174,7 @@ const NilPage = (props) => {
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <SearchBar onSubmit={(val) => onSearch(val)} />
+            {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
             <div />
             {user.role?.toLowerCase() === 'approver' ? (
               <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
@@ -178,7 +182,11 @@ const NilPage = (props) => {
               </Button>
             ) : user.role?.toLowerCase() === 'verifikator' ? (
               <Button variant="contained" onClick={openWorkingDaysModal}>
-                Ubah periode pembuatan laporan nihil
+                <Typography>
+                  Periode submit laporan nihil:{' '}
+                  <span style={{ color: '#551a8b', fontWeight: 'bold' }}>{LED.workDays} </span>
+                  hari kerja
+                </Typography>
               </Button>
             ) : null}
           </div>
@@ -260,8 +268,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getZeroReport: (pagination, keyword, role) =>
-      dispatch(getZeroReport(pagination, keyword, role)),
+    getZeroReport: (pagination, user) => dispatch(getZeroReport(pagination, user)),
     createZeroReport: (user) => dispatch(createZeroReport(user)),
     updateWorkingDays: (workingDays) => dispatch(updateWorkingDays(workingDays)),
   };

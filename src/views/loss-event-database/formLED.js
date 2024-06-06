@@ -9,6 +9,7 @@ import { getDropdown } from 'src/actions/masterDataActions';
 import { useNavigate } from 'react-router';
 import { formatNumber } from 'src/utils/use-formatter';
 import { validationSchema } from './validationForm';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { useSelector, connect } from 'react-redux';
 import { IconX, IconCloudUpload } from '@tabler/icons';
 import { createFormLed, createDraftLed } from 'src/actions/formLEDActions';
@@ -127,7 +128,7 @@ const CreateFormLED = (props) => {
       brief: '',
       impact: '',
       followUp: '',
-      caseCause: 0,
+      caseCause: null,
       actionPlan: [
         {
           PIC: '',
@@ -140,17 +141,18 @@ const CreateFormLED = (props) => {
           targetDate: '',
         },
       ],
-      caseStatus: 0,
-      costCentre: 0,
+      caseStatus: null,
+      costCentre: null,
       chronology: '',
       reportDate: dayjs().toString(),
       actualLoss: '0',
-      incidentDate: '',
-      caseCategory: 0,
+      caseCategory: null,
       potentialLoss: '0',
       identifiedDate: '',
       recoveryAmount: '0',
       recoverySource: '',
+      incidentEndDate: '',
+      incidentStartDate: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -245,10 +247,10 @@ const CreateFormLED = (props) => {
                       setCaseStatusValue({ id: 0, label: '' });
                     } else {
                       setCaseStatusValue(newValue);
-                      formik.setFieldValue('caseStatus', newValue.id);
+                      formik.setFieldValue('caseStatus', newValue?.id);
                     }
                   }}
-                  isOptionEqualToValue={(option, value) => option.id === value.id}
+                  isOptionEqualToValue={(option, value) => option?.id === value?.id}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -308,47 +310,74 @@ const CreateFormLED = (props) => {
                   </div>
 
                   <div className="form-input-date-wrapper">
-                    <Typography variant="body1">Tanggal kejadian</Typography>
+                    <Typography variant="body1">Tanggal mulai kejadian</Typography>
 
-                    <>
-                      <DatePicker
-                        id="incidentDate"
-                        format="DD - MMM - YYYY"
-                        error={formik.touched.incidentDate && Boolean(formik.errors.incidentDate)}
-                        onBlur={formik.handleBlur}
-                        slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
-                        helperText={formik.touched.incidentDate && formik.errors.incidentDate}
-                        onChange={(value) => {
-                          formik.setFieldValue('incidentDate', String(value));
-                          const diff = dateDiff(formik.values.reportDate, value);
-                          console.log(diff);
-                          if (diff > 5) {
-                            setSLANotif('kejadian ini sudah melewati SLA');
-                          } else {
-                            setSLANotif('');
-                          }
-                        }}
-                      />
-                      {slaNotif ? (
-                        <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
-                          {slaNotif}
-                        </Typography>
-                      ) : null}
-                    </>
+                    <MobileDatePicker
+                      id="incidentStartDate"
+                      error={
+                        formik.touched.incidentStartDate && Boolean(formik.errors.incidentStartDate)
+                      }
+                      format="DD - MMM - YYYY"
+                      onBlur={formik.handleBlur}
+                      slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
+                      helperText={
+                        formik.touched.incidentStartDate && formik.errors.incidentStartDate
+                      }
+                      onChange={(value) => {
+                        formik.setFieldValue('incidentStartDate', String(value));
+                      }}
+                    />
+                  </div>
+
+                  <Typography
+                    sx={{ fontWeight: 'bold', alignSelf: 'flex-start', marginTop: '40px' }}
+                  >
+                    s/d
+                  </Typography>
+
+                  <div className="form-input-date-wrapper">
+                    <Typography variant="body1">Tanggal akhir kejadian</Typography>
+
+                    <MobileDatePicker
+                      id="incidentEndDate"
+                      format="DD - MMM - YYYY"
+                      error={
+                        formik.touched.incidentEndDate && Boolean(formik.errors.incidentEndDate)
+                      }
+                      onBlur={formik.handleBlur}
+                      slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
+                      helperText={formik.touched.incidentEndDate && formik.errors.incidentEndDate}
+                      onChange={(value) => {
+                        formik.setFieldValue('incidentEndDate', String(value));
+                      }}
+                    />
                   </div>
 
                   <div className="form-input-date-wrapper">
                     <Typography variant="body1">Tanggal identifikasi</Typography>
 
-                    <DatePicker
+                    <MobileDatePicker
                       id="identifiedDate"
                       format="DD - MMM - YYYY"
                       error={formik.touched.identifiedDate && Boolean(formik.errors.identifiedDate)}
                       onBlur={formik.handleBlur}
-                      onChange={(value) => formik.setFieldValue('identifiedDate', String(value))}
+                      onChange={(value) => {
+                        formik.setFieldValue('identifiedDate', String(value));
+                        const diff = dateDiff(formik.values.reportDate, value);
+                        if (diff > 5) {
+                          setSLANotif('kejadian ini sudah melewati SLA');
+                        } else {
+                          setSLANotif('');
+                        }
+                      }}
                       slotProps={{ textField: { placeholder: 'DD - MMM - YYYY' } }}
                       helperText={formik.touched.identifiedDate && formik.errors.identifiedDate}
                     />
+                    {slaNotif ? (
+                      <Typography sx={{ marginLeft: 1, marginTop: '8px' }} color="error">
+                        {slaNotif}
+                      </Typography>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -613,12 +642,8 @@ const CreateFormLED = (props) => {
                   value={costCentreValue}
                   options={createOption(masterData.dropdown.costCentre)}
                   onChange={(event, newValue) => {
-                    if (newValue === null) {
-                      setCostCentreValue({ id: 0, label: '' });
-                    } else {
-                      setCostCentreValue(newValue);
-                      formik.setFieldValue('costCentre', newValue.id);
-                    }
+                    setCostCentreValue(newValue);
+                    formik.setFieldValue('costCentre', newValue?.id);
                   }}
                   isOptionEqualToValue={(option, value) => option.id === value.id}
                   renderInput={(params) => (
@@ -655,7 +680,7 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tindak lanjut
+                  Tindakan yang dilakukan
                 </Typography>
 
                 <QuillTextField
@@ -687,7 +712,7 @@ const CreateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindakan yang dilakukan
+                  Tindak Lanjut
                 </Typography>
 
                 <Button variant="contained" onClick={addRow}>

@@ -1,23 +1,30 @@
 import * as yup from 'yup';
 
 export const riskFormSchema = yup.object({
-  caseStatus: yup
-    .number(`masukkan status kejadian`)
-    .typeError('harap pilih status kejadian')
-    .required(`harap pilih status kejadian`),
+  workProcess: yup.string('masukkan proses kerja').required('proses kerja wajib diisi'),
   chronology: yup.string(`masukkan kronologi kejadian`).required(`kronologi wajib diisi`),
+  root: yup.string('masukkan akar permasalahan').required('akar permasalahan wajib diisi'),
 
-  // financial
-  potentialLoss: yup.string(`masukkan nominal kerugian potensial finansial`).when('caseStatus', {
-    is: 'Risk Event',
-    then: yup.string().required('potensi kerugian wajib diisi'),
-  }),
+  category: '',
+  cause: '',
+  owner: yup.string('masukkan pemilik risiko').required('pemilik risiko wajib diisi'),
+  significance: yup
+    .string('masukkan signifikansi risiko')
+    .required('signifikansi risiko wajib diisi'),
 
-  actualLoss: yup
-    .number(`masukkan nominal kerugian aktual`)
-    .moreThan(yup.ref('recoveryAmount'), 'nilai harus lebih besar dari recovery')
-    .when('caseStatus', {
-      is: 'Loss Event',
-      then: yup.number().required('kerugian aktual wajib diisi'),
-    }),
+  impact: yup.number().max(5).min(1),
+  likelihood: yup.number().max(5).min(1),
+});
+
+export const controlFormSchema = yup.object({
+  name: yup.string('masukkan nama kontrol').required('nama kontrol wajib diisi'),
+  description: yup.string('masukkan deskripsi kontrol').required('deskripsi kontrol wajib diisi'),
+  owner: yup.string('masukkan nama pemilik kontrol').required('nama pemilik kontrol wajib diisi'),
+  frequency: yup.string('pilih frekuensi kontrol').required('frekuensi kontrol wajib dipilih'),
+  effectiveness: yup
+    .string('pilih efektivitas kontrol')
+    .required('efektivitas kontrol wajib dipilih'),
+  keyControl: yup.string('pilih kontrol utama').required('kontrol utama wajib dipilih'),
+  impact: yup.number().max(5).min(1),
+  likelihood: yup.number().max(5).min(1),
 });

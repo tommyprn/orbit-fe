@@ -146,18 +146,18 @@ const ListLED = (props) => {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
                             <TableCell>{index + 1}</TableCell>
-                            <TableCell>{row.idLaporan}</TableCell>
+                            <TableCell>{row?.idLaporan}</TableCell>
                             <TableCell>
                               {' '}
                               {row?.unitKerja?.namaUnitKerja !== 'CABANG'
                                 ? row?.unitKerja?.namaUnitKerja
                                 : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
                             </TableCell>
-                            <TableCell>{row.statusKejadian.nama}</TableCell>
+                            <TableCell>{row.statusKejadian?.nama}</TableCell>
                             <TableCell>
                               {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
                             </TableCell>
-                            <TableCell>{row.statusLaporan.nama}</TableCell>
+                            <TableCell>{row.statusLaporan?.nama}</TableCell>
                             <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                               <Button
                                 size="small"

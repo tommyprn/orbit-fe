@@ -17,6 +17,7 @@ import {
   FETCH_ONE_FORM_LED_FAILURE,
   FETCH_ONE_FORM_LED_REQUEST,
   FETCH_ONE_FORM_LED_SUCCESS,
+  FETCH_WORKING_DAYS_SUCCESS,
 } from '../actions/formLEDActions';
 
 const initialState = {
@@ -27,6 +28,7 @@ const initialState = {
   inbox: {},
   detail: {},
   history: {},
+  workDays: 0,
   loading: false,
 };
 
@@ -55,7 +57,9 @@ const formLedReducer = (state = initialState, action) => {
     case FETCH_FORM_LED_SUCCESS:
       return { ...state, list: action.payload, loading: false };
     case FETCH_ZERO_REPORT_SUCCESS:
-      return { ...state, nil: action.payload, loading: false };
+      return { ...state, nil: action.payload, workDays: action.payload.hariKerja, loading: false };
+    case FETCH_WORKING_DAYS_SUCCESS:
+      return { ...state, workDays: action.payload.data.hariKerja, loading: false };
     case FETCH_HISTORY_LED_SUCCESS:
       return { ...state, history: action.payload, loading: false };
     case FETCH_ONE_FORM_LED_SUCCESS:

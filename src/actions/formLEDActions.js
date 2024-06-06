@@ -52,7 +52,7 @@ export const createFormLed = (payload, user) => {
       formData.append('kodeUnitKerja', user.division);
     }
 
-    formData.append('ssl', payload.costCentre);
+    formData.append('ssl', payload.costCentre ?? 0);
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
     formData.append('aktivitas', payload.caseCategory);
@@ -60,7 +60,8 @@ export const createFormLed = (payload, user) => {
     formData.append('tindakLanjut', payload.followUp);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus);
-    formData.append('tanggalKejadian', payload.incidentDate);
+    formData.append('tanggalKejadianEnd', payload.incidentEndDate);
+    formData.append('tanggalKejadianStart', payload.incidentStartDate);
     formData.append('potensiKerugian', payload.potentialLoss);
     formData.append('nominalRecovery', payload.recoveryAmount);
     formData.append('penyebabKejadian', payload.caseCause);
@@ -136,22 +137,29 @@ export const editFormLed = (payload, user) => {
     }
 
     formData.append('id', payload.id);
-    formData.append('ssl', payload.costCentre);
+    formData.append('ssl', payload.costCentre ?? 0);
     formData.append('dampak', payload.impact);
     if (payload.reportId) {
       formData.append('idLaporan', payload.reportId);
     }
     formData.append('kronologi', payload.chronology);
-    formData.append('aktivitas', payload.caseCategory);
+    formData.append('aktivitas', payload.caseCategory ?? '');
     formData.append('tanggalLapor', payload.reportDate);
     formData.append('tindakLanjut', payload.followUp);
-    formData.append('statusKejadian', payload.caseStatus);
+    formData.append('statusKejadian', payload.caseStatus ?? '');
     formData.append('sumberRecovery', payload.recoverySource);
-    formData.append('tanggalKejadian', payload.incidentDate);
+    formData.append(
+      'tanggalKejadianEnd',
+      payload.incidentEndDate ? payload.incidentEndDate : new Date(),
+    );
+    formData.append(
+      'tanggalKejadianStart',
+      payload.incidentStartDate ? payload.incidentStartDate : new Date(),
+    );
     formData.append('potensiKerugian', payload.potentialLoss);
     formData.append('nominalRecovery', payload.recoveryAmount);
     formData.append('kronologiSingkat', payload.brief);
-    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('penyebabKejadian', payload.caseCause ?? '');
     formData.append('tanggalIdentifikasi', payload.identifiedDate);
     formData.append('nominalRealisasiKerugian', payload.actualLoss);
 
@@ -217,12 +225,12 @@ export const createDraftLed = (payload, user) => {
     if (payload.id) {
       formData.append('id', payload.id);
     }
-    formData.append('ssl', payload.costCentre);
+    formData.append('ssl', payload.costCentre ?? 0);
     formData.append('nip', user.nip);
     formData.append('role', user.role);
     formData.append('dampak', payload.impact);
     formData.append('kronologi', payload.chronology);
-    formData.append('aktivitas', payload.caseCategory);
+    formData.append('aktivitas', payload.caseCategory ?? 0);
     formData.append('kodeCabang', user.branchCode);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
@@ -230,11 +238,18 @@ export const createDraftLed = (payload, user) => {
     formData.append('tanggalLapor', payload.reportDate ? payload.reportDate : new Date());
     formData.append('kodeUnitKerja', user.division);
     formData.append('sumberRecovery', payload.recoverySource);
-    formData.append('statusKejadian', payload.caseStatus);
-    formData.append('tanggalKejadian', payload.incidentDate ? payload.incidentDate : new Date());
+    formData.append('statusKejadian', payload.caseStatus ?? 0);
+    formData.append(
+      'tanggalKejadianEnd',
+      payload.incidentEndDate ? payload.incidentEndDate : new Date(),
+    );
+    formData.append(
+      'tanggalKejadianStart',
+      payload.incidentStartDate ? payload.incidentStartDate : new Date(),
+    );
     formData.append('potensiKerugian', payload.potentialLoss);
     formData.append('nominalRecovery', payload.recoveryAmount);
-    formData.append('penyebabKejadian', payload.caseCause);
+    formData.append('penyebabKejadian', payload.caseCause ?? 0);
     formData.append('kronologiSingkat', payload.brief);
     formData.append(
       'tanggalIdentifikasi',
@@ -692,6 +707,7 @@ export const getHistoryLED = (id) => {
 
 export const FETCH_ZERO_REPORT_REQUEST = 'FETCH_ZERO_REPORT_REQUEST';
 export const FETCH_ZERO_REPORT_SUCCESS = 'FETCH_ZERO_REPORT_SUCCESS';
+export const FETCH_WORKING_DAYS_SUCCESS = 'FETCH_WORKING_DAYS_SUCCESS';
 export const FETCH_ZERO_REPORT_FAILURE = 'FETCH_ZERO_REPORT_FAILURE';
 
 export const fetchZeroReportStart = () => ({
@@ -703,16 +719,24 @@ export const fetchZeroReportSuccess = (data) => ({
   payload: data,
 });
 
+export const fetchWorkingDaysSuccess = (data) => ({
+  type: FETCH_WORKING_DAYS_SUCCESS,
+  payload: data,
+});
+
 export const fetchZeroReportFailure = (error) => ({
   type: FETCH_ZERO_REPORT_FAILURE,
   payload: error,
 });
 
-export const getZeroReport = (pagination, keyword, user) => {
+export const getZeroReport = (pagination, user) => {
   const queryString = stringify(
     {
+      role: user?.role,
       pageSize: pagination?.perPage,
       pageNumber: pagination?.page,
+      kodeCabang: user?.branchCode,
+      kodeUnitKerja: user?.division,
     },
     {
       arrayFormat: 'comma',
@@ -817,9 +841,8 @@ export const updateWorkingDays = (days) => {
         body: JSON.stringify(requestBody),
       });
       const responseJSON = await res.json();
-
       if (res.status === 200) {
-        dispatch(fetchZeroReportSuccess(responseJSON));
+        dispatch(fetchWorkingDaysSuccess(responseJSON));
       }
 
       return responseJSON;

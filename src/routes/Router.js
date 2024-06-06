@@ -42,6 +42,9 @@ const IrmActionReport = Loadable(lazy(() => import('../views/report/irm-action-r
 const RiskFormPage = Loadable(
   lazy(() => import('../views/risk-control-self-assestment/risk-form')),
 );
+const ControlFormPage = Loadable(
+  lazy(() => import('../views/risk-control-self-assestment/control-form')),
+);
 
 /* ****404 Pages***** */
 const Error = Loadable(lazy(() => import('../views/authentication/Error')));
@@ -88,7 +91,7 @@ const Router = [
 
       // ============================== REPORT ROUTES =====================================
       { path: '/RCSA/report', exact: true, element: <LedReport /> },
-      { path: '/RCSA/control', exact: true, element: <LedReport /> },
+      { path: '/RCSA/control', exact: true, element: <ControlFormPage /> },
       { path: '/RCSA/testing', exact: true, element: <LedReport /> },
       { path: '/RCSA/risk-form', exact: true, element: <RiskFormPage /> },
 

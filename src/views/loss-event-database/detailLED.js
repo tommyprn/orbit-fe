@@ -176,7 +176,13 @@ const DetailLED = (props) => {
       />
 
       <SimpleModal isOpen={approveModal} title="Konfirmasi" onCloseHandler={onCancelApprove} on>
-        Apakah kamu yakin ingin menyetujui laporan ini, dan meneruskan ke IRM?
+        Apakah kamu yakin ingin menyetujui laporan ini, dan meneruskan ke{' '}
+        {role === 'verifikator'
+          ? 'Head of L2 IRM'
+          : role === 'approver'
+          ? 'IRM Verifikator'
+          : 'status closed'}
+        ?
         <div
           style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px' }}
         >
@@ -218,7 +224,9 @@ const DetailLED = (props) => {
               />
               <DetailWrapper
                 title="Tanggal kejadian"
-                content={formatDate(dataLaporan?.tanggalKejadian)}
+                content={`${formatDate(dataLaporan?.tanggalKejadianStart)} - ${formatDate(
+                  dataLaporan?.tanggalKejadianEnd,
+                )}`}
               />
               <DetailWrapper
                 title="Tanggal identifikasi"
@@ -290,17 +298,21 @@ const DetailLED = (props) => {
 
               <DetailWrapper
                 title="Cost Centre"
-                content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}
+                content={
+                  dataLaporan?.sslEntity
+                    ? `${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`
+                    : '-'
+                }
               />
 
               <DetailWrapper
                 title="Sumber recovery"
-                content={`Rp. ${formatNumber(dataLaporan?.sumberRecovery)}`}
+                content={dataLaporan?.sumberRecovery ? `${dataLaporan?.sumberRecovery}` : '-'}
               />
 
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Tindak lanjut
+                  Tindakan yang dilakukan
                 </Typography>
                 <Typography
                   variant="body1"

@@ -227,12 +227,12 @@ const userDev = {
   divisiUser: 'CABANG',
   kodeCabangUser: '301',
   kodeRegionUser: '004',
-  namaCabangUser: 'KP0 Muamalat Tower',
+  namaCabangUser: 'Kuningan Branch',
   departementUser: 'CABANG',
   statusCabangUser: 'KCP',
   idDepartementUser: '4',
   kodeCabangKcuUser: '301',
-  namaCabangKcuUser: 'KP0 Muamalat Tower',
+  namaCabangKcuUser: 'KCO muamalat tower',
   apps: [
     {
       id: 1,
