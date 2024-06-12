@@ -198,6 +198,49 @@ const UpdateFormLED = (props) => {
                 />
               </div>
 
+              <DetailWrapper
+                title="Tanggal lapor"
+                content={formatDate(dataLaporan?.tanggalLapor)}
+              />
+
+              <DetailWrapper
+                title="Tanggal kejadian"
+                content={formatDate(dataLaporan?.tanggalKejadian)}
+              />
+
+              <DetailWrapper
+                title="Tanggal identifikasi"
+                content={formatDate(dataLaporan?.tanggalIdentifikasi)}
+              />
+
+              <DetailWrapper
+                title="Penyebab kejadian"
+                content={dataLaporan?.penyebabKejadianEntity?.nama}
+              />
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6">Kategori kejadian</Typography>
+
+              <>
+                <DetailWrapper
+                  title="Aktivitas (level 3)"
+                  content={dataLaporan?.aktivitasEntity?.nama}
+                />
+                <DetailWrapper
+                  title="Sub kategori (level 2)"
+                  content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
+                />
+                <DetailWrapper
+                  title="Kategori (level 1)"
+                  content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
+                />
+              </>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6">Kronologi kejadian</Typography>
+
+              <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
+
               {caseStatusValue.label === 'Loss Event' ? (
                 <div className="form-input-wrapper">
                   <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
@@ -225,19 +268,6 @@ const UpdateFormLED = (props) => {
                 </div>
               )}
 
-              <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
-              <DetailWrapper
-                title="Tanggal lapor"
-                content={formatDate(dataLaporan?.tanggalLapor)}
-              />
-              <DetailWrapper
-                title="Tanggal kejadian"
-                content={formatDate(dataLaporan?.tanggalKejadian)}
-              />
-              <DetailWrapper
-                title="Tanggal identifikasi"
-                content={formatDate(dataLaporan?.tanggalIdentifikasi)}
-              />
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                   Dampak
@@ -248,28 +278,6 @@ const UpdateFormLED = (props) => {
                   dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
                 />
               </div>
-              <DetailWrapper
-                title="Penyebab kejadian"
-                content={dataLaporan?.penyebabKejadianEntity?.nama}
-              />
-            </>
-
-            <Divider sx={{ marginTop: 'px' }} />
-            <Typography variant="h6">Kategori kejadian</Typography>
-
-            <>
-              <DetailWrapper
-                title="Aktivitas (level 3)"
-                content={dataLaporan?.aktivitasEntity?.nama}
-              />
-              <DetailWrapper
-                title="Sub kategori (level 2)"
-                content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
-              />
-              <DetailWrapper
-                title="Kategori (level 1)"
-                content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
-              />
             </>
 
             <Divider sx={{ marginTop: 'px' }} />
@@ -283,8 +291,8 @@ const UpdateFormLED = (props) => {
 
               {caseStatusValue.label !== 'Loss Event' ? (
                 <DetailWrapper
-                  title="Nominal recovery"
-                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
+                  title="Gross loss"
+                  content={`Rp. ${formatNumber(dataLaporan?.nominalRealisasiKerugian)}`}
                 />
               ) : (
                 <div className="form-input-wrapper">
@@ -330,7 +338,7 @@ const UpdateFormLED = (props) => {
               {caseStatusValue.label !== 'Loss Event' ? (
                 <DetailWrapper
                   title="Nominal recovery"
-                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
+                  content={`Rp. ${formatNumber(dataLaporan?.nominalRecover)}`}
                 />
               ) : (
                 <div className="form-input-wrapper">
@@ -371,13 +379,51 @@ const UpdateFormLED = (props) => {
                 )}`}
               />
 
-              <DetailWrapper
-                title="Cost Centre"
-                content={`${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`}
-              />
+              {caseStatusValue.label !== 'Loss Event' ? (
+                <DetailWrapper
+                  title="Cost Centre"
+                  content={
+                    dataLaporan?.sslEntity?.kode
+                      ? `${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`
+                      : '-'
+                  }
+                />
+              ) : (
+                <div className="form-input-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%' }}>
+                    Cost Centre
+                  </Typography>
+
+                  <Autocomplete
+                    disablePortal
+                    id="costCentre"
+                    sx={{ width: '80%' }}
+                    value={formik.values.costCentre}
+                    options={createOption(masterData.dropdown.costCentre, true)}
+                    onChange={(event, newValue) => {
+                      formik.setFieldValue('costCentre', newValue?.id);
+                    }}
+                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        id="costCentre"
+                        value={formik.values.costCentre}
+                        error={formik.touched.costCentre && Boolean(formik.errors.costCentre)}
+                        onBlur={formik.handleBlur}
+                        helperText={formik.touched.costCentre && formik.errors.costCentre}
+                        placeholder="pilih kode cost centre"
+                      />
+                    )}
+                  />
+                </div>
+              )}
 
               {caseStatusValue.label !== 'Loss Event' ? (
-                <DetailWrapper title="Sumber recovery" content={dataLaporan.sumberRecovery} />
+                <DetailWrapper
+                  title="Sumber recovery"
+                  content={dataLaporan?.sumberRecovery ? dataLaporan?.sumberRecovery : '-'}
+                />
               ) : (
                 <div className="form-input-wrapper">
                   <Typography variant="body1" sx={{ width: '20%' }}>
@@ -387,7 +433,7 @@ const UpdateFormLED = (props) => {
                   <TextField
                     sx={{ width: '80%' }}
                     id="recoverySource"
-                    value={formik.values.recoverySource}
+                    value={formik.values?.recoverySource}
                     error={formik.touched.recoverySource && Boolean(formik.errors.recoverySource)}
                     onBlur={formik.handleBlur}
                     variant="outlined"

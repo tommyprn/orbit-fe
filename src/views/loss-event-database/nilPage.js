@@ -21,8 +21,8 @@ import secureLocalStorage from 'react-secure-storage';
 
 // component
 // import SearchBar from 'src/components/search-bar/SearchBar';
-import SimpleModal from 'src/components/modal/simpleModal';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
@@ -119,7 +119,7 @@ const NilPage = (props) => {
   };
 
   const data = LED.nil;
-  console.log(user);
+
   return (
     <PageContainer titdatae="Laporan Nihil" description="zero report Page">
       <Breadcrumb title="Laporan Nihil" items={BCrumb} />
@@ -177,7 +177,7 @@ const NilPage = (props) => {
             {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
             <div />
             {user.role?.toLowerCase() === 'approver' ? (
-              <Button variant="contained" onClick={onOpenModal} disabled={!data.isButtonEnable}>
+              <Button variant="contained" onClick={onOpenModal} disabled={!data?.isButtonEnable}>
                 Submit laporan nihil
               </Button>
             ) : user.role?.toLowerCase() === 'verifikator' ? (

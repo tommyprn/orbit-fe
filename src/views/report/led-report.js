@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { connect } from 'react-redux';
 import { chartValue } from 'src/utils/use-chart-utils';
@@ -30,7 +30,6 @@ const LedReport = (props) => {
   const [period, setPeriod] = useState('triwulan');
   const [isDownload, setIsDownload] = useState(false);
   const [selectedLine, setSelectedLine] = useState('');
-  const [selectedType, setSelectedType] = useState('');
   const [selectedCase, setSelectedCase] = useState('kategori');
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
   const [selectedMonth, setSelectedMonth] = useState(dayjs().get('month'));
@@ -99,14 +98,10 @@ const LedReport = (props) => {
 
   const handleDOwnloadGraph = () => {
     exportComponentAsJPEG(chartRef, {
-      fileName: `${period !== 'month' ? 'BarChart' : 'PieChart'}-${selectedType}-${selectedYear}`,
+      fileName: `${period !== 'month' ? 'BarChart' : 'PieChart'}-${selectedYear}`,
       html2CanvasOptions: { height: 500 },
     });
   };
-
-  const getCaseOpt = useMemo(() => {
-    return report?.report.filter((item) => item.label !== 'Grand Total').map((item) => item.label);
-  }, [report?.report]);
 
   const openModal = () => {
     setIsOpen(true);
@@ -217,17 +212,7 @@ const LedReport = (props) => {
             justifyContent: 'space-between',
           }}
         >
-          <Autocomplete
-            sx={{ width: '400px' }}
-            options={getCaseOpt}
-            onChange={(event, newValue) => {
-              if (newValue !== null) {
-                setSelectedType(newValue);
-              }
-            }}
-            isOptionEqualToValue={(option, value) => option === value}
-            renderInput={(params) => <TextField {...params} label="jenis kejadian" />}
-          />
+          <div />
           <Button onClick={handleDOwnloadGraph} startIcon={<IconDownload size={18} />}>
             Unduh Grafik Laporan
           </Button>
@@ -250,9 +235,9 @@ const LedReport = (props) => {
               <BarChart
                 data={report?.report}
                 label={axis[period]}
-                title={`${selectedType} ${selectedYear}`}
+                title={`Periode ${period} ${selectedYear}`}
                 period={period}
-                filter={selectedType}
+                filter={selectedCase}
               />
             </div>
           ) : (
