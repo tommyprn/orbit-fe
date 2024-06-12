@@ -130,19 +130,20 @@ const masterDataReducer = (state = initialState, action) => {
       return {
         ...state,
         dropdown: {
+          branch: action.payload.cabang,
+          region: action.payload.region,
           workUnit: action.payload.unitKerja,
+          reportId: action.payload.laporan,
           caseCause: action.payload.penyebabKejadian,
           costCentre: action.payload.ssl,
           caseStatus: action.payload.statusKejadian,
+          directorate: action.payload.direktorat,
+          reportStatus: action.payload.statusLaporan,
           caseCategory: {
             levelOne: action.payload.kategoriKejadian,
             levelTwo: action.payload.subKategori,
             levelThree: action.payload.aktivitas,
           },
-          reportStatus: action.payload.statusLaporan,
-          branch: action.payload.cabang,
-          region: action.payload.region,
-          directorate: action.payload.direktorat,
         },
         isLoading: false,
       };

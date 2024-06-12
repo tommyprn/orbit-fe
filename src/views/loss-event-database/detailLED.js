@@ -97,6 +97,7 @@ const DetailLED = (props) => {
       navigate('/LED/list');
       showToast('success', 'laporan berhasil dikirim kembali ke RTU');
     } else {
+      setRejectModal(false);
       showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
@@ -117,6 +118,7 @@ const DetailLED = (props) => {
       navigate('/LED/list');
       showToast('success', 'laporan berhasil dikirim kembali ke RTU');
     } else {
+      setSendBackModal(false);
       showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
@@ -141,6 +143,7 @@ const DetailLED = (props) => {
       navigate('/LED/list');
       showToast('success', 'berhasil mengubah status laporan');
     } else {
+      setApproveModal(false);
       showToast('error', 'gagal koneksi ke server, mohon coba beberapa saat lagi');
     }
   };
@@ -206,18 +209,7 @@ const DetailLED = (props) => {
 
             <>
               <DetailWrapper title="Status kejadian" content={dataLaporan?.statusKejadian?.nama} />
-              <div className="detail-wrapper">
-                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Kronologi
-                </Typography>
 
-                <Typography
-                  variant="body1"
-                  sx={{ width: '80%' }}
-                  dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
-                />
-              </div>
-              <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
               <DetailWrapper
                 title="Tanggal lapor"
                 content={formatDate(dataLaporan?.tanggalLapor)}
@@ -232,6 +224,50 @@ const DetailLED = (props) => {
                 title="Tanggal identifikasi"
                 content={formatDate(dataLaporan?.tanggalIdentifikasi)}
               />
+              <DetailWrapper
+                title="Penyebab kejadian"
+                content={dataLaporan?.penyebabKejadianEntity?.nama}
+              />
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6">Kategori kejadian</Typography>
+
+              <>
+                <DetailWrapper
+                  title="Aktivitas (level 3)"
+                  content={
+                    dataLaporan?.aktivitasEntity?.nama +
+                    ' - ' +
+                    dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.kode
+                  }
+                />
+                <DetailWrapper
+                  title="Sub kategori (level 2)"
+                  content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
+                />
+                <DetailWrapper
+                  title="Kategori (level 1)"
+                  content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
+                />
+              </>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6">Kronologi kejadian</Typography>
+
+              <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
+
+              <div className="detail-wrapper">
+                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                  Kronologi
+                </Typography>
+
+                <Typography
+                  variant="body1"
+                  sx={{ width: '80%' }}
+                  dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+                />
+              </div>
+
               <div className="detail-wrapper">
                 <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
                   Dampak
@@ -242,32 +278,6 @@ const DetailLED = (props) => {
                   dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
                 />
               </div>
-              <DetailWrapper
-                title="Penyebab kejadian"
-                content={dataLaporan?.penyebabKejadianEntity?.nama}
-              />
-            </>
-
-            <Divider sx={{ marginTop: 'px' }} />
-            <Typography variant="h6">Kategori kejadian</Typography>
-
-            <>
-              <DetailWrapper
-                title="Aktivitas (level 3)"
-                content={
-                  dataLaporan?.aktivitasEntity?.nama +
-                  ' - ' +
-                  dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.kode
-                }
-              />
-              <DetailWrapper
-                title="Sub kategori (level 2)"
-                content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
-              />
-              <DetailWrapper
-                title="Kategori (level 1)"
-                content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
-              />
             </>
 
             <Divider sx={{ marginTop: 'px' }} />

@@ -45,7 +45,8 @@ const DetailedReportTable = ({
     'Divisi/ Cabang',
     'No LED',
     'Status Kejadian',
-    'Tanggal Kejadian',
+    'Awal Tanggal Kejadian',
+    'Akhir Tanggal Kejadian',
     'Tanggal Teridentifikasi',
     'Tanggal Lapor',
     'Penyebab Kejadian',
@@ -77,7 +78,8 @@ const DetailedReportTable = ({
             : item?.unitKerja?.namaUnitKerja,
         noLed: item.idLaporan,
         statusKejadian: item.statusKejadian.nama,
-        tanggalKejadian: item.tanggalKejadian,
+        tanggalKejadianStart: item.tanggalKejadianStart,
+        tanggalKejadianEnd: item.tanggalKejadianEnd,
         tanggalTeridentifikasi: item.tanggalIdentifikasi,
         tanggalLapor: item.tanggalLapor,
         penyebabKejadian: item.penyebabKejadian?.nama,
@@ -92,7 +94,7 @@ const DetailedReportTable = ({
         grossLoss: String(item?.nominalRealisasiKerugian),
         netLoss: String(item?.nominalRealisasiKerugian - item?.nominalRecovery),
         statusLed: item.statusLaporan.nama,
-        targetDate: item.actionPlan[item.actionPlan?.length - 1].targetPenyelesaian,
+        targetDate: item.actionPlan[item.actionPlan?.length - 1]?.targetPenyelesaian,
         sumberRecovery: item?.sumberRecovery,
         statusOtorisasi:
           item.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
@@ -101,7 +103,7 @@ const DetailedReportTable = ({
           item.unitKerja?.namaUnitKerja === 'CABANG'
             ? item.cabang.emailPic
             : item.unitKerja?.emailPic,
-        tindakLanjut: item.actionPlan[item.actionPlan?.length - 1].actionPlan,
+        tindakLanjut: item.actionPlan[item.actionPlan?.length - 1]?.actionPlan,
         statusAkhir:
           item.statusLaporan.nama === 'Void' || item.statusLaporan.nama === 'Closed'
             ? item.statusLaporan.nama
@@ -111,9 +113,9 @@ const DetailedReportTable = ({
   };
 
   const generateActionData = (data) => {
-    return data.map((item) => {
+    return data?.map((item) => {
       return {
-        nomorLed: item.laporanLed?.idLaporan,
+        nomorLed: item?.laporanLedEntity,
         plan: item?.actionPlan,
         divisi:
           item?.unitKerjaEntity?.namaUnitKerja !== 'CABANG'
@@ -139,7 +141,8 @@ const DetailedReportTable = ({
         <Workbook.Column label="Divisi/ Cabang" value="divisiCabang" />
         <Workbook.Column label="No LED" value="noLed" />
         <Workbook.Column label="Status Kejadian" value="statusKejadian" />
-        <Workbook.Column label="Tanggal Kejadian" value="tanggalKejadian" />
+        <Workbook.Column label="Awal Tanggal Kejadian" value="tanggalKejadianStart" />
+        <Workbook.Column label="Akhir Tanggal Kejadian" value="tanggalKejadianEnd" />
         <Workbook.Column label="Tanggal Teridentifikasi" value="tanggalTeridentifikasi" />
         <Workbook.Column label="Tanggal Lapor" value="tanggalLapor" />
         <Workbook.Column label="Penyebab Kejadian" value="penyebabKejadian" />
@@ -233,9 +236,7 @@ const DetailedReportTable = ({
                 key={index}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell>
-                  {dayjs(row.createdDate, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
-                </TableCell>
+                <TableCell>{dayjs(row.createdDate, 'DD-MM-YYYY').format('MMMM')}</TableCell>
                 <TableCell>{dayjs(row.createdDate, 'DD-MM-YYYY').get('year')}</TableCell>
                 <TableCell>
                   {row?.unitKerja?.namaUnitKerja === 'CABANG'
@@ -244,9 +245,18 @@ const DetailedReportTable = ({
                 </TableCell>
                 <TableCell>{row.idLaporan}</TableCell>
                 <TableCell>{row.statusKejadian.nama}</TableCell>
-                <TableCell>{dayjs(row.tanggalKejadian).format('DD - MMM - YYYY')}</TableCell>
-                <TableCell>{dayjs(row.tanggalIdentifikasi).format('DD - MMM - YYYY')}</TableCell>
-                <TableCell>{dayjs(row.tanggalLapor).format('DD - MMM - YYYY')}</TableCell>
+                <TableCell>
+                  {dayjs(row.tanggalKejadianStart, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                </TableCell>
+                <TableCell>
+                  {dayjs(row.tanggalKejadianEnd, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                </TableCell>
+                <TableCell>
+                  {dayjs(row.tanggalIdentifikasi, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                </TableCell>
+                <TableCell sx={{ textWrap: 'noWrap' }}>
+                  {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                </TableCell>
                 <TableCell>{row.penyebabKejadian?.nama}</TableCell>
                 <TableCell>{row.aktivitas?.subKategori?.kategoriKejadian.nama}</TableCell>
                 <TableCell>{row.aktivitas?.subKategori?.nama}</TableCell>

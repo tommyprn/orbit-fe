@@ -16,12 +16,13 @@ import {
   TablePagination,
 } from '@mui/material';
 import { getAllInbox } from 'src/actions/formLEDActions';
-import { IconFileDescription, IconPencil } from '@tabler/icons';
+import { IconFileDescription, IconPencil, IconHistory } from '@tabler/icons';
 import secureLocalStorage from 'react-secure-storage';
 
 // component
 import SearchBar from 'src/components/search-bar/SearchBar';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
+import HistoryModal from 'src/components/modal/history-modal';
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 
@@ -310,7 +311,9 @@ const Dashboard = (props) => {
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
   const [history, setHistory] = useState();
+  const [selected, setSelected] = useState({});
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [historyModal, setHistoryModal] = useState(false);
 
   if (process.env.REACT_APP_DEPLOY_STATE === 'false') {
     secureLocalStorage.setItem('user', JSON.stringify(userDev));
@@ -345,8 +348,17 @@ const Dashboard = (props) => {
     navigation(`/LED/detail-report/${id}`);
   };
 
-  const onEdit = (id) => {
-    navigation(`/LED/edit-report/${id}`);
+  const onEdit = (id, status) => {
+    if (role.toLowerCase() === 'inputer') {
+      if (status === 'Draft' || status === 'Need Update') {
+        navigation(`/LED/edit-report/${id}`);
+      } else {
+        navigation(`/LED/update-report/${id}`);
+      }
+    }
+    if (role.toLowerCase() === 'approver') {
+      navigation(`/LED/detail-report/${id}`);
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -363,11 +375,27 @@ const Dashboard = (props) => {
     setKeyword(values);
   };
 
+  const openHistory = (id, reportId) => {
+    setSelected({ id: id, reportId: reportId });
+    setHistoryModal(true);
+  };
+
+  const closeHistory = () => {
+    setSelected(0);
+    setHistoryModal(false);
+  };
+
   const data = LED.inbox;
   return (
     <PageContainer title="Dashboard" description="Dashboard Page">
       <Breadcrumb title="Dashboard" items={BCrumb} />
-
+      <HistoryModal
+        id={selected.id}
+        reportId={selected.reportId}
+        title="History laporan"
+        isOpen={historyModal}
+        onCloseHandler={closeHistory}
+      />
       <DashboardCard>
         <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
           {data?.totalData > 0 ? (
@@ -422,7 +450,7 @@ const Dashboard = (props) => {
                             >
                               Detail
                             </Button>
-                            {user.role?.toLowerCase() === 'inputer' ? (
+                            {role?.toLowerCase() === 'inputer' ? (
                               <Button
                                 sx={{ marginRight: '8px' }}
                                 size="small"
@@ -436,6 +464,17 @@ const Dashboard = (props) => {
                                 Edit
                               </Button>
                             ) : null}
+                            <Button
+                              size="small"
+                              color="success"
+                              variant="contained"
+                              startIcon={<IconHistory />}
+                              onClick={() => {
+                                openHistory(row.id, row.idLaporan);
+                              }}
+                            >
+                              History
+                            </Button>
                           </TableCell>
                         </StyledTableRow>
                       ))}

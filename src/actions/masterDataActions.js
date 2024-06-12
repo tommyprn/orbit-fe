@@ -25,10 +25,12 @@ export const fetchDropdownFailure = (error) => ({
   payload: error,
 });
 
-export const getDropdown = (id) => {
+export const getDropdown = (user, id) => {
   const queryString = stringify(
     {
       id,
+      kodeDivisi: user?.division,
+      kodeCabang: user?.branchCode,
     },
     {
       arrayFormat: 'comma',

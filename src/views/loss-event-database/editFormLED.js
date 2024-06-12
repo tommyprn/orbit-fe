@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import { dateDiff } from 'src/utils/use-calculate';
 import { useFormik } from 'formik';
 import { showToast } from 'src/utils/use-snackbar';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { formatNumber } from 'src/utils/use-formatter';
 import { validationSchema } from './validationForm';
@@ -149,10 +148,10 @@ const EditFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getDropdown();
+      await getDropdown(user);
       await getOneFormLed(params.reportId);
     })();
-  }, [getDropdown, getOneFormLed, params.reportId]);
+  }, [params.reportId]);
 
   useEffect(() => {
     const newData = masterData?.dropdown?.caseCategory?.levelThree?.find((item) => {
@@ -361,27 +360,6 @@ const EditFormLED = (props) => {
 
             <div className="form-input-wrapper">
               <Typography variant="body1" sx={{ width: '20%' }}>
-                Kronologi
-              </Typography>
-
-              <QuillTextField
-                id="chronology"
-                value={formik.values.chronology}
-                isError={formik.errors}
-                onChange={(val) => formik.setFieldValue('chronology', val)}
-                helperText="kronologi kejadian wajib diisi"
-              />
-            </div>
-
-            <FormTextField
-              id="brief"
-              title="Kronologi singkat"
-              formik={formik}
-              placeholder="akar masalah dari kejadian tersebut"
-            />
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
                 Tanggal lapor
               </Typography>
 
@@ -468,20 +446,6 @@ const EditFormLED = (props) => {
                   ) : null}
                 </div>
               </div>
-            </div>
-
-            <div className="form-input-wrapper">
-              <Typography variant="body1" sx={{ width: '20%' }}>
-                Dampak
-              </Typography>
-
-              <QuillTextField
-                id="impact"
-                value={formik.values.impact}
-                isError={formik.errors}
-                onChange={(val) => formik.setFieldValue('impact', val)}
-                helperText="dampak kejadian wajib diisi"
-              />
             </div>
 
             <div className="form-input-wrapper">
@@ -595,6 +559,46 @@ const EditFormLED = (props) => {
                 variant="outlined"
                 placeholder="kategori akan terpilih secara otomatis"
                 disabled
+              />
+            </div>
+
+            <Divider sx={{ marginTop: 'px' }} />
+            <Typography variant="h6" sx={{ width: '20%' }}>
+              Kronologi kejadian
+            </Typography>
+
+            <FormTextField
+              id="brief"
+              title="Kronologi singkat"
+              formik={formik}
+              placeholder="akar masalah dari kejadian tersebut"
+            />
+
+            <div className="form-input-wrapper">
+              <Typography variant="body1" sx={{ width: '20%' }}>
+                Kronologi
+              </Typography>
+
+              <QuillTextField
+                id="chronology"
+                value={formik.values.chronology}
+                isError={formik.errors}
+                onChange={(val) => formik.setFieldValue('chronology', val)}
+                helperText="kronologi kejadian wajib diisi"
+              />
+            </div>
+
+            <div className="form-input-wrapper">
+              <Typography variant="body1" sx={{ width: '20%' }}>
+                Dampak
+              </Typography>
+
+              <QuillTextField
+                id="impact"
+                value={formik.values.impact}
+                isError={formik.errors}
+                onChange={(val) => formik.setFieldValue('impact', val)}
+                helperText="dampak kejadian wajib diisi"
               />
             </div>
 
@@ -727,7 +731,7 @@ const EditFormLED = (props) => {
                 id="costCentre"
                 sx={{ width: '80%' }}
                 value={costCentreValue}
-                options={createOption(masterData.dropdown.costCentre)}
+                options={createOption(masterData.dropdown.costCentre, true)}
                 onChange={(event, newValue) => {
                   if (newValue === null) {
                     setCostCentreValue({ id: 0, label: '' });
@@ -915,7 +919,7 @@ const EditFormLED = (props) => {
                               />
                             </TableCell>
                             <TableCell>
-                              <DatePicker
+                              <MobileDatePicker
                                 id={`actionPlan.${index}.targetDate`}
                                 sx={{ width: '200px' }}
                                 error={
@@ -1049,7 +1053,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     approveLED: (id, user) => dispatch(approveLED(id, user)),
-    getDropdown: () => dispatch(getDropdown()),
+    getDropdown: (user, id) => dispatch(getDropdown(user, id)),
     editFormLed: (payload, user) => dispatch(editFormLed(payload, user)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
     createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),

@@ -4,7 +4,6 @@ import secureLocalStorage from 'react-secure-storage';
 import { dateDiff } from 'src/utils/use-calculate';
 import { useFormik } from 'formik';
 import { showToast } from 'src/utils/use-snackbar';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { useNavigate } from 'react-router';
 import { formatNumber } from 'src/utils/use-formatter';
@@ -112,7 +111,7 @@ const CreateFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getDropdown();
+      await getDropdown(user);
     })();
   }, [getDropdown]);
 
@@ -267,38 +266,6 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Kronologi
-                </Typography>
-
-                <QuillTextField
-                  id="chronology"
-                  value={formik.values.chronology}
-                  isError={formik.errors}
-                  onChange={(val) => formik.setFieldValue('chronology', val)}
-                  helperText="kronologi kejadian wajib diisi"
-                />
-              </div>
-
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
-                  Kronologi singkat
-                </Typography>
-
-                <TextField
-                  sx={{ width: '80%' }}
-                  id="brief"
-                  value={formik.values.brief}
-                  error={formik.touched.brief && Boolean(formik.errors.brief)}
-                  onBlur={formik.handleBlur}
-                  variant="outlined"
-                  onChange={formik.handleChange}
-                  helperText={formik.touched.brief && formik.errors.brief}
-                  placeholder="ringkasan dari kronologi kejadian tersebut"
-                />
-              </div>
-
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
                   Tanggal
                 </Typography>
 
@@ -380,20 +347,6 @@ const CreateFormLED = (props) => {
                     ) : null}
                   </div>
                 </div>
-              </div>
-
-              <div className="form-input-wrapper">
-                <Typography variant="body1" sx={{ width: '20%' }}>
-                  Dampak
-                </Typography>
-
-                <QuillTextField
-                  id="impact"
-                  value={formik.values.impact}
-                  isError={formik.errors}
-                  onChange={(val) => formik.setFieldValue('impact', val)}
-                  helperText="dampak kejadian wajib diisi"
-                />
               </div>
 
               <div className="form-input-wrapper">
@@ -507,6 +460,57 @@ const CreateFormLED = (props) => {
                   variant="outlined"
                   placeholder="kategori akan terpilih secara otomatis"
                   disabled
+                />
+              </div>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Typography variant="h6" sx={{ width: '20%' }}>
+                Kronologi kejadian
+              </Typography>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Kronologi singkat
+                </Typography>
+
+                <TextField
+                  sx={{ width: '80%' }}
+                  id="brief"
+                  value={formik.values.brief}
+                  error={formik.touched.brief && Boolean(formik.errors.brief)}
+                  onBlur={formik.handleBlur}
+                  variant="outlined"
+                  onChange={formik.handleChange}
+                  helperText={formik.touched.brief && formik.errors.brief}
+                  placeholder="ringkasan dari kronologi kejadian tersebut"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Kronologi
+                </Typography>
+
+                <QuillTextField
+                  id="chronology"
+                  value={formik.values.chronology}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('chronology', val)}
+                  helperText="kronologi kejadian wajib diisi"
+                />
+              </div>
+
+              <div className="form-input-wrapper">
+                <Typography variant="body1" sx={{ width: '20%' }}>
+                  Dampak
+                </Typography>
+
+                <QuillTextField
+                  id="impact"
+                  value={formik.values.impact}
+                  isError={formik.errors}
+                  onChange={(val) => formik.setFieldValue('impact', val)}
+                  helperText="dampak kejadian wajib diisi"
                 />
               </div>
 
@@ -640,7 +644,7 @@ const CreateFormLED = (props) => {
                   id="costCentre"
                   sx={{ width: '80%' }}
                   value={costCentreValue}
-                  options={createOption(masterData.dropdown.costCentre)}
+                  options={createOption(masterData.dropdown.costCentre, true)}
                   onChange={(event, newValue) => {
                     setCostCentreValue(newValue);
                     formik.setFieldValue('costCentre', newValue?.id);
@@ -740,6 +744,7 @@ const CreateFormLED = (props) => {
                         <TableCell sx={{ width: '200px' }}>Lampiran</TableCell>
                       </TableRow>
                     </TableHead>
+
                     <TableBody>
                       {rows.map((row, index) => {
                         return (
@@ -826,7 +831,7 @@ const CreateFormLED = (props) => {
                               />
                             </TableCell>
                             <TableCell>
-                              <DatePicker
+                              <MobileDatePicker
                                 id={`actionPlan.${index}.targetDate`}
                                 sx={{ width: '200px' }}
                                 error={
@@ -940,7 +945,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDropdown: () => dispatch(getDropdown()),
+    getDropdown: (user) => dispatch(getDropdown(user)),
     createFormLed: (payload, user) => dispatch(createFormLed(payload, user)),
     createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),
   };

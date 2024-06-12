@@ -1,11 +1,13 @@
-export const createOption = (option) => {
+export const createOption = (option, ssl) => {
   if (option === undefined) {
     return [];
   } else {
     return option?.map((item) => {
       return {
         id: item.id || item.idUnitKerja,
-        label: item.nama || item.namaUnitKerja || item.namaCabang || item.namaRegion,
+        label: ssl
+          ? `${item.kode} - ${item.nama}`
+          : item.nama || item.namaUnitKerja || item.namaCabang || item.namaRegion,
         pic: item.namaPic || '',
         email: item.emailPic || '',
       };
@@ -26,6 +28,19 @@ export const createGroupedOption = (option) => {
           item.subKategori.kategoriKejadian.nama + ' - ' + item.subKategori.kategoriKejadian.kode,
         idSubCategory: item.subKategori.id,
         labelSubCategory: item.subKategori.nama,
+      };
+    });
+  }
+};
+
+export const createIdOption = (data) => {
+  if (data === undefined) {
+    return [];
+  } else {
+    return data?.map((item) => {
+      return {
+        id: item.id,
+        label: item.idLaporan,
       };
     });
   }
