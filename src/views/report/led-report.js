@@ -7,7 +7,7 @@ import { getAllLedReport } from 'src/actions/reportActions';
 import { useDownloadExcel } from 'react-export-table-to-excel';
 import { exportComponentAsJPEG } from 'react-component-export-image';
 import { IconDownload, IconFilter } from '@tabler/icons';
-import { periodOpt, caseOpt, month, getYearOpt } from '../../utils/get-dropdown-data';
+import { month, caseOpt, periodOpt, statusOpt, getYearOpt } from '../../utils/get-dropdown-data';
 import { Button, TextField, Typography, IconButton, Autocomplete } from '@mui/material';
 
 // component
@@ -27,6 +27,7 @@ const LedReport = (props) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [line, setLine] = useState([]);
+  const [status, setStatus] = useState(3);
   const [period, setPeriod] = useState('triwulan');
   const [isDownload, setIsDownload] = useState(false);
   const [selectedLine, setSelectedLine] = useState('');
@@ -37,9 +38,9 @@ const LedReport = (props) => {
   useEffect(() => {
     (async () => {
       await getDropdown();
-      await getAllLedReport(selectedCase, selectedYear, line, selectedLine);
+      await getAllLedReport(selectedCase, selectedYear, line, selectedLine, status);
     })();
-  }, [selectedYear, selectedCase, line, selectedLine]);
+  }, [line, status, selectedYear, selectedCase, selectedLine]);
 
   const axis = {
     month: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -136,21 +137,6 @@ const LedReport = (props) => {
             }}
           >
             <div style={{ display: 'flex', gap: '16px' }}>
-              <IconButton color="#4a116f" size="large" onClick={openModal}>
-                <IconFilter />
-              </IconButton>
-
-              <Autocomplete
-                sx={{ width: '200px' }}
-                options={caseOpt}
-                onChange={(event, newValue) => {
-                  if (newValue !== null) {
-                    setSelectedCase(newValue.value);
-                  }
-                }}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
-                renderInput={(params) => <TextField {...params} label="filter kejadian" />}
-              />
               <Autocomplete
                 sx={{ width: '200px' }}
                 options={periodOpt}
@@ -188,10 +174,50 @@ const LedReport = (props) => {
                   renderInput={(params) => <TextField {...params} label="Bulan" />}
                 />
               ) : null}
+
+              <IconButton
+                sx={{
+                  width: '50px',
+                  height: '50px',
+                  // backgroundColor: '#ECF2FF',
+                  // boxShadow:
+                  //   'rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px',
+                }}
+                color="#4a116f"
+                onClick={openModal}
+              >
+                <IconFilter />
+              </IconButton>
             </div>
             <Button onClick={handleDownloadTable} startIcon={<IconDownload size={18} />}>
               Unduh Tabel Laporan
             </Button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '16px' }}>
+            <Autocomplete
+              sx={{ width: '200px' }}
+              options={caseOpt}
+              onChange={(event, newValue) => {
+                if (newValue !== null) {
+                  setSelectedCase(newValue.value);
+                }
+              }}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              renderInput={(params) => <TextField {...params} label="filter kejadian" />}
+            />
+
+            <Autocomplete
+              sx={{ width: '200px' }}
+              options={statusOpt(dropdown?.reportStatus)}
+              onChange={(event, newValue) => {
+                if (newValue !== null) {
+                  setStatus(newValue.value);
+                }
+              }}
+              isOptionEqualToValue={(option, value) => option.value === value.value}
+              renderInput={(params) => <TextField {...params} label="Status laporan" />}
+            />
           </div>
 
           <ReportFilterTable
@@ -220,15 +246,15 @@ const LedReport = (props) => {
 
         <div
           style={{
-            maxWidth: '1100px',
+            width: '1100px',
           }}
           ref={chartRef}
         >
           {period !== 'month' ? (
             <div
               style={{
+                width: '1000px',
                 display: 'flex',
-                maxWidth: '1000px',
                 alignItems: 'center',
               }}
             >
@@ -274,8 +300,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getDropdown: () => dispatch(getDropdown()),
-    getAllLedReport: (selCase, year, line, selectedLine) =>
-      dispatch(getAllLedReport(selCase, year, line, selectedLine)),
+    getAllLedReport: (selCase, year, line, selectedLine, status) =>
+      dispatch(getAllLedReport(selCase, year, line, selectedLine, status)),
   };
 };
 

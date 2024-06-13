@@ -37,21 +37,18 @@ const NavItem = ({ item, level, pathDirect, onClick, hideMenu }) => {
     marginBottom: '2px',
     padding: '8px 10px',
     borderRadius: `${customizer.borderRadius}px`,
-    backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
-    color:
-      level > 1 && pathDirect === item.href
-        ? `rgb(85,26,139) !important`
-        : theme.palette.text.secondary,
+    backgroundColor: level > 1 ? 'transparent' : 'inherit',
+    color: level > 1 && pathDirect === item.href ? `rgb(85,26,139) ` : theme.palette.text.secondary,
     paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
     '&:hover': {
-      backgroundColor: 'rgb(85,26,139,0.7)',
-      color: level > 1 ? 'rgb(85,26,139)' : 'white',
+      backgroundColor: '#6ec338',
+      color: 'white',
     },
     '&.Mui-selected': {
-      backgroundColor: 'rgb(85,26,139)',
+      backgroundColor: '#6ec338',
       color: 'white',
       '&:hover': {
-        backgroundColor: 'rgb(85,26,139,0.7)',
+        backgroundColor: 'rgb(110,195,56,0.7)',
         color: 'white',
       },
     },

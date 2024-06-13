@@ -24,7 +24,7 @@ export const fetchReportFailure = (error) => ({
   payload: error,
 });
 
-export const getAllLedReport = (selCase, year, array, selected) => {
+export const getAllLedReport = (selCase, year, array, selected, status) => {
   const queryString = stringify(
     {},
     {
@@ -45,6 +45,7 @@ export const getAllLedReport = (selCase, year, array, selected) => {
       tahun: year,
       cabang: selected === 'branch' && array.length > 0 ? array : null,
       region: selected === 'region' && array.length > 0 ? array : null,
+      status: status,
       filter: selCase,
       unitKerja: selected === 'division' && array.length > 0 ? array : null,
       direktorat: selected === 'directorate' && array.length > 0 ? array : null,

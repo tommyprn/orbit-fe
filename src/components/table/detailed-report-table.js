@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import dayjs from 'dayjs';
-import Workbook from 'react-excel-workbook';
+import { Workbook } from 'react-excel-workbook';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useSelector } from 'react-redux';
 import { formatNumber, formatText } from 'src/utils/use-formatter';

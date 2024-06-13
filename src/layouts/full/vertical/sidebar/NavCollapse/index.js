@@ -34,26 +34,27 @@ const NavCollapse = ({ menu, level, pathWithoutLastPart, pathDirect, onClick, hi
 
   // style
   const ListItemStyled = styled(ListItem)(() => ({
-    marginBottom: '2px',
     padding: '8px 10px',
-    paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
     whiteSpace: 'nowrap',
-    '&:hover': {
-      backgroundColor: 'rgb(85,26,139,0.7)',
-      color: 'white',
-    },
-    // backgroundColor: open && level < 2
-    //     ? 'rgb(85,26,139)'
-    //     : `inherit` && level > 1 && open
-    //     ? 'rgb(85,26,139)'
-    //     : theme.palette.text.secondary,
+    paddingLeft: hideMenu ? '10px' : level > 2 ? `${level * 15}px` : '10px',
+    marginBottom: '2px',
+    borderRadius: `${customizer.borderRadius}px`,
+    backgroundColor:
+      open && level < 2 ? 'rgb(85,26,139)' : level > 1 && open ? 'rgb(85,26,139)' : 'transparent',
     color:
       open && level < 2
-        ? 'rgb(85,26,139)'
-        : `inherit` && level > 1 && open
+        ? 'white'
+        : level > 1 && open
         ? 'rgb(85,26,139)'
         : theme.palette.text.secondary,
-    borderRadius: `${customizer.borderRadius}px`,
+    '&:hover': {
+      backgroundColor: 'rgb(85,26,139)',
+      color: 'white',
+    },
+    '&.Mui-selected': {
+      backgroundColor: 'rgb(85,26,139)',
+      color: 'white',
+    },
   }));
 
   // menu collapse for sub-levels

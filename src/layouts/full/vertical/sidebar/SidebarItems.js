@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router';
 import { toggleMobileSidebar } from 'src/store/customizer/CustomizerSlice';
-import { Box, List, useMediaQuery, Button, ButtonGroup, Typography } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
+import { Box, List, useMediaQuery, Button, ButtonGroup, Typography } from '@mui/material';
 import secureLocalStorage from 'react-secure-storage';
 
 import NavItem from './NavItem';
@@ -42,13 +42,13 @@ const SidebarItems = () => {
             } else if (item.children) {
               return (
                 <NavCollapse
-                  menu={item}
-                  pathDirect={pathDirect}
-                  hideMenu={hideMenu}
-                  pathWithoutLastPart={pathWithoutLastPart}
-                  level={1}
                   key={index}
+                  menu={item}
+                  level={1}
                   onClick={() => dispatch(toggleMobileSidebar())}
+                  hideMenu={hideMenu}
+                  pathDirect={pathDirect}
+                  pathWithoutLastPart={pathWithoutLastPart}
                 />
               );
 
@@ -58,9 +58,9 @@ const SidebarItems = () => {
                 <NavItem
                   item={item}
                   key={index}
-                  pathDirect={pathDirect}
-                  hideMenu={hideMenu}
                   onClick={() => dispatch(toggleMobileSidebar())}
+                  hideMenu={hideMenu}
+                  pathDirect={pathDirect}
                 />
               );
             }
@@ -83,7 +83,7 @@ const SidebarItems = () => {
             <Button onClick={() => onClick('Inputer')}>Inputer</Button>
             <Button onClick={() => onClick('Approver')}>Approver</Button>
             <Button onClick={() => onClick('Admin')}>Admin</Button>
-            <Button onClick={() => onClick('Verifikator')}>Verifikator</Button>
+            <Button onClick={() => onClick('Validator')}>Validator</Button>
             <Button onClick={() => onClick('IRMApproval')}>IRM Approval</Button>
           </ButtonGroup>
           <Typography sx={{ color: 'black', marginTop: '8px' }}>

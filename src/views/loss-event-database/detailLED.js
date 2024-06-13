@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import secureLocalStorage from 'react-secure-storage';
+import { usePDF } from 'react-to-pdf';
 import { connect } from 'react-redux';
 import { showToast } from 'src/utils/use-snackbar';
 import { IconDownload } from '@tabler/icons';
 import { useNavigate, useParams } from 'react-router';
 import { formatDate, formatNumber } from 'src/utils/use-formatter';
+
 import {
   Card,
   Table,
@@ -71,6 +73,7 @@ const DetailLED = (props) => {
   const [rejectModal, setRejectModal] = useState(false);
   const [approveModal, setApproveModal] = useState(false);
   const [sendBackModal, setSendBackModal] = useState(false);
+
   useEffect(() => {
     (async () => {
       await getOneFormLed(JSON.parse(params.reportId), params.incidentNumber);
@@ -152,6 +155,8 @@ const DetailLED = (props) => {
     setApproveModal(false);
   };
 
+  const { toPDF, targetRef } = usePDF({ filename: `Laporan LED No_${dataLaporan?.idLaporan}` });
+
   const role = user?.role.toLowerCase();
   const showButton =
     (role === 'approver' && statusLaporan === 'Recorded') ||
@@ -202,226 +207,238 @@ const DetailLED = (props) => {
         {isLoading ? (
           <Spinner />
         ) : (
-          <div className="form-sheet">
-            <div className="form-title">
-              <Typography variant="h4">Nomor Insiden: {dataLaporan?.idLaporan} </Typography>
-            </div>
-
-            <>
-              <DetailWrapper title="Status kejadian" content={dataLaporan?.statusKejadian?.nama} />
-
-              <DetailWrapper
-                title="Tanggal lapor"
-                content={formatDate(dataLaporan?.tanggalLapor)}
-              />
-              <DetailWrapper
-                title="Tanggal kejadian"
-                content={`${formatDate(dataLaporan?.tanggalKejadianStart)} - ${formatDate(
-                  dataLaporan?.tanggalKejadianEnd,
-                )}`}
-              />
-              <DetailWrapper
-                title="Tanggal identifikasi"
-                content={formatDate(dataLaporan?.tanggalIdentifikasi)}
-              />
-              <DetailWrapper
-                title="Penyebab kejadian"
-                content={dataLaporan?.penyebabKejadianEntity?.nama}
-              />
-
-              <Divider sx={{ marginTop: 'px' }} />
-              <Typography variant="h6">Kategori kejadian</Typography>
+          <div>
+            {role === 'approver' ? (
+              <section style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div />
+                <Button variant="contained" onClick={toPDF}>
+                  Unduh PDF
+                </Button>
+              </section>
+            ) : null}
+            <section className="form-sheet" ref={targetRef}>
+              <div className="form-title">
+                <Typography variant="h4">Nomor Insiden: {dataLaporan?.idLaporan} </Typography>
+              </div>
 
               <>
                 <DetailWrapper
-                  title="Aktivitas (level 3)"
-                  content={
-                    dataLaporan?.aktivitasEntity?.nama +
-                    ' - ' +
-                    dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.kode
-                  }
+                  title="Status kejadian"
+                  content={dataLaporan?.statusKejadian?.nama}
+                />
+
+                <DetailWrapper
+                  title="Tanggal lapor"
+                  content={formatDate(dataLaporan?.tanggalLapor)}
                 />
                 <DetailWrapper
-                  title="Sub kategori (level 2)"
-                  content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
+                  title="Tanggal kejadian"
+                  content={`${formatDate(dataLaporan?.tanggalKejadianStart)} - ${formatDate(
+                    dataLaporan?.tanggalKejadianEnd,
+                  )}`}
                 />
                 <DetailWrapper
-                  title="Kategori (level 1)"
-                  content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
+                  title="Tanggal identifikasi"
+                  content={formatDate(dataLaporan?.tanggalIdentifikasi)}
                 />
+                <DetailWrapper
+                  title="Penyebab kejadian"
+                  content={dataLaporan?.penyebabKejadianEntity?.nama}
+                />
+
+                <Divider sx={{ marginTop: 'px' }} />
+                <Typography variant="h6">Kategori kejadian</Typography>
+
+                <>
+                  <DetailWrapper
+                    title="Aktivitas (level 3)"
+                    content={
+                      dataLaporan?.aktivitasEntity?.nama +
+                      ' - ' +
+                      dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.kode
+                    }
+                  />
+                  <DetailWrapper
+                    title="Sub kategori (level 2)"
+                    content={dataLaporan?.aktivitasEntity?.subKategori?.nama}
+                  />
+                  <DetailWrapper
+                    title="Kategori (level 1)"
+                    content={dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama}
+                  />
+                </>
+
+                <Divider sx={{ marginTop: 'px' }} />
+                <Typography variant="h6">Kronologi kejadian</Typography>
+
+                <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
+
+                <div className="detail-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Kronologi
+                  </Typography>
+
+                  <Typography
+                    variant="body1"
+                    sx={{ width: '80%' }}
+                    dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+                  />
+                </div>
+
+                <div className="detail-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Dampak
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ width: '80%' }}
+                    dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
+                  />
+                </div>
               </>
 
               <Divider sx={{ marginTop: 'px' }} />
-              <Typography variant="h6">Kronologi kejadian</Typography>
+              <Typography variant="h6">Kerugian finansial</Typography>
 
-              <DetailWrapper title="Kronologi singkat" content={dataLaporan?.kronologiSingkat} />
-
-              <div className="detail-wrapper">
-                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Kronologi
-                </Typography>
-
-                <Typography
-                  variant="body1"
-                  sx={{ width: '80%' }}
-                  dangerouslySetInnerHTML={{ __html: dataLaporan?.kronologi }}
+              <>
+                <DetailWrapper
+                  title="Nominal potensi kerugian"
+                  content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
                 />
-              </div>
 
-              <div className="detail-wrapper">
-                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Dampak
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ width: '80%' }}
-                  dangerouslySetInnerHTML={{ __html: dataLaporan?.dampak }}
+                <DetailWrapper
+                  title="Nominal recovery"
+                  content={`Rp. ${formatNumber(dataLaporan?.nominalRecovery)}`}
                 />
-              </div>
-            </>
 
-            <Divider sx={{ marginTop: 'px' }} />
-            <Typography variant="h6">Kerugian finansial</Typography>
-
-            <>
-              <DetailWrapper
-                title="Nominal potensi kerugian"
-                content={`Rp. ${formatNumber(dataLaporan?.potensiKerugian)}`}
-              />
-
-              <DetailWrapper
-                title="Nominal recovery"
-                content={`Rp. ${formatNumber(dataLaporan?.nominalRecovery)}`}
-              />
-
-              <DetailWrapper
-                title="Gross loss"
-                content={`Rp. ${formatNumber(dataLaporan?.nominalRealisasiKerugian)}`}
-              />
-
-              <DetailWrapper
-                title="Nett loss"
-                content={`Rp. ${formatNumber(
-                  dataLaporan?.nominalRealisasiKerugian - dataLaporan?.nominalRecovery,
-                )}`}
-              />
-
-              <DetailWrapper
-                title="Cost Centre"
-                content={
-                  dataLaporan?.sslEntity
-                    ? `${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`
-                    : '-'
-                }
-              />
-
-              <DetailWrapper
-                title="Sumber recovery"
-                content={dataLaporan?.sumberRecovery ? `${dataLaporan?.sumberRecovery}` : '-'}
-              />
-
-              <div className="detail-wrapper">
-                <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                  Tindakan yang dilakukan
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ width: '80%' }}
-                  dangerouslySetInnerHTML={{ __html: dataLaporan?.tindakLanjut }}
+                <DetailWrapper
+                  title="Gross loss"
+                  content={`Rp. ${formatNumber(dataLaporan?.nominalRealisasiKerugian)}`}
                 />
-              </div>
-            </>
 
-            <Divider sx={{ marginTop: 'px' }} />
-            <Card
-              elevation={0}
-              sx={{
-                gap: '16px',
-                padding: 0,
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                }}
-              >
-                <Typography variant="h6">Tindak Lanjut</Typography>
-              </div>
+                <DetailWrapper
+                  title="Nett loss"
+                  content={`Rp. ${formatNumber(
+                    dataLaporan?.nominalRealisasiKerugian - dataLaporan?.nominalRecovery,
+                  )}`}
+                />
 
-              <Paper
+                <DetailWrapper
+                  title="Cost Centre"
+                  content={
+                    dataLaporan?.sslEntity
+                      ? `${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`
+                      : '-'
+                  }
+                />
+
+                <DetailWrapper
+                  title="Sumber recovery"
+                  content={dataLaporan?.sumberRecovery ? `${dataLaporan?.sumberRecovery}` : '-'}
+                />
+
+                <div className="detail-wrapper">
+                  <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
+                    Tindakan yang dilakukan
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ width: '80%' }}
+                    dangerouslySetInnerHTML={{ __html: dataLaporan?.tindakLanjut }}
+                  />
+                </div>
+              </>
+
+              <Divider sx={{ marginTop: 'px' }} />
+              <Card
+                elevation={0}
                 sx={{
-                  maxWidth: '100%',
-                  overflow: 'hidden',
+                  gap: '16px',
+                  padding: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
                 }}
               >
-                <TableContainer sx={{ paddingBottom: '20px' }}>
-                  <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>no</TableCell>
-                        <TableCell>Action Plan</TableCell>
-                        <TableCell>Unit Kerja/ Cabang</TableCell>
-                        <TableCell>PIC</TableCell>
-                        <TableCell>Email PIC</TableCell>
-                        <TableCell>Target penyelesaian</TableCell>
-                        <TableCell>Lampiran</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {dataActionPlan?.map((row, index) => {
-                        return (
-                          <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>
-                              <Typography variant="body1">{row?.actionPlan}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="body1">
-                                {row?.unitKerjaEntity?.namaUnitKerja ||
-                                  row?.cabangEntity?.namaCabang}
-                                <strong>
-                                  {` (${
-                                    row?.unitKerjaEntity?.kodeUnitKerja ||
-                                    row?.cabangEntity?.kodeCabang
-                                  })`}
-                                </strong>
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="body1">{row?.penanggungJawab}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="body1">{row?.email}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography variant="body1">
-                                {formatDate(row?.targetPenyelesaian)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              {row?.namaFile ? (
-                                <Button startIcon={<IconDownload />}>
-                                  <a id={row.id} href={`${API}download-lampiran?id=${row.id}`}>
-                                    {row.namaFile}
-                                  </a>
-                                </Button>
-                              ) : (
-                                <Typography variant="body1">Tidak ada File</Typography>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-            </Card>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <Typography variant="h6">Tindak Lanjut</Typography>
+                </div>
 
+                <Paper
+                  sx={{
+                    maxWidth: '100%',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <TableContainer sx={{ paddingBottom: '20px' }}>
+                    <Table size="small" aria-label="a dense table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>no</TableCell>
+                          <TableCell>Action Plan</TableCell>
+                          <TableCell>Unit Kerja/ Cabang</TableCell>
+                          <TableCell>PIC</TableCell>
+                          <TableCell>Email PIC</TableCell>
+                          <TableCell>Target penyelesaian</TableCell>
+                          <TableCell>Lampiran</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {dataActionPlan?.map((row, index) => {
+                          return (
+                            <TableRow key={index}>
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>
+                                <Typography variant="body1">{row?.actionPlan}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body1">
+                                  {row?.unitKerjaEntity?.namaUnitKerja ||
+                                    row?.cabangEntity?.namaCabang}
+                                  <strong>
+                                    {` (${
+                                      row?.unitKerjaEntity?.kodeUnitKerja ||
+                                      row?.cabangEntity?.kodeCabang
+                                    })`}
+                                  </strong>
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body1">{row?.penanggungJawab}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body1">{row?.email}</Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body1">
+                                  {formatDate(row?.targetPenyelesaian)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                {row?.namaFile ? (
+                                  <Button startIcon={<IconDownload />}>
+                                    <a id={row.id} href={`${API}download-lampiran?id=${row.id}`}>
+                                      {row.namaFile}
+                                    </a>
+                                  </Button>
+                                ) : (
+                                  <Typography variant="body1">Tidak ada File</Typography>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Card>
+            </section>
             <div className="button-wrapper">
               <Button variant="contained" color="secondary" onClick={backHandler}>
                 Kembali

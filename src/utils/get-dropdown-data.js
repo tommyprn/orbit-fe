@@ -58,3 +58,25 @@ export const periodOpt = [
   { label: 'Semi-Annually', value: 'semester' },
   { label: 'Annually', value: 'annual' },
 ];
+
+export const statusOpt = (data) => {
+  return data
+    ?.filter(
+      (item) =>
+        item.nama?.toLowerCase() !== 'recorded' &&
+        item.nama?.toLowerCase() !== 'void' &&
+        item.nama?.toLowerCase() !== 'draft' &&
+        item.nama?.toLowerCase() !== 'need update',
+    )
+    .map((item) => {
+      return {
+        label: item.nama,
+        value: item.id,
+      };
+    });
+};
+// [
+//   { label: 'On Progress', value: 'progress' },
+//   { label: 'Pending Closed', value: 'pending' },
+//   { label: 'Closed', value: 'closed' },
+// ];
