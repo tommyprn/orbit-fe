@@ -437,9 +437,8 @@ const Dashboard = (props) => {
                             {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
                           </TableCell>
                           <TableCell>{row.statusLaporan?.nama}</TableCell>
-                          <TableCell>
+                          <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                             <Button
-                              sx={{ marginRight: '8px' }}
                               size="small"
                               color="primary"
                               variant="contained"
@@ -452,7 +451,6 @@ const Dashboard = (props) => {
                             </Button>
                             {role?.toLowerCase() === 'inputer' ? (
                               <Button
-                                sx={{ marginRight: '8px' }}
                                 size="small"
                                 color="warning"
                                 variant="contained"

@@ -1007,14 +1007,16 @@ const EditFormLED = (props) => {
 
               {user.role?.toLowerCase() === 'inputer' ? (
                 <>
-                  <Button
-                    variant="contained"
-                    color="warning"
-                    onClick={onSaveAsDraft}
-                    disabled={!formik.dirty}
-                  >
-                    Draft
-                  </Button>
+                  {dataLaporan.statusLaporanEntity?.nama === 'Draft' ? (
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      onClick={onSaveAsDraft}
+                      disabled={!formik.dirty}
+                    >
+                      Draft
+                    </Button>
+                  ) : null}
                   <Button
                     variant="contained"
                     color="primary"

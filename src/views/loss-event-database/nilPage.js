@@ -180,7 +180,7 @@ const NilPage = (props) => {
               <Button variant="contained" onClick={onOpenModal} disabled={!data?.isButtonEnable}>
                 Submit laporan nihil
               </Button>
-            ) : user.role?.toLowerCase() === 'verifikator' ? (
+            ) : user.role?.toLowerCase() === 'validator' ? (
               <Button variant="contained" onClick={openWorkingDaysModal}>
                 <Typography>
                   Periode submit laporan nihil:{' '}

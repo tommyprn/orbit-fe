@@ -160,8 +160,9 @@ const DetailLED = (props) => {
   const role = user?.role.toLowerCase();
   const showButton =
     (role === 'approver' && statusLaporan === 'Recorded') ||
-    (role === 'verifikator' && statusLaporan === 'On Progress') ||
-    (role === 'irmapproval' && statusLaporan === 'Pending Closed');
+    (role === 'validator' && statusLaporan === 'On Progress' && !dataLaporan?.isPendingFraud) ||
+    (role === 'irmapproval' && statusLaporan === 'Pending Closed') ||
+    (role === 'validatorfraud' && statusLaporan === 'On Progress' && dataLaporan?.isPendingFraud);
 
   return (
     <PageContainer title="Buat Laporan Loss Event Database (LED)" description="EditFormLED Page">
@@ -185,10 +186,10 @@ const DetailLED = (props) => {
 
       <SimpleModal isOpen={approveModal} title="Konfirmasi" onCloseHandler={onCancelApprove} on>
         Apakah kamu yakin ingin menyetujui laporan ini, dan meneruskan ke{' '}
-        {role === 'verifikator'
+        {role === 'validator'
           ? 'Head of L2 IRM'
           : role === 'approver'
-          ? 'IRM Verifikator'
+          ? 'IRM validator'
           : 'status closed'}
         ?
         <div
@@ -446,13 +447,13 @@ const DetailLED = (props) => {
 
               {showButton ? (
                 <>
-                  {role !== 'verifikator' ? null : (
+                  {role !== 'validator' && role !== 'validatorfraud' ? null : (
                     <Button variant="contained" color="warning" onClick={onSendBack}>
                       Revisi Laporan
                     </Button>
                   )}
 
-                  {role === 'irmapproval' ? null : (
+                  {role === 'irmapproval' || role === 'validatorfraud' ? null : (
                     <Button variant="contained" color="error" onClick={onRejectReport}>
                       {statusLaporan === 'On Progress' ? 'Void ' : 'Revisi '}
                       Laporan

@@ -85,6 +85,7 @@ const SidebarItems = () => {
             <Button onClick={() => onClick('Admin')}>Admin</Button>
             <Button onClick={() => onClick('Validator')}>Validator</Button>
             <Button onClick={() => onClick('IRMApproval')}>IRM Approval</Button>
+            <Button onClick={() => onClick('ValidatorFraud')}>Fraud</Button>
           </ButtonGroup>
           <Typography sx={{ color: 'black', marginTop: '8px' }}>
             role: <strong>{role}</strong>

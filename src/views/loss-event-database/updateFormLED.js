@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import secureLocalStorage from 'react-secure-storage';
-import { connect } from 'react-redux';
 import { useFormik } from 'formik';
 import { showToast } from 'src/utils/use-snackbar';
 import { getDropdown } from 'src/actions/masterDataActions';
 import { createOption } from 'src/utils/use-options';
 import { IconCloudUpload } from '@tabler/icons';
 import { validationSchema } from './validationForm';
+import { connect, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { formatNumber, formatDate } from 'src/utils/use-formatter';
 import { editFormLed, getOneFormLed, approveLED } from 'src/actions/formLEDActions';
@@ -50,6 +50,7 @@ const UpdateFormLED = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const customizer = useSelector((state) => state.customizer);
 
   const { detail, isLoading, approveLED, masterData, getDropdown, editFormLed, getOneFormLed } =
     props;
@@ -151,7 +152,17 @@ const UpdateFormLED = (props) => {
   };
 
   return (
-    <PageContainer title="Edit Laporan Loss Event Database (LED)" description="EditFormLED Page">
+    <PageContainer
+      customStyle={{
+        maxWidth: customizer.isCollapse
+          ? `calc(100vw - 152px)`
+          : window.innerWidth > 1199
+          ? `calc(100vw - 335px)`
+          : '100%',
+      }}
+      title="Edit Laporan Loss Event Database (LED)"
+      description="EditFormLED Page"
+    >
       <Breadcrumb title="Edit Laporan LED" items={BCrumb} />
 
       <DashboardCard>

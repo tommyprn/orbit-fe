@@ -50,8 +50,9 @@ const HistoryModal = ({ id, reportId, LED, title, isOpen, getHistoryLED, onClose
     1: 'Inputer',
     2: 'Approver',
     3: 'IRM Admin',
-    4: 'IRM Verifikator',
+    4: 'IRM validator',
     5: 'IRM Approval',
+    6: 'Validator Fraud',
   };
 
   const header = [
