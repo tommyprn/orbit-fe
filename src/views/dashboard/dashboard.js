@@ -327,7 +327,7 @@ const Dashboard = (props) => {
       name: user?.nameUser,
       email: user?.emailUser,
       division: user?.divisiUser,
-      branchCode: user.kodeCabangUser,
+      branchCode: user?.kodeCabangUser,
       branchName: user?.namaCabangUser,
       department: user?.departementUser,
     };

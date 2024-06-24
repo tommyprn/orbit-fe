@@ -20,6 +20,7 @@ import { IconFileDescription, IconHistory, IconPencil } from '@tabler/icons';
 import secureLocalStorage from 'react-secure-storage';
 
 // component
+import Spinner from '../spinner/Spinner';
 import SearchBar from 'src/components/search-bar/SearchBar';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import HistoryModal from 'src/components/modal/history-modal';
@@ -49,6 +50,7 @@ const InboxLED = (props) => {
   const { LED, getAllInbox } = props;
   const navigation = useNavigate();
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState('');
@@ -67,14 +69,14 @@ const InboxLED = (props) => {
   };
 
   const onEdit = (id, status) => {
-    if (user.role.toLowerCase() === 'inputer') {
+    if (role.toLowerCase() === 'inputer') {
       if (status === 'Draft' || status === 'Need Update') {
         navigation(`/LED/edit-report/${id}`);
       } else {
         navigation(`/LED/update-report/${id}`);
       }
     }
-    if (user.role.toLowerCase() === 'approver') {
+    if (role.toLowerCase() === 'approver') {
       navigation(`/LED/detail-report/${id}`);
     }
   };
@@ -117,128 +119,132 @@ const InboxLED = (props) => {
         onCloseHandler={closeHistory}
       />
 
-      <DashboardCard>
-        <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
-          {data?.totalData > 0 ? (
-            <>
-              <SearchBar onSubmit={(val) => onSearch(val)} />
+      {LED?.loading ? (
+        <Spinner />
+      ) : (
+        <DashboardCard>
+          <div style={{ gap: '16px', display: 'flex', flexDirection: 'column' }}>
+            {data?.totalData > 0 ? (
+              <>
+                <SearchBar onSubmit={(val) => onSearch(val)} />
 
-              <Paper
-                sx={{
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                }}
-                elevation={0}
-                variant="outlined"
-              >
-                <TableContainer>
-                  <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>no</TableCell>
-                        <TableCell>Nomor Insiden</TableCell>
-                        <TableCell>Divisi/ Cabang</TableCell>
-                        <TableCell>Status Kejadian</TableCell>
-                        <TableCell>Tanggal Lapor</TableCell>
-                        <TableCell>Status Laporan</TableCell>
-                        <TableCell>Aksi</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data?.data?.map((row, index) => {
-                        return (
-                          <StyledTableRow
-                            key={index}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{row?.idLaporan}</TableCell>
-                            <TableCell>
-                              {row?.unitKerja?.namaUnitKerja !== 'CABANG'
-                                ? row?.unitKerja?.namaUnitKerja
-                                : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
-                            </TableCell>
-                            <TableCell>{row?.statusKejadian?.nama}</TableCell>
-                            <TableCell>
-                              {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                            </TableCell>
-                            <TableCell>{row?.statusLaporan?.nama}</TableCell>
-                            <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                              <Button
-                                size="small"
-                                color="primary"
-                                variant="contained"
-                                startIcon={<IconFileDescription />}
-                                onClick={() => {
-                                  onDetail(row.id);
-                                }}
-                              >
-                                Detail
-                              </Button>
-                              {user.role?.toLowerCase() === 'inputer' ? (
+                <Paper
+                  sx={{
+                    maxWidth: '100%',
+                    overflow: 'hidden',
+                  }}
+                  elevation={0}
+                  variant="outlined"
+                >
+                  <TableContainer>
+                    <Table size="small" aria-label="a dense table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>no</TableCell>
+                          <TableCell>Nomor Insiden</TableCell>
+                          <TableCell>Divisi/ Cabang</TableCell>
+                          <TableCell>Status Kejadian</TableCell>
+                          <TableCell>Tanggal Lapor</TableCell>
+                          <TableCell>Status Laporan</TableCell>
+                          <TableCell>Aksi</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {data?.data?.map((row, index) => {
+                          return (
+                            <StyledTableRow
+                              key={index}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>{row?.idLaporan}</TableCell>
+                              <TableCell>
+                                {row?.unitKerja?.namaUnitKerja !== 'CABANG'
+                                  ? row?.unitKerja?.namaUnitKerja
+                                  : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
+                              </TableCell>
+                              <TableCell>{row?.statusKejadian?.nama}</TableCell>
+                              <TableCell>
+                                {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                              </TableCell>
+                              <TableCell>{row?.statusLaporan?.nama}</TableCell>
+                              <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                 <Button
                                   size="small"
-                                  color="warning"
+                                  color="primary"
                                   variant="contained"
-                                  startIcon={<IconPencil />}
+                                  startIcon={<IconFileDescription />}
                                   onClick={() => {
-                                    onEdit(row.id, row.statusLaporan.nama);
+                                    onDetail(row.id);
                                   }}
                                 >
-                                  Edit
+                                  Detail
                                 </Button>
-                              ) : null}
-                              <Button
-                                size="small"
-                                color="success"
-                                variant="contained"
-                                startIcon={<IconHistory />}
-                                onClick={() => {
-                                  openHistory(row.id, row.idLaporan);
-                                }}
-                              >
-                                History
-                              </Button>
-                            </TableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  sx={{
-                    display: 'flex',
-                    width: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 1,
-                  }}
-                  page={page}
-                  count={data.totalData ?? 0}
-                  component="div"
-                  rowsPerPage={rowsPerPage}
-                  onPageChange={handleChangePage}
-                  labelRowsPerPage="Baris per halaman"
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </Paper>
-            </>
-          ) : (
-            <Typography textAlign="center" variant="h2">
-              Belum ada laporan dalam kotak masuk
-            </Typography>
-          )}
+                                {role?.toLowerCase() === 'inputer' ? (
+                                  <Button
+                                    size="small"
+                                    color="warning"
+                                    variant="contained"
+                                    startIcon={<IconPencil />}
+                                    onClick={() => {
+                                      onEdit(row.id, row.statusLaporan.nama);
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                ) : null}
+                                <Button
+                                  size="small"
+                                  color="success"
+                                  variant="contained"
+                                  startIcon={<IconHistory />}
+                                  onClick={() => {
+                                    openHistory(row.id, row.idLaporan);
+                                  }}
+                                >
+                                  History
+                                </Button>
+                              </TableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePagination
+                    sx={{
+                      display: 'flex',
+                      width: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 1,
+                    }}
+                    page={page}
+                    count={data.totalData ?? 0}
+                    component="div"
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={handleChangePage}
+                    labelRowsPerPage="Baris per halaman"
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </Paper>
+              </>
+            ) : (
+              <Typography textAlign="center" variant="h2">
+                Belum ada laporan dalam kotak masuk
+              </Typography>
+            )}
 
-          {/* {LED.LED?.data?.map((item) => {
+            {/* {LED.LED?.data?.map((item) => {
             return (
               <div key={item.id}>
                 <ReportCard LED={item} list />
               </div>
             );
           })} */}
-        </div>
-      </DashboardCard>
+          </div>
+        </DashboardCard>
+      )}
     </PageContainer>
   );
 };

@@ -91,7 +91,7 @@ const ActionPlanTable = ({ formik }) => {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <Typography variant="h6" sx={{ width: '20%' }}>
-          Tindak Lanjut
+          Rencana Tindakan
         </Typography>
 
         <Button variant="contained" onClick={addRow}>
@@ -104,7 +104,7 @@ const ActionPlanTable = ({ formik }) => {
           <TableHead>
             <TableRow>
               <TableCell>no</TableCell>
-              <TableCell sx={{ width: '16%' }}>Action Plan*</TableCell>
+              <TableCell sx={{ width: '16%' }}>Penjelasan Rencana Tindakan*</TableCell>
               <TableCell sx={{ width: '16%' }}>Unit Kerja*</TableCell>
               <TableCell sx={{ width: '16%' }}>PIC*</TableCell>
               <TableCell sx={{ width: '16%' }}>Email PIC*</TableCell>

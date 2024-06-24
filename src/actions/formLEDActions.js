@@ -358,7 +358,7 @@ export const getAllList = (pagination, keyword, user) => {
   };
 };
 
-export const approveLED = (id, user) => {
+export const approveLED = (id, user, fraud) => {
   const queryString = stringify(
     {},
     {
@@ -379,7 +379,7 @@ export const approveLED = (id, user) => {
       id,
       nip: user.nip,
       nama: user.name,
-      role: user.role,
+      role: fraud ? 'approver' : user.role,
     };
 
     try {

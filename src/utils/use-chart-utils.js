@@ -17,7 +17,7 @@ export const chartValue = (data, period, nominal) => {
   const newValue = newData.map((item) => {
     return item.reduce((sum, val) => {
       if (nominal) {
-        return Math.round((sum + val / 1000000) * 1000) / 1000;
+        return Math.round((sum + val / 1000000) * 100) / 100;
       }
       return sum + val;
     }, 0);

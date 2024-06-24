@@ -48,6 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const NilPage = (props) => {
   const { LED, getZeroReport, createZeroReport, updateWorkingDays } = props;
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
 
   const [page, setPage] = useState(0);
   // const [keyword, setKeyword] = useState('');
@@ -176,11 +177,11 @@ const NilPage = (props) => {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
             <div />
-            {user.role?.toLowerCase() === 'approver' ? (
+            {role?.toLowerCase() === 'approver' ? (
               <Button variant="contained" onClick={onOpenModal} disabled={!data?.isButtonEnable}>
                 Submit laporan nihil
               </Button>
-            ) : user.role?.toLowerCase() === 'validator' ? (
+            ) : role?.toLowerCase() === 'validator' ? (
               <Button variant="contained" onClick={openWorkingDaysModal}>
                 <Typography>
                   Periode submit laporan nihil:{' '}

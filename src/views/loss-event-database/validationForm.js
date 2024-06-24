@@ -49,7 +49,7 @@ export const validationSchema = yup.object({
     is: (val) => val > 0,
     then: yup.string().required(`sumber recovery wajib diisi`),
   }),
-  followUp: yup.string(`masukkan sumber recovery`).required(`tindak lanjut wajib diisi`),
+  followUp: yup.string(`masukkan sumber recovery`).required(`rencana tindakan wajib diisi`),
 
   //action plan
   actionPlan: yup.array().of(

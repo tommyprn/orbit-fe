@@ -61,6 +61,7 @@ const DetailLED = (props) => {
       ? 'http://10.55.54.161:30090/api/v1/'
       : 'http://10.80.240.45:1933/api/v1/';
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const role = user?.role.toLowerCase();
   const params = useParams();
   const navigate = useNavigate();
   const { detail, isLoading, approveIRM, rejectIRM, approveLED, sendBackLED, getOneFormLed } =
@@ -131,13 +132,15 @@ const DetailLED = (props) => {
   };
 
   // approve function
+  const fraud = dataLaporan?.statusLaporanEntity?.nama === 'Recorded' && role === 'validatorfraud';
+
   const onApproveReport = () => {
     setApproveModal(true);
   };
   const onApproveConfirm = async () => {
     let res;
     if (statusLaporan === 'Recorded') {
-      res = await approveLED(detail.laporanLed.id, user);
+      res = await approveLED(detail.laporanLed.id, user, fraud);
     } else {
       res = await approveIRM(detail.laporanLed.id, user);
     }
@@ -157,9 +160,8 @@ const DetailLED = (props) => {
 
   const { toPDF, targetRef } = usePDF({ filename: `Laporan LED No_${dataLaporan?.idLaporan}` });
 
-  const role = user?.role.toLowerCase();
   const showButton =
-    (role === 'approver' && statusLaporan === 'Recorded') ||
+    ((role === 'approver' || role === 'validatorfraud') && statusLaporan === 'Recorded') ||
     (role === 'validator' && statusLaporan === 'On Progress' && !dataLaporan?.isPendingFraud) ||
     (role === 'irmapproval' && statusLaporan === 'Pending Closed') ||
     (role === 'validatorfraud' && statusLaporan === 'On Progress' && dataLaporan?.isPendingFraud);
@@ -188,7 +190,9 @@ const DetailLED = (props) => {
         Apakah kamu yakin ingin menyetujui laporan ini, dan meneruskan ke{' '}
         {role === 'validator'
           ? 'Head of L2 IRM'
-          : role === 'approver'
+          : role === 'approver' && !dataLaporan?.isPendingFraud
+          ? 'IRM validator'
+          : role === 'approver' && dataLaporan?.isPendingFraud
           ? 'IRM validator'
           : 'status closed'}
         ?
@@ -340,7 +344,7 @@ const DetailLED = (props) => {
 
                 <div className="detail-wrapper">
                   <Typography variant="body1" sx={{ width: '20%', fontWeight: '500' }}>
-                    Tindakan yang dilakukan
+                    Tindak Lanjut
                   </Typography>
                   <Typography
                     variant="body1"
@@ -367,7 +371,7 @@ const DetailLED = (props) => {
                     alignItems: 'flex-start',
                   }}
                 >
-                  <Typography variant="h6">Tindak Lanjut</Typography>
+                  <Typography variant="h6">Rencana Tindakan</Typography>
                 </div>
 
                 <Paper
@@ -381,7 +385,7 @@ const DetailLED = (props) => {
                       <TableHead>
                         <TableRow>
                           <TableCell>no</TableCell>
-                          <TableCell>Action Plan</TableCell>
+                          <TableCell>Penjelasan Rencana Tindakan</TableCell>
                           <TableCell>Unit Kerja/ Cabang</TableCell>
                           <TableCell>PIC</TableCell>
                           <TableCell>Email PIC</TableCell>
@@ -485,7 +489,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     rejectIRM: (id, user, comment) => dispatch(rejectIRM(id, user, comment)),
     approveIRM: (id, user) => dispatch(approveIRM(id, user)),
-    approveLED: (id, user) => dispatch(approveLED(id, user)),
+    approveLED: (id, user, fraud) => dispatch(approveLED(id, user, fraud)),
     sendBackLED: (id, user, comment) => dispatch(sendBackLED(id, user, comment)),
     getOneFormLed: (id, incidentNumber) => dispatch(getOneFormLed(id, incidentNumber)),
   };

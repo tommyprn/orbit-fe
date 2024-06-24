@@ -50,6 +50,7 @@ const UpdateFormLED = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
   const customizer = useSelector((state) => state.customizer);
 
   const { detail, isLoading, approveLED, masterData, getDropdown, editFormLed, getOneFormLed } =
@@ -457,7 +458,7 @@ const UpdateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tindakan yang dilakukan
+                  Tindak Lanjut
                 </Typography>
 
                 <QuillTextField
@@ -488,7 +489,7 @@ const UpdateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindak Lanjut
+                  Rencana Tindakan
                 </Typography>
               </div>
 
@@ -503,7 +504,7 @@ const UpdateFormLED = (props) => {
                     <TableHead>
                       <TableRow>
                         <TableCell>no</TableCell>
-                        <TableCell sx={{ width: '400px' }}>Action Plan*</TableCell>
+                        <TableCell sx={{ width: '400px' }}>Penjelasan Rencana Tindakan*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Unit Kerja*</TableCell>
                         <TableCell sx={{ width: '200px' }}>PIC*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Email PIC*</TableCell>
@@ -614,7 +615,7 @@ const UpdateFormLED = (props) => {
                 Kembali
               </Button>
 
-              {user.role?.toLowerCase() === 'inputer' ? (
+              {role?.toLowerCase() === 'inputer' ? (
                 <Button
                   variant="contained"
                   color="primary"

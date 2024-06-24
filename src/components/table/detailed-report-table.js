@@ -77,13 +77,13 @@ const DetailedReportTable = ({
             ? item.cabang?.namaCabang
             : item?.unitKerja?.namaUnitKerja,
         noLed: item.idLaporan,
-        statusKejadian: item.statusKejadian.nama,
+        statusKejadian: item.statusKejadian?.nama,
         tanggalKejadianStart: item.tanggalKejadianStart,
         tanggalKejadianEnd: item.tanggalKejadianEnd,
         tanggalTeridentifikasi: item.tanggalIdentifikasi,
         tanggalLapor: item.tanggalLapor,
         penyebabKejadian: item.penyebabKejadian?.nama,
-        kategori: item.aktivitas?.subKategori?.kategoriKejadian.nama,
+        kategori: item.aktivitas?.subKategori?.kategoriKejadian?.nama,
         subKategori: item.aktivitas?.subKategori?.nama,
         aktivitas: item.aktivitas?.nama,
         highlight: item.kronologiSingkat,
@@ -93,11 +93,11 @@ const DetailedReportTable = ({
         recovery: String(item?.nominalRecovery),
         grossLoss: String(item?.nominalRealisasiKerugian),
         netLoss: String(item?.nominalRealisasiKerugian - item?.nominalRecovery),
-        statusLed: item.statusLaporan.nama,
+        statusLed: item.statusLaporan?.nama,
         targetDate: item.actionPlan[item.actionPlan?.length - 1]?.targetPenyelesaian,
         sumberRecovery: item?.sumberRecovery,
         statusOtorisasi:
-          item.statusKejadian.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
+          item.statusKejadian?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
         catatan: item.catatan,
         picAndMail:
           item.unitKerja?.namaUnitKerja === 'CABANG'
@@ -105,7 +105,7 @@ const DetailedReportTable = ({
             : item.unitKerja?.emailPic,
         tindakLanjut: item.actionPlan[item.actionPlan?.length - 1]?.actionPlan,
         statusAkhir:
-          item.statusLaporan.nama === 'Void' || item.statusLaporan.nama === 'Closed'
+          item.statusLaporan?.nama === 'Void' || item.statusLaporan?.nama === 'Closed'
             ? item.statusLaporan.nama
             : null,
       };
@@ -162,12 +162,12 @@ const DetailedReportTable = ({
         <Workbook.Column label="Status Otorisasi" value="statusOtorisasi" />
         <Workbook.Column label="Catatan" value="catatan" />
         <Workbook.Column label="Nama PIC/ Email" value="picAndMail" />
-        <Workbook.Column label="Tindak Lanjut" value="tindakLanjut" />
+        <Workbook.Column label="Rencana Tindakan" value="tindakLanjut" />
         <Workbook.Column label="Status Akhir" value="statusAkhir" />
       </Workbook.Sheet>
       <Workbook.Sheet data={generateActionData(actionPlan)} name="Action Plan">
         <Workbook.Column label="Nomor Laporan" value="nomorLed" />
-        <Workbook.Column label="Action Plan" value="plan" />
+        <Workbook.Column label="Rencana Tindakan" value="plan" />
         <Workbook.Column label="Divisi" value="divisi" />
         <Workbook.Column label="PIC" value="PIC" />
         <Workbook.Column label="Email PIC" value="email" />
@@ -244,7 +244,7 @@ const DetailedReportTable = ({
                     : row?.unitKerja?.namaUnitKerja}
                 </TableCell>
                 <TableCell>{row.idLaporan}</TableCell>
-                <TableCell>{row.statusKejadian.nama}</TableCell>
+                <TableCell>{row.statusKejadian?.nama}</TableCell>
                 <TableCell>
                   {dayjs(row.tanggalKejadianStart, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
@@ -258,7 +258,7 @@ const DetailedReportTable = ({
                   {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
                 <TableCell>{row.penyebabKejadian?.nama}</TableCell>
-                <TableCell>{row.aktivitas?.subKategori?.kategoriKejadian.nama}</TableCell>
+                <TableCell>{row.aktivitas?.subKategori?.kategoriKejadian?.nama}</TableCell>
                 <TableCell>{row.aktivitas?.subKategori?.nama}</TableCell>
                 <TableCell>{row.aktivitas?.nama}</TableCell>
                 <TableCell>
@@ -291,11 +291,11 @@ const DetailedReportTable = ({
                 <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
                   {formatNumber(row?.nominalRealisasiKerugian - row?.nominalRecovery)}
                 </TableCell>
-                <TableCell>{row.statusLaporan.nama}</TableCell>
+                <TableCell>{row.statusLaporan?.nama}</TableCell>
 
                 <TableCell>{row?.sumberRecovery}</TableCell>
                 <TableCell>
-                  {row.statusLaporan.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
+                  {row.statusLaporan?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
                 </TableCell>
                 <TableCell>
                   <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
@@ -303,7 +303,7 @@ const DetailedReportTable = ({
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {row.statusLaporan.nama === 'Void' || row.statusLaporan.nama === 'Closed'
+                  {row.statusLaporan?.nama === 'Void' || row.statusLaporan?.nama === 'Closed'
                     ? row.statusLaporan.nama
                     : '-'}
                 </TableCell>

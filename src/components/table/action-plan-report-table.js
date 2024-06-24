@@ -31,13 +31,13 @@ const ActionPlanReportTable = ({ data }) => {
   const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
     filename: `detail-laporan-action-plan-LED`,
-    sheet: 'Action Plan',
+    sheet: 'Rencana Tindakan',
   });
 
   const header = [
     'No',
     'Nomor Laporan',
-    'Action Plan',
+    'Rencana Tindakan',
     'Divisi',
     'PIC',
     'Email PIC',
@@ -54,9 +54,9 @@ const ActionPlanReportTable = ({ data }) => {
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h4">Action Plan List</Typography>
+        <Typography variant="h4">List Rencana Tindakan</Typography>
         <Button startIcon={<IconDownload size={18} />} onClick={onDownload}>
-          Unduh Laporan Action Plan
+          Unduh Laporan Rencana Tindakan
         </Button>
       </div>
 

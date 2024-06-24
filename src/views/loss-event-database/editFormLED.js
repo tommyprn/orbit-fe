@@ -66,6 +66,8 @@ const GroupItems = styled('ul')({
 
 const EditFormLED = (props) => {
   const user = JSON.parse(secureLocalStorage.getItem('history'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
+
   const params = useParams();
   const navigate = useNavigate();
   const customizer = useSelector((state) => state.customizer);
@@ -775,7 +777,7 @@ const EditFormLED = (props) => {
 
             <div className="form-input-wrapper">
               <Typography variant="body1" sx={{ width: '20%' }}>
-                Tindakan yang dilakukan
+                Tindak Lanjut
               </Typography>
 
               <QuillTextField
@@ -805,7 +807,7 @@ const EditFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindak Lanjut
+                  Rencana Tindakan
                 </Typography>
 
                 <Button variant="contained" onClick={addRow}>
@@ -825,7 +827,7 @@ const EditFormLED = (props) => {
                       <TableRow>
                         <TableCell>hapus</TableCell>
                         <TableCell>no</TableCell>
-                        <TableCell sx={{ width: '400px' }}>Action Plan*</TableCell>
+                        <TableCell sx={{ width: '400px' }}>Penjelasan Rencana Tindakan*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Unit Kerja*</TableCell>
                         <TableCell sx={{ width: '200px' }}>PIC*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Email PIC*</TableCell>
@@ -1005,7 +1007,7 @@ const EditFormLED = (props) => {
                 Kembali
               </Button>
 
-              {user.role?.toLowerCase() === 'inputer' ? (
+              {role?.toLowerCase() === 'inputer' ? (
                 <>
                   {dataLaporan.statusLaporanEntity?.nama === 'Draft' ? (
                     <Button

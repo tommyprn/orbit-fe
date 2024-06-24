@@ -20,6 +20,7 @@ import { IconFileDescription, IconHistory } from '@tabler/icons';
 import secureLocalStorage from 'react-secure-storage';
 
 // component
+import Spinner from '../spinner/Spinner';
 import SearchBar from 'src/components/search-bar/SearchBar';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import PageContainer from 'src/components/container/PageContainer';
@@ -90,7 +91,25 @@ const ListLED = (props) => {
     setKeyword(values);
   };
 
-  const data = LED.list;
+  const getPending = (status, fraud) => {
+    if (status.toLowerCase() === 'draft') {
+      return 'Inputer';
+    } else if (status.toLowerCase() === 'recorded') {
+      return 'Approver';
+    } else if (status.toLowerCase() === 'need update') {
+      return 'Inputer';
+    } else if (status.toLowerCase() === 'pending closed') {
+      return 'IRM Approval';
+    } else if (status.toLowerCase() === 'on progress' && !fraud) {
+      return 'IRM Validator';
+    } else if (status.toLowerCase() === 'on progress' && fraud) {
+      return 'AFR Validator';
+    } else {
+      return '-';
+    }
+  };
+
+  const data = LED?.list;
 
   return (
     <PageContainer titdatae="List" description="List LED Page">
@@ -104,115 +123,122 @@ const ListLED = (props) => {
         onCloseHandler={closeHistory}
       />
 
-      <DashboardCard>
-        <div
-          style={{
-            gap: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
-          {data?.totalData > 0 ? (
-            <>
-              <SearchBar onSubmit={(val) => onSearch(val)} />
+      {LED?.loading ? (
+        <Spinner />
+      ) : (
+        <DashboardCard>
+          <div
+            style={{
+              gap: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+            }}
+          >
+            {data?.totalData > 0 ? (
+              <>
+                <SearchBar onSubmit={(val) => onSearch(val)} />
 
-              <Paper
-                sx={{
-                  maxWidth: '100%',
-                  overflow: 'hidden',
-                }}
-                elevation={0}
-                variant="outlined"
-              >
-                <TableContainer>
-                  <Table size="small" aria-label="a dense table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>no</TableCell>
-                        <TableCell>Nomor Insiden</TableCell>
-                        <TableCell>Divisi/ Cabang</TableCell>
-                        <TableCell>Status Kejadian</TableCell>
-                        <TableCell>Tanggal Lapor</TableCell>
-                        <TableCell>Status Laporan</TableCell>
-                        <TableCell>Aksi</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data?.data?.map((row, index) => {
-                        return (
-                          <StyledTableRow
-                            key={index}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <TableCell>{index + 1}</TableCell>
-                            <TableCell>{row?.idLaporan}</TableCell>
-                            <TableCell>
-                              {' '}
-                              {row?.unitKerja?.namaUnitKerja !== 'CABANG'
-                                ? row?.unitKerja?.namaUnitKerja
-                                : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
-                            </TableCell>
-                            <TableCell>{row.statusKejadian?.nama}</TableCell>
-                            <TableCell>
-                              {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
-                            </TableCell>
-                            <TableCell>{row.statusLaporan?.nama}</TableCell>
-                            <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                              <Button
-                                size="small"
-                                color="primary"
-                                variant="contained"
-                                startIcon={<IconFileDescription />}
-                                onClick={() => {
-                                  onDetail(row.id);
-                                }}
-                              >
-                                Detail
-                              </Button>
-                              <Button
-                                size="small"
-                                color="success"
-                                variant="contained"
-                                startIcon={<IconHistory />}
-                                onClick={() => {
-                                  openHistory(row.id, row.idLaporan);
-                                }}
-                              >
-                                History
-                              </Button>
-                            </TableCell>
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
+                <Paper
                   sx={{
-                    display: 'flex',
-                    width: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 1,
+                    maxWidth: '100%',
+                    overflow: 'hidden',
                   }}
-                  page={page}
-                  count={data.totalData ?? 0}
-                  component="div"
-                  rowsPerPage={rowsPerPage}
-                  onPageChange={handleChangePage}
-                  labelRowsPerPage="Baris per halaman"
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </Paper>
-            </>
-          ) : (
-            <Typography textAlign="center" variant="h2">
-              Belum ada laporan pending saat ini
-            </Typography>
-          )}
-        </div>
-      </DashboardCard>
+                  elevation={0}
+                  variant="outlined"
+                >
+                  <TableContainer>
+                    <Table size="small" aria-label="a dense table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>no</TableCell>
+                          <TableCell>Nomor Insiden</TableCell>
+                          <TableCell>Divisi/ Cabang</TableCell>
+                          <TableCell>Status Kejadian</TableCell>
+                          <TableCell>Tanggal Lapor</TableCell>
+                          <TableCell>Status Laporan</TableCell>
+                          <TableCell>Pending Role</TableCell>
+                          <TableCell>Aksi</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {data?.data?.map((row, index) => {
+                          return (
+                            <StyledTableRow
+                              key={index}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            >
+                              <TableCell>{index + 1}</TableCell>
+                              <TableCell>{row?.idLaporan}</TableCell>
+                              <TableCell>
+                                {row?.unitKerja?.namaUnitKerja !== 'CABANG'
+                                  ? row?.unitKerja?.namaUnitKerja
+                                  : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
+                              </TableCell>
+                              <TableCell>{row.statusKejadian?.nama}</TableCell>
+                              <TableCell>
+                                {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD-MMM-YY')}
+                              </TableCell>
+                              <TableCell>{row.statusLaporan?.nama}</TableCell>
+                              <TableCell>
+                                {getPending(row.statusLaporan?.nama, row?.isPendingFraud)}
+                              </TableCell>
+                              <TableCell sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                <Button
+                                  size="small"
+                                  color="primary"
+                                  variant="contained"
+                                  startIcon={<IconFileDescription />}
+                                  onClick={() => {
+                                    onDetail(row.id);
+                                  }}
+                                >
+                                  Detail
+                                </Button>
+                                <Button
+                                  size="small"
+                                  color="success"
+                                  variant="contained"
+                                  startIcon={<IconHistory />}
+                                  onClick={() => {
+                                    openHistory(row.id, row.idLaporan);
+                                  }}
+                                >
+                                  History
+                                </Button>
+                              </TableCell>
+                            </StyledTableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePagination
+                    sx={{
+                      display: 'flex',
+                      width: '100%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: 1,
+                    }}
+                    page={page}
+                    count={data.totalData ?? 0}
+                    component="div"
+                    rowsPerPage={rowsPerPage}
+                    onPageChange={handleChangePage}
+                    labelRowsPerPage="Baris per halaman"
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </Paper>
+              </>
+            ) : (
+              <Typography textAlign="center" variant="h2">
+                Belum ada laporan pending saat ini
+              </Typography>
+            )}
+          </div>
+        </DashboardCard>
+      )}
     </PageContainer>
   );
 };

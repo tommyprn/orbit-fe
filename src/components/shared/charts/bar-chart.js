@@ -142,7 +142,7 @@ const BarChart = ({ data, label, title, period, filter }) => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'right',
+        position: 'bottom',
       },
       title: {
         text: title,
@@ -150,6 +150,13 @@ const BarChart = ({ data, label, title, period, filter }) => {
         padding: 30,
       },
       datalabels: {
+        formatter: (val, ctx) => {
+          if (val !== null && val !== 0) {
+            return val;
+          } else {
+            return null;
+          }
+        },
         color: 'black',
         font: {
           weight: 'bold',

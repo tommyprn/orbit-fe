@@ -684,7 +684,7 @@ const CreateFormLED = (props) => {
 
               <div className="form-input-wrapper">
                 <Typography variant="body1" sx={{ width: '20%' }}>
-                  Tindakan yang dilakukan
+                  Tindak Lanjut
                 </Typography>
 
                 <QuillTextField
@@ -716,7 +716,7 @@ const CreateFormLED = (props) => {
                 }}
               >
                 <Typography variant="h6" sx={{ width: '20%' }}>
-                  Tindak Lanjut
+                  Rencana Tindakan
                 </Typography>
 
                 <Button variant="contained" onClick={addRow}>
@@ -736,7 +736,7 @@ const CreateFormLED = (props) => {
                       <TableRow>
                         <TableCell>hapus</TableCell>
                         <TableCell>no</TableCell>
-                        <TableCell sx={{ width: '400px' }}>Action Plan*</TableCell>
+                        <TableCell sx={{ width: '400px' }}>Penjelasan Rencana Tindakan*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Unit Kerja/ cabang*</TableCell>
                         <TableCell sx={{ width: '200px' }}>PIC*</TableCell>
                         <TableCell sx={{ width: '200px' }}>Email PIC*</TableCell>
