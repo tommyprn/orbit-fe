@@ -1,17 +1,26 @@
-import { createOption } from 'src/utils/use-options';
 import { Typography, TextField, Autocomplete } from '@mui/material';
 
 // component
 import QuillTextField from 'src/components/forms/quil-text/quill-text';
 
-const BaseInput = ({ id, type, title, formik, option, helperText, placeholder, ...props }) => {
+const BaseInput = ({
+  id,
+  type,
+  title,
+  value,
+  formik,
+  option,
+  helperText,
+  placeholder,
+  ...props
+}) => {
   const Basic = (
     <TextField
       {...props}
       sx={{ minWidth: '200px' }}
       id={id}
       size="small"
-      value={formik.values[id]}
+      value={value}
       error={formik.touched[id] && Boolean(formik.errors[id])}
       onBlur={formik.handleBlur}
       onChange={formik.handleChange}
@@ -23,7 +32,7 @@ const BaseInput = ({ id, type, title, formik, option, helperText, placeholder, .
   const QuillText = (
     <QuillTextField
       id={id}
-      value={formik.values[id]}
+      value={value}
       width="100%"
       isError={formik.errors}
       onChange={(val) => formik.setFieldValue(id, val)}
@@ -37,7 +46,7 @@ const BaseInput = ({ id, type, title, formik, option, helperText, placeholder, .
       id={id}
       sx={{ minWidth: '200px' }}
       size="small"
-      value={formik.values.id}
+      value={value}
       options={option}
       onChange={(event, newValue) => {
         if (newValue !== null) {

@@ -16,15 +16,15 @@ export const riskFormSchema = yup.object({
   likelihood: yup.number().max(5).min(1),
 });
 
-export const controlFormSchema = yup.object({
-  name: yup.string('masukkan nama kontrol').required('nama kontrol wajib diisi'),
-  description: yup.string('masukkan deskripsi kontrol').required('deskripsi kontrol wajib diisi'),
-  owner: yup.string('masukkan nama pemilik kontrol').required('nama pemilik kontrol wajib diisi'),
-  frequency: yup.string('pilih frekuensi kontrol').required('frekuensi kontrol wajib dipilih'),
-  effectiveness: yup
-    .string('pilih efektivitas kontrol')
-    .required('efektivitas kontrol wajib dipilih'),
-  keyControl: yup.string('pilih kontrol utama').required('kontrol utama wajib dipilih'),
-  impact: yup.number().max(5).min(1),
-  likelihood: yup.number().max(5).min(1),
-});
+export const controlFormSchema = yup.array().of(
+  yup.object({
+    name: yup.string('masukkan nama kontrol').required('nama kontrol wajib diisi'),
+    owner: yup.string('masukkan nama pemilik kontrol').required('nama pemilik kontrol wajib diisi'),
+    frequency: yup.string('pilih frekuensi kontrol').required('frekuensi kontrol wajib dipilih'),
+    effectiveness: yup
+      .string('pilih efektivitas kontrol')
+      .required('efektivitas kontrol wajib dipilih'),
+    keyControl: yup.string('pilih kontrol utama').required('kontrol utama wajib dipilih'),
+    description: yup.string('masukkan deskripsi kontrol').required('deskripsi kontrol wajib diisi'),
+  }),
+);

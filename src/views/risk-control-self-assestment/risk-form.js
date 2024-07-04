@@ -27,14 +27,14 @@ const RiskForm = (props) => {
 
   const formik = useFormik({
     initialValues: {
-      workProcess: '',
       root: '',
-      cause: '',
+      cause: null,
       owner: '',
       impact: 1,
-      category: '',
+      category: null,
       likelihood: 1,
       chronology: '',
+      workProcess: '',
       significance: '',
     },
     validationSchema: riskFormSchema,
@@ -69,7 +69,7 @@ const RiskForm = (props) => {
           >
             <div
               style={{
-                gap: '16px',
+                gap: '24px',
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
@@ -78,6 +78,7 @@ const RiskForm = (props) => {
               <BaseInput
                 id="workProcess"
                 title="Proses kerja"
+                value={formik.values.workProcess}
                 formik={formik}
                 placeholder="keterangan detail proses kerja"
               />
@@ -85,6 +86,7 @@ const RiskForm = (props) => {
               <BaseInput
                 id="root"
                 title="Akar permasalahan"
+                value={formik.values.root}
                 formik={formik}
                 placeholder="akar permasalahan timbulnya risiko"
               />
@@ -93,6 +95,7 @@ const RiskForm = (props) => {
                 id="chronology"
                 type="quill"
                 title="Kronologi/ deskripsi kejadian"
+                value={formik.values.chronology}
                 formik={formik}
                 helperText="kronologi kejadian wajib diisi"
                 placeholder="keterangan detail risiko yang teridentifikasi"
@@ -111,6 +114,7 @@ const RiskForm = (props) => {
                 id="category"
                 title="Kategori kejadian"
                 type="select"
+                value={formik.values.category}
                 formik={formik}
                 option={createOption(dropDown?.caseCategory.levelOne)}
                 placeholder="kategori kejadian risiko opr"
@@ -120,6 +124,7 @@ const RiskForm = (props) => {
                 id="cause"
                 title="Penyebab kejadian"
                 type="select"
+                value={formik.values.cause}
                 formik={formik}
                 option={createOption(dropDown?.caseCause)}
                 placeholder="penyebab kejadian risiko opr"
@@ -128,6 +133,7 @@ const RiskForm = (props) => {
               <BaseInput
                 id="significance"
                 title="Risiko signifikan"
+                value={formik.values.significance}
                 formik={formik}
                 placeholder="apakah risiko ini merupakan risiko signifikan?"
               />
@@ -135,6 +141,7 @@ const RiskForm = (props) => {
               <BaseInput
                 id="owner"
                 title="Pemilik risiko (L1/ BOSM)"
+                value={formik.values.owner}
                 formik={formik}
                 placeholder="nama pejabat tertinggi pada unit kerja pemilik risiko"
               />

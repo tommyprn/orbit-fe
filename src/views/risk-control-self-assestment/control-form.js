@@ -1,55 +1,50 @@
 import React, { useEffect } from 'react';
 import secureLocalStorage from 'react-secure-storage';
 import { IconX } from '@tabler/icons';
-import { connect, useSelector } from 'react-redux';
+import { showToast } from 'src/utils/use-snackbar';
 import { useFormik } from 'formik';
-import { getDropdown } from 'src/actions/masterDataActions';
-import { getRiskColor } from 'src/utils/use-formatter';
-import { getRiskRating } from 'src/utils/use-calculate';
 import { controlFormSchema } from './RSCAFormValidation';
+import { connect, useSelector } from 'react-redux';
 import {
-  Typography,
-  Divider,
-  Button,
   Card,
   Paper,
+  Table,
+  Button,
+  Divider,
+  TableRow,
   TableBody,
   TableCell,
-  TableContainer,
-  TableRow,
-  Table,
   TableHead,
   IconButton,
+  Typography,
+  TableContainer,
 } from '@mui/material';
 
 // component
 import BaseInput from 'src/components/shared/input/base-input';
-import SliderInput from 'src/components/shared/slider/slider';
 import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
 
 const ControlForm = (props) => {
   const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName')).toLowerCase();
-  const { dropDown, getDropdown } = props;
+  const {} = props;
   const customizer = useSelector((state) => state.customizer);
 
   useEffect(() => {
-    (async () => {
-      await getDropdown();
-    })();
+    (async () => {})();
   }, []);
 
   const formik = useFormik({
-    initialValues: {
-      name: '',
-      description: '',
-      owner: '',
-      frequency: '',
-      effectiveness: '',
-      keyControl: '',
-      impact: 1,
-      likelihood: 1,
-    },
+    initialValues: [
+      {
+        name: '',
+        owner: '',
+        frequency: '',
+        keyControl: '',
+        description: '',
+        effectiveness: '',
+      },
+    ],
     validationSchema: controlFormSchema,
     onSubmit: async (values) => {
       console.log(values);
@@ -65,7 +60,35 @@ const ControlForm = (props) => {
     },
   });
 
-  const deleteRowHandle = () => {};
+  const deleteRowHandle = (index) => {
+    if (formik.values.length > 1) {
+      formik.setValues((val) => {
+        const newValue = val.filter((item, i) => {
+          return i !== index;
+        });
+        return newValue;
+      });
+    } else {
+      showToast('error', 'minimal memiliki satu kontrol risiko');
+    }
+  };
+
+  const addRow = () => {
+    formik.setValues((val) => {
+      const newValue = [
+        ...val,
+        {
+          name: '',
+          owner: '',
+          frequency: '',
+          keyControl: '',
+          description: '',
+          effectiveness: '',
+        },
+      ];
+      return newValue;
+    });
+  };
 
   const frequencyOpt = [
     {
@@ -164,12 +187,22 @@ const ControlForm = (props) => {
             }}
           >
             <Typography variant="h6" sx={{ width: '20%' }}>
-              Tindak Lanjut
+              Kontrol Input 1
             </Typography>
 
-            <Button variant="contained" onClick={null}>
-              Tambah Plan
-            </Button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Button variant="contained" color="warning" onClick={addRow}>
+                Tambah Plan
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={formik.handleSubmit}
+                disabled={!formik.isValid || !formik.dirty}
+              >
+                Submit
+              </Button>
+            </div>
           </div>
 
           <Paper
@@ -193,7 +226,7 @@ const ControlForm = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {[{}].map((row, index) => {
+                  {formik.values.map((row, index) => {
                     return (
                       <TableRow
                         key={index}
@@ -211,8 +244,9 @@ const ControlForm = (props) => {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           <BaseInput
-                            id="name"
+                            id={`${index}.name`}
                             type="quill"
+                            value={formik.values[index].name}
                             formik={formik}
                             helperText="Nama kontrol wajib diisi"
                             placeholder="Nama kontrol"
@@ -220,20 +254,27 @@ const ControlForm = (props) => {
                         </TableCell>
                         <TableCell>
                           <BaseInput
-                            id="description"
+                            id={`${index}.description`}
                             type="quill"
+                            value={formik.values[index].description}
                             formik={formik}
                             helperText="Deskripsi kontrol wajib diisi"
                             placeholder="Deskripsi kontrol"
                           />
                         </TableCell>
                         <TableCell>
-                          <BaseInput id="owner" formik={formik} placeholder="Pemilik kontrol" />
+                          <BaseInput
+                            id={`${index}.owner`}
+                            value={formik.values[index].owner}
+                            formik={formik}
+                            placeholder="Pemilik kontrol"
+                          />
                         </TableCell>
                         <TableCell>
                           <BaseInput
-                            id="frequency"
+                            id={`${index}.frequency`}
                             type="select"
+                            value={formik.values[index].frequency}
                             formik={formik}
                             option={frequencyOpt}
                             placeholder="pilih frekuensi kontrol"
@@ -241,8 +282,9 @@ const ControlForm = (props) => {
                         </TableCell>
                         <TableCell>
                           <BaseInput
-                            id="effectiveness"
+                            id={`${index}.effectiveness`}
                             type="select"
+                            value={formik.values[index].effectiveness}
                             formik={formik}
                             option={keyOpt}
                             placeholder="apakah merupakan kontrol utama?"
@@ -250,8 +292,9 @@ const ControlForm = (props) => {
                         </TableCell>
                         <TableCell>
                           <BaseInput
-                            id="keyControl"
+                            id={`${index}.keyControl`}
                             type="select"
+                            value={formik.values[index].keyControl}
                             formik={formik}
                             option={effectiveOpt}
                             placeholder="pilih efektivitas kontrol"
@@ -271,15 +314,11 @@ const ControlForm = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  return {
-    dropDown: state.masterData.dropdown,
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    getDropdown: () => dispatch(getDropdown()),
-  };
+  return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ControlForm);
