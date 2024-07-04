@@ -1,13 +1,23 @@
 import * as yup from 'yup';
-import { Button, Radio, Typography, TextField, RadioGroup, FormControlLabel } from '@mui/material';
 import { useFormik } from 'formik';
+import { createIdOption } from 'src/utils/use-options';
+import {
+  Radio,
+  Button,
+  TextField,
+  Typography,
+  RadioGroup,
+  Autocomplete,
+  FormControlLabel,
+} from '@mui/material';
 
 // yup validation
 
 const EditWorkUnitForm = ({
-  ssl,
   workUnit,
   selected,
+  regionOpt,
+  parentOpt,
   masterTitle,
   onSaveHandler,
   onCloseHandler,
@@ -27,15 +37,11 @@ const EditWorkUnitForm = ({
         is: 'branch',
         then: yup.number().required('wajib diisi'),
       }),
-    approver: yup
-      .string(`masukkan nama approver ${masterTitle}`)
-      .required(`Nama approver ${masterTitle} wajib diisi`),
-    emailApprover: yup
-      .string(`masukkan email approver ${masterTitle}`)
-      .required(`Email approver ${masterTitle} wajib diisi`),
-    emailUpperLevel: yup
-      .string(`masukkan email upper level ${masterTitle}`)
-      .required(`masukkan email upper level ${masterTitle} wajib diisi`),
+    approver: yup.string(`masukkan nama approver ${masterTitle}`),
+
+    emailApprover: yup.string(`masukkan email approver ${masterTitle}`),
+
+    emailUpperLevel: yup.string(`masukkan email upper level ${masterTitle}`),
   });
 
   const workUnitFormik = useFormik({
@@ -44,6 +50,7 @@ const EditWorkUnitForm = ({
       code: selected.code,
       name: selected.name,
       email: selected.email,
+      region: selected?.region,
       parent: selected?.parent,
       isEnable: selected.isEnable,
       approver: selected.approver,
@@ -86,18 +93,53 @@ const EditWorkUnitForm = ({
         helperText={workUnitFormik.touched.name && workUnitFormik.errors.name}
       />
       {workUnit === 'branch' ? (
-        <TextField
-          required
-          id="parent"
-          sx={{ width: '100%' }}
-          label={`nama induk cabang`}
-          variant="outlined"
-          error={workUnitFormik.touched.parent && Boolean(workUnitFormik.errors.parent)}
-          value={workUnitFormik.values.parent}
-          onBlur={workUnitFormik.handleBlur}
-          onChange={workUnitFormik.handleChange}
-          helperText={workUnitFormik.touched.parent && workUnitFormik.errors.parent}
-        />
+        <>
+          <Autocomplete
+            disablePortal
+            id="region"
+            options={createIdOption(regionOpt)}
+            value={workUnitFormik.values.region}
+            onChange={(event, newValue) => {
+              if (newValue !== null) {
+                workUnitFormik.setFieldValue('region', newValue.id);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="region"
+                label="Kode region cabang"
+                error={workUnitFormik.touched.region && Boolean(workUnitFormik.errors.region)}
+                value={workUnitFormik.values.region}
+                onBlur={workUnitFormik.handleBlur}
+                helperText={workUnitFormik.touched.region && workUnitFormik.errors.region}
+              />
+            )}
+          />
+
+          <Autocomplete
+            disablePortal
+            id="parent"
+            options={createIdOption(parentOpt)}
+            value={workUnitFormik.values.parent}
+            onChange={(event, newValue) => {
+              if (newValue !== null) {
+                workUnitFormik.setFieldValue('parent', newValue.id);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                id="parent"
+                label="Kode induk cabang"
+                error={workUnitFormik.touched.parent && Boolean(workUnitFormik.errors.parent)}
+                value={workUnitFormik.values.parent}
+                onBlur={workUnitFormik.handleBlur}
+                helperText={workUnitFormik.touched.parent && workUnitFormik.errors.parent}
+              />
+            )}
+          />
+        </>
       ) : null}
 
       <TextField
@@ -131,7 +173,6 @@ const EditWorkUnitForm = ({
         id="approver"
         label="nama approver"
         variant="outlined"
-        required
         value={workUnitFormik.values.approver}
         error={workUnitFormik.touched.approver && Boolean(workUnitFormik.errors.approver)}
         onBlur={workUnitFormik.handleBlur}
@@ -143,7 +184,6 @@ const EditWorkUnitForm = ({
         id="emailApprover"
         label="email approver"
         variant="outlined"
-        required
         value={workUnitFormik.values.emailApprover}
         error={workUnitFormik.touched.emailApprover && Boolean(workUnitFormik.errors.emailApprover)}
         onBlur={workUnitFormik.handleBlur}
@@ -156,7 +196,6 @@ const EditWorkUnitForm = ({
         id="emailUpperLevel"
         label="email L2/ upper level"
         variant="outlined"
-        required
         value={workUnitFormik.values.emailUpperLevel}
         error={
           workUnitFormik.touched.emailUpperLevel && Boolean(workUnitFormik.errors.emailUpperLevel)

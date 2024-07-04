@@ -25,13 +25,9 @@ export const fetchDropdownFailure = (error) => ({
   payload: error,
 });
 
-export const getDropdown = (user, id) => {
+export const getDropdown = () => {
   const queryString = stringify(
-    {
-      id,
-      kodeDivisi: user?.division,
-      kodeCabang: user?.branchCode,
-    },
+    {},
     {
       arrayFormat: 'comma',
       encode: false,
@@ -1355,6 +1351,7 @@ export const updateBranch = (payload) => {
       emailPic: payload.email,
       namaPic: payload.pic,
       isEnable: payload.isEnable,
+      kodeRegion: payload.region,
       kodeCabang: payload.code,
       namaCabang: payload.name,
       indukCabang: payload.parent,
@@ -1421,6 +1418,7 @@ export const createBranch = (payload) => {
     const requestBody = {
       kodeCabang: payload.code,
       namaCabang: payload.name,
+      kodeRegion: payload.region,
       indukCabang: payload.parent,
       namaPicCabang: payload.pic,
       emailPicCabang: payload.email,

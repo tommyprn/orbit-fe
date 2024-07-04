@@ -111,7 +111,7 @@ const CreateFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getDropdown(user);
+      await getDropdown();
     })();
   }, [getDropdown]);
 
@@ -945,7 +945,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDropdown: (user) => dispatch(getDropdown(user)),
+    getDropdown: () => dispatch(getDropdown()),
     createFormLed: (payload, user) => dispatch(createFormLed(payload, user)),
     createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),
   };

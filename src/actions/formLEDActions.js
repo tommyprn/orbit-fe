@@ -49,7 +49,7 @@ export const createFormLed = (payload, user) => {
     if (user.division === 'CABANG') {
       formData.append('kodeCabang', user.branchCode);
     } else {
-      formData.append('kodeUnitKerja', user.division);
+      formData.append('kodeUnitKerja', user.idDivision);
     }
 
     formData.append('ssl', payload.costCentre ?? 0);
@@ -133,7 +133,7 @@ export const editFormLed = (payload, user) => {
     if (user.division === 'CABANG') {
       formData.append('kodeCabang', user.branchCode);
     } else {
-      formData.append('kodeUnitKerja', user.division);
+      formData.append('kodeUnitKerja', user.idDivision);
     }
 
     formData.append('id', payload.id);
@@ -236,7 +236,7 @@ export const createDraftLed = (payload, user) => {
     formData.append('emailInputer', user.email);
     formData.append('tindakLanjut', payload.followUp);
     formData.append('tanggalLapor', payload.reportDate ? payload.reportDate : new Date());
-    formData.append('kodeUnitKerja', user.division);
+    formData.append('kodeUnitKerja', user.idDivision);
     formData.append('sumberRecovery', payload.recoverySource);
     formData.append('statusKejadian', payload.caseStatus ?? 0);
     formData.append(
@@ -324,7 +324,7 @@ export const getAllList = (pagination, keyword, user) => {
       idLaporan: keyword,
       pageNumber: pagination?.page,
       kodeCabang: user.branchCode,
-      kodeUnitKerja: user.division,
+      kodeUnitKerja: user.idDivision,
     },
     {
       arrayFormat: 'comma',
@@ -558,7 +558,7 @@ export const getAllInbox = (pagination, keyword, user) => {
       idLaporan: keyword,
       pageNumber: pagination?.page,
       kodeCabang: user.branchCode,
-      kodeUnitKerja: user.division,
+      kodeUnitKerja: user.idDivision,
     },
     {
       arrayFormat: 'comma',
@@ -736,7 +736,7 @@ export const getZeroReport = (pagination, user) => {
       pageSize: pagination?.perPage,
       pageNumber: pagination?.page,
       kodeCabang: user?.branchCode,
-      kodeUnitKerja: user?.division,
+      kodeUnitKerja: user?.idDivision,
     },
     {
       arrayFormat: 'comma',

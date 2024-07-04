@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, Typography } from '@mui/material';
-import { getBranch, updateBranch, deleteBranch, createBranch } from 'src/actions/masterDataActions';
+import {
+  getBranch,
+  getDropdown,
+  updateBranch,
+  deleteBranch,
+  createBranch,
+} from 'src/actions/masterDataActions';
 
 // component
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
@@ -12,8 +18,10 @@ import EditWorkUnitForm from 'src/components/forms/edit-work-unit-form';
 import CreateWorkUnitForm from 'src/components/forms/create-work-unit-form';
 
 const Branch = (props) => {
-  const { masterData, getBranch, updateBranch, deleteBranch, createBranch } = props;
+  const { masterData, getDropdown, getBranch, updateBranch, deleteBranch, createBranch } = props;
   const [keyword, setKeyword] = useState('');
+  const [parentOpt, setParentOpt] = useState([]);
+  const [regionOpt, setRegionOpt] = useState([]);
   const [rowPerPage, setRowPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(0);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -39,8 +47,14 @@ const Branch = (props) => {
   useEffect(() => {
     (async () => {
       await getBranch({ perPage: rowPerPage, page: currentPage }, keyword);
+      await getDropdown();
     })();
   }, [rowPerPage, currentPage, keyword]);
+
+  useEffect(() => {
+    setRegionOpt(masterData?.dropdown.region);
+    setParentOpt(masterData?.dropdown.parentBranch);
+  }, [masterData]);
 
   // Create Controller
   const onCreateHandler = () => {
@@ -59,6 +73,7 @@ const Branch = (props) => {
       code: item.kodeCabang,
       name: item.namaCabang,
       email: item.emailPic,
+      region: item.regionEntity?.id,
       parent: item.indukCabang,
       isEnable: item.isEnable,
       approver: item.namaApproverCabang,
@@ -131,6 +146,8 @@ const Branch = (props) => {
         <CreateWorkUnitForm
           workUnit="branch"
           masterTitle="Cabang"
+          parentOpt={parentOpt}
+          regionOpt={regionOpt}
           onSaveHandler={onCreateSave}
           onCloseHandler={onCloseHandler}
         />
@@ -139,8 +156,11 @@ const Branch = (props) => {
       <SimpleModal title="Ubah Cabang" isOpen={editModalOpen} onCloseHandler={onCloseHandler}>
         <EditWorkUnitForm
           workUnit="branch"
-          masterTitle="Cabang"
           selected={selectedUnit}
+          dropdown={masterData?.dropdown}
+          parentOpt={parentOpt}
+          regionOpt={regionOpt}
+          masterTitle="Cabang"
           onSaveHandler={onEditSave}
           onCloseHandler={onCloseHandler}
         />
@@ -177,6 +197,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getBranch: (pagination, keyword) => dispatch(getBranch(pagination, keyword)),
+    getDropdown: () => dispatch(getDropdown()),
     updateBranch: (payload) => dispatch(updateBranch(payload)),
     deleteBranch: (payload) => dispatch(deleteBranch(payload)),
     createBranch: (payload) => dispatch(createBranch(payload)),

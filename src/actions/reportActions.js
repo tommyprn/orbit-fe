@@ -363,7 +363,7 @@ export const getAllDatabaseReport = (start, end, user) => {
       endDate: end,
       startDate: start,
       kodeCabang: user.branchCode,
-      kodeUnitKerja: user.division,
+      kodeUnitKerja: user.idDivision,
     },
     {
       arrayFormat: 'comma',
@@ -404,7 +404,7 @@ export const getAllActionPlanReport = (start, end, user) => {
       endDate: end,
       startDate: start,
       kodeCabang: user.branchCode,
-      kodeUnitKerja: user.division,
+      kodeUnitKerja: user.idDivision,
     },
     {
       arrayFormat: 'comma',

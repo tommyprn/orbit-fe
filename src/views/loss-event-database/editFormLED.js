@@ -150,7 +150,7 @@ const EditFormLED = (props) => {
 
   useEffect(() => {
     (async () => {
-      await getDropdown(user);
+      await getDropdown();
       await getOneFormLed(params.reportId);
     })();
   }, [params.reportId]);
@@ -1057,7 +1057,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     approveLED: (id, user) => dispatch(approveLED(id, user)),
-    getDropdown: (user, id) => dispatch(getDropdown(user, id)),
+    getDropdown: () => dispatch(getDropdown()),
     editFormLed: (payload, user) => dispatch(editFormLed(payload, user)),
     getOneFormLed: (id) => dispatch(getOneFormLed(id)),
     createDraftLed: (payload, user) => dispatch(createDraftLed(payload, user)),

@@ -21,6 +21,7 @@ import secureLocalStorage from 'react-secure-storage';
 
 // component
 // import SearchBar from 'src/components/search-bar/SearchBar';
+import Spinner from '../spinner/Spinner';
 import Breadcrumb from 'src/layouts/full/shared/breadcrumb/Breadcrumb';
 import SimpleModal from 'src/components/modal/simpleModal';
 import PageContainer from 'src/components/container/PageContainer';
@@ -48,7 +49,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const NilPage = (props) => {
   const { LED, getZeroReport, createZeroReport, updateWorkingDays } = props;
   const user = JSON.parse(secureLocalStorage.getItem('history'));
-  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'));
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'))?.toLowerCase();
 
   const [page, setPage] = useState(0);
   // const [keyword, setKeyword] = useState('');
@@ -165,98 +166,103 @@ const NilPage = (props) => {
         </div>
       </SimpleModal>
 
-      <DashboardCard>
-        <div
-          style={{
-            gap: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
-            <div />
-            {role?.toLowerCase() === 'approver' ? (
-              <Button variant="contained" onClick={onOpenModal} disabled={!data?.isButtonEnable}>
-                Submit laporan nihil
-              </Button>
-            ) : role?.toLowerCase() === 'validator' ? (
-              <Button variant="contained" onClick={openWorkingDaysModal}>
-                <Typography>
-                  Periode submit laporan nihil:{' '}
-                  <span style={{ color: '#551a8b', fontWeight: 'bold' }}>{LED.workDays} </span>
-                  hari kerja
-                </Typography>
-              </Button>
-            ) : null}
-          </div>
-
-          <Paper
-            sx={{
-              maxWidth: '100%',
-              overflow: 'hidden',
+      {LED.loading || !role ? (
+        <Spinner />
+      ) : (
+        <DashboardCard>
+          <div
+            style={{
+              gap: '16px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
             }}
-            elevation={0}
-            variant="outlined"
           >
-            <TableContainer>
-              <Table size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>no</TableCell>
-                    <TableCell>Tanggal Lapor</TableCell>
-                    <TableCell>Nama Orion</TableCell>
-                    <TableCell>Unit Kerja</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.data?.map((row, index) => {
-                    return (
-                      <StyledTableRow
-                        key={index}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{dayjs(row.tanggalLapor).format('DD-MMM-YY')}</TableCell>
-                        <TableCell>{row.unitKerjaEntity.namaApproverUnit}</TableCell>
-                        <TableCell>
-                          {row.unitKerjaEntity.namaUnitKerja !== 'CABANG' ? (
-                            <>
-                              {row.unitKerjaEntity.kodeUnitKerja} -{' '}
-                              {row.unitKerjaEntity.namaUnitKerja}
-                            </>
-                          ) : (
-                            <>
-                              {row.cabangEntity.kodeCabang} - {row.cabangEntity.namaCabang}
-                            </>
-                          )}
-                        </TableCell>
-                      </StyledTableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {/* <SearchBar onSubmit={(val) => onSearch(val)} /> */}
+              <div />
+              {(role === 'approver' || role === 'validatorfraud') && (
+                <Button variant="contained" onClick={onOpenModal} disabled={!data?.isButtonEnable}>
+                  Submit laporan nihil
+                </Button>
+              )}
+              {role === 'admin' && (
+                <Button variant="contained" onClick={openWorkingDaysModal}>
+                  <Typography>
+                    Periode submit laporan nihil:{' '}
+                    <span style={{ color: '#ffcd56', fontWeight: 'bold' }}>{LED.workDays} </span>
+                    hari kerja
+                  </Typography>
+                </Button>
+              )}
+            </div>
+
+            <Paper
               sx={{
-                display: 'flex',
-                width: '100%',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 1,
+                maxWidth: '100%',
+                overflow: 'hidden',
               }}
-              page={page}
-              count={data?.totalData ?? 0}
-              component="div"
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              labelRowsPerPage="Baris per halaman"
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </div>
-      </DashboardCard>
+              elevation={0}
+              variant="outlined"
+            >
+              <TableContainer>
+                <Table size="small" aria-label="a dense table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>no</TableCell>
+                      <TableCell>Tanggal Lapor</TableCell>
+                      <TableCell>Nama Orion</TableCell>
+                      <TableCell>Unit Kerja</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {data?.data?.map((row, index) => {
+                      return (
+                        <StyledTableRow
+                          key={index}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{dayjs(row.tanggalLapor).format('DD-MMM-YY')}</TableCell>
+                          <TableCell>{row.unitKerjaEntity.namaApproverUnit}</TableCell>
+                          <TableCell>
+                            {row.unitKerjaEntity.namaUnitKerja !== 'CABANG' ? (
+                              <>
+                                {row.unitKerjaEntity.kodeUnitKerja} -{' '}
+                                {row.unitKerjaEntity.namaUnitKerja}
+                              </>
+                            ) : (
+                              <>
+                                {row.cabangEntity.kodeCabang} - {row.cabangEntity.namaCabang}
+                              </>
+                            )}
+                          </TableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                sx={{
+                  display: 'flex',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 1,
+                }}
+                page={page}
+                count={data?.totalData ?? 0}
+                component="div"
+                rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
+                labelRowsPerPage="Baris per halaman"
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+          </div>
+        </DashboardCard>
+      )}
     </PageContainer>
   );
 };

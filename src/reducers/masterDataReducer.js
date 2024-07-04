@@ -144,6 +144,7 @@ const masterDataReducer = (state = initialState, action) => {
             levelTwo: action.payload.subKategori,
             levelThree: action.payload.aktivitas,
           },
+          parentBranch: action.payload.indukCabang,
         },
         isLoading: false,
       };

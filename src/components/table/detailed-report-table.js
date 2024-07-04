@@ -70,8 +70,8 @@ const DetailedReportTable = ({
   const generateGeneralData = (data) => {
     return data.map((item) => {
       return {
-        bulanInputLed: item.createdDate,
-        Tahun: dayjs(item.createdDate, 'DD-MM-YYYY').get('year'),
+        bulanInputLed: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').format('MMMM'),
+        Tahun: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').get('year'),
         divisiCabang:
           item?.unitKerja?.namaUnitKerja === 'CABANG'
             ? item.cabang?.namaCabang
@@ -236,8 +236,8 @@ const DetailedReportTable = ({
                 key={index}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell>{dayjs(row.createdDate, 'DD-MM-YYYY').format('MMMM')}</TableCell>
-                <TableCell>{dayjs(row.createdDate, 'DD-MM-YYYY').get('year')}</TableCell>
+                <TableCell>{dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('MMMM')}</TableCell>
+                <TableCell>{dayjs(row?.tanggalLapor, 'DD-MM-YYYY').get('year')}</TableCell>
                 <TableCell>
                   {row?.unitKerja?.namaUnitKerja === 'CABANG'
                     ? row.cabang?.namaCabang
@@ -275,7 +275,8 @@ const DetailedReportTable = ({
                 </TableCell>
                 <TableCell>
                   <Typography
-                    sx={{ fontSize: '12px' }}
+                    sx={{ maxWidth: '200px', fontSize: '12px' }}
+                    noWrap
                     dangerouslySetInnerHTML={{ __html: row?.tindakLanjut }}
                   />
                 </TableCell>

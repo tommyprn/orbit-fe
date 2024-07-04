@@ -9,7 +9,6 @@ import AntSwitch from '../shared/AntSwitch';
 import SearchBar from 'src/components/search-bar/SearchBar';
 
 export const WorkUnitTable = ({
-  ssl,
   title,
   master,
   header,
@@ -134,21 +133,23 @@ export const WorkUnitTable = ({
                   <Typography>{item?.namaUnitKerja || item?.namaCabang}</Typography>
                 </td>
                 <td style={{ width: '17%' }}>
-                  <Typography>{item?.namaPic || '-'}</Typography>
-                  <Typography>{item?.emailPic || '-'}</Typography>
+                  <Typography sx={{ wordWrap: 'break-word' }}>{item?.namaPic || '-'}</Typography>
+                  <Typography sx={{ wordWrap: 'break-word' }}>{item?.emailPic || '-'}</Typography>
                 </td>
                 <td style={{ width: '17%' }}>
-                  <Typography>
+                  <Typography sx={{ wordWrap: 'break-word' }}>
                     {item?.namaApproverUnit || item?.namaApproverCabang || '-'}
                   </Typography>
-                  <Typography>
+                  <Typography sx={{ wordWrap: 'break-word' }}>
                     {item?.emailApproverUnit || item?.emailApproverCabang || '-'}
                   </Typography>
                 </td>
                 <td style={{ width: '17%' }}>
-                  <Typography>{item?.emailUpperUnit || item?.emailUpperCabang || '-'}</Typography>
+                  <Typography sx={{ wordWrap: 'break-word' }}>
+                    {item?.emailUpperUnit || item?.emailUpperCabang || '-'}
+                  </Typography>
                 </td>
-                <td style={{ width: '15%', display: 'flex', alignItems: 'center' }}>
+                <td style={{ width: '15%', display: 'flex' }}>
                   <IconButton
                     aria-label="edit"
                     onClick={() => onUpdate(item)}

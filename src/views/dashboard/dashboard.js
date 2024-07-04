@@ -218,21 +218,22 @@ const menuDev = [
 ];
 
 const userDev = {
-  isMcb: true,
-  isLdap: false,
   idUser: '2',
   nikUser: '20150213',
-  idDivisi: '21',
   nameUser: 'Yanto',
   emailUser: 'test@mail.com',
+  isMcbUser: true,
+  isLdapUser: false,
   divisiUser: 'CABANG',
-  kodeCabangUser: '301',
+  idDivisiUser: '21',
+  kodeCabangUser: '101',
   kodeRegionUser: '004',
   namaCabangUser: 'Kuningan Branch',
+  namaRegionUser: 'JATENG DIY KALIMANTAN 2',
   departementUser: 'CABANG',
   statusCabangUser: 'KCP',
-  idDepartementUser: '4',
-  kodeCabangKcuUser: '301',
+  idDepartementUser: '21',
+  kodeCabangKcuUser: '101',
   namaCabangKcuUser: 'KCO muamalat tower',
   apps: [
     {
@@ -329,6 +330,7 @@ const Dashboard = (props) => {
       division: user?.divisiUser,
       branchCode: user?.kodeCabangUser,
       branchName: user?.namaCabangUser,
+      idDivision: user?.idDivisiUser,
       department: user?.departementUser,
     };
 

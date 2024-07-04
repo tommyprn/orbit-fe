@@ -39,8 +39,8 @@ export const createIdOption = (data) => {
   } else {
     return data?.map((item) => {
       return {
-        id: item.id,
-        label: item.idLaporan,
+        id: item.id || item.kodeIndukCabang,
+        label: item.idLaporan || item.namaIndukCabang || item.namaRegion,
       };
     });
   }

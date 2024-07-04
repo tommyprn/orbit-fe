@@ -8,7 +8,6 @@ import { getAllDatabaseReport, getAllActionPlanReport } from 'src/actions/report
 import PageContainer from 'src/components/container/PageContainer';
 import DashboardCard from '../../components/shared/DashboardCard';
 import DetailedReportTable from 'src/components/table/detailed-report-table';
-// import ActionPlanReportTable from 'src/components/table/action-plan-report-table';
 
 import './report.css';
 
@@ -24,7 +23,7 @@ const DatabaseReport = (props) => {
     (async () => {
       const userSent = {
         role: role,
-        division: user.divisiUser,
+        idDivision: user.idDivisiUser,
         branchCode: user.kodeCabangKcuUser,
       };
       await getAllDatabaseReport(
