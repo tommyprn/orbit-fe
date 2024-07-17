@@ -119,19 +119,15 @@ const EditFormLED = (props) => {
     {},
     {},
   ]);
-  const [costCentreValue, setCostCentreValue] = useState({
-    id: 0,
-    label: '',
-  });
   const [caseCauseValue, setCaseCauseValue] = useState({
     id: 0,
     label: '',
   });
-  const [caseStatusValue, setCaseStatusValue] = useState({
+  const [costCentreValue, setCostCentreValue] = useState({
     id: 0,
     label: '',
   });
-  const [caseCategoryValue, setCaseCategoryValue] = useState({
+  const [caseStatusValue, setCaseStatusValue] = useState({
     id: 0,
     label: '',
   });
@@ -146,6 +142,10 @@ const EditFormLED = (props) => {
         nama: dataLaporan?.aktivitasEntity?.subKategori?.kategoriKejadian?.nama,
       },
     },
+  });
+  const [caseCategoryValue, setCaseCategoryValue] = useState({
+    id: 0,
+    label: '',
   });
 
   useEffect(() => {

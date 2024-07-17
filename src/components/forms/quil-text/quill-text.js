@@ -31,7 +31,7 @@ const QuillTextField = (props) => {
         flexDirection: 'column',
       }}
     >
-      <div style={{ height: '136px' }}>
+      <div style={{ height: '130px' }}>
         <TextField id={id} sx={{ display: 'none' }} value={text} />
 
         <ReactQuill

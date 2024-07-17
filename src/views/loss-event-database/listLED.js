@@ -98,7 +98,7 @@ const ListLED = (props) => {
       return 'Approver';
     } else if (status.toLowerCase() === 'need update') {
       return 'Inputer';
-    } else if (status.toLowerCase() === 'pending closed') {
+    } else if (status.toLowerCase() === 'validated') {
       return 'IRM Approval';
     } else if (status.toLowerCase() === 'on progress' && !fraud) {
       return 'IRM Validator';

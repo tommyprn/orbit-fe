@@ -84,7 +84,7 @@ const BaseInput = ({
     <div
       style={{
         gap: '8px',
-        height: type === 'quill' ? 'auto' : '4rem',
+        height: type === 'quill' ? 'auto' : '5rem',
         display: 'flex',
         flexDirection: 'column',
       }}

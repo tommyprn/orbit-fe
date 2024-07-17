@@ -51,8 +51,8 @@ const NilPage = (props) => {
   const user = JSON.parse(secureLocalStorage.getItem('history'));
   const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'))?.toLowerCase();
 
-  const [page, setPage] = useState(0);
   // const [keyword, setKeyword] = useState('');
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [workingDays, setWorkingDays] = useState(false);
   const [workingDaysModal, setWorkingDaysModal] = useState(false);

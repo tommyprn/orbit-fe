@@ -61,6 +61,10 @@ const UpdateFormLED = (props) => {
     id: 0,
     label: '',
   });
+  const [costCentreValue, setCostCentreValue] = useState({
+    id: 0,
+    label: '',
+  });
 
   const dataLaporan = detail?.laporanLed;
   const dataActionPlan = detail?.actionPlans;
@@ -77,6 +81,10 @@ const UpdateFormLED = (props) => {
       setCaseStatusValue({
         id: dataLaporan?.statusKejadian?.id ?? 0,
         label: dataLaporan?.statusKejadian?.nama ?? '',
+      });
+      setCostCentreValue({
+        id: dataLaporan?.sslEntity?.id,
+        label: `${dataLaporan?.sslEntity?.kode} - ${dataLaporan?.sslEntity?.nama}`,
       });
     }
   }, [dataLaporan, dataActionPlan]);
@@ -106,17 +114,17 @@ const UpdateFormLED = (props) => {
           id: item.id ?? 0,
           PIC: item.penanggungJawab,
           plan: item.actionPlan,
-          file: item.namaFile ?? '',
+          file: item?.namaFile ?? '',
           email: item.email,
           isBranch: item.cabangEntity ? true : false,
+          isEnable: item?.isDone,
+          targetDate: item.targetPenyelesaian,
           branch: item.cabangEntity
             ? { id: item.cabangEntity.id, label: item.cabangEntity.namaCabang }
             : { id: 0, label: '' },
           workUnit: item.unitKerjaEntity
             ? { id: item.unitKerjaEntity.idUnitKerja, label: item.unitKerjaEntity.namaUnitKerja }
             : { id: 0, label: '' },
-          targetDate: item.targetPenyelesaian,
-          isEnable: item.isDone ? item.isDone : false,
         };
       }),
     },
@@ -133,6 +141,8 @@ const UpdateFormLED = (props) => {
       }
     },
   });
+
+  console.log(dataActionPlan);
 
   const onCancel = () => {
     navigate(-1);
@@ -410,17 +420,25 @@ const UpdateFormLED = (props) => {
                     disablePortal
                     id="costCentre"
                     sx={{ width: '80%' }}
-                    value={formik.values.costCentre}
+                    value={costCentreValue}
                     options={createOption(masterData.dropdown.costCentre, true)}
                     onChange={(event, newValue) => {
-                      formik.setFieldValue('costCentre', newValue?.id);
+                      if (newValue !== null) {
+                        setCostCentreValue(newValue);
+                        formik.setFieldValue('costCentre', newValue?.id);
+                      } else {
+                        setCostCentreValue({
+                          id: null,
+                          label: '',
+                        });
+                      }
                     }}
                     isOptionEqualToValue={(option, value) => option.id === value.id}
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         id="costCentre"
-                        value={formik.values.costCentre}
+                        value={costCentreValue}
                         error={formik.touched.costCentre && Boolean(formik.errors.costCentre)}
                         onBlur={formik.handleBlur}
                         helperText={formik.touched.costCentre && formik.errors.costCentre}
@@ -585,7 +603,9 @@ const UpdateFormLED = (props) => {
                                     variant="standard"
                                     onChange={(event) => {
                                       const files = event.target.files[0];
-                                      formik.setFieldValue(`actionPlan.${index}.file`, files);
+                                      if (files) {
+                                        formik.setFieldValue(`actionPlan.${index}.file`, files);
+                                      }
                                     }}
                                     helperText={
                                       formik.touched?.actionPlan?.[index]?.file &&

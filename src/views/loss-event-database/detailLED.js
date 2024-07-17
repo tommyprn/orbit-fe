@@ -163,7 +163,7 @@ const DetailLED = (props) => {
   const showButton =
     ((role === 'approver' || role === 'validatorfraud') && statusLaporan === 'Recorded') ||
     (role === 'validator' && statusLaporan === 'On Progress' && !dataLaporan?.isPendingFraud) ||
-    (role === 'irmapproval' && statusLaporan === 'Pending Closed') ||
+    (role === 'irmapproval' && statusLaporan === 'Validated') ||
     (role === 'validatorfraud' && statusLaporan === 'On Progress' && dataLaporan?.isPendingFraud);
 
   return (
