@@ -9,49 +9,59 @@ import axiosServices from './utils/axios';
 import secureLocalStorage from 'react-secure-storage';
 
 function App() {
-  const routing = useRoutes(Router);
+  const user = JSON.parse(secureLocalStorage.getItem('user'));
   const theme = ThemeSettings();
+  const routing = useRoutes(Router);
   const customizer = useSelector((state) => state.customizer);
 
   const navigateTo = (url) => {
     window.location.href = url;
   };
 
-  // const checkSessionExpiry = async () => {
-  //   const accessToken = secureLocalStorage?.getItem('accessToken');
-  //   const menu = secureLocalStorage?.getItem('menuItem');
+  const checkSessionExpiry = async () => {
+    const accessToken = localStorage.getItem('tokenLogin');
+    const menu = secureLocalStorage.getItem('menuItem');
 
-  //   if (
-  //     !accessToken ||
-  //     accessToken === '' ||
-  //     accessToken === null ||
-  //     !menu ||
-  //     menu === '' ||
-  //     menu === null
-  //   ) {
-  //     // navigate to login when no token/ menu item found
-  //     navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
-  //     return;
-  //   }
+    if (
+      !accessToken ||
+      accessToken === '' ||
+      accessToken === null ||
+      !menu ||
+      menu === '' ||
+      menu === null
+    ) {
+      alert('Anda Tidak Memiliki Akses');
+      secureLocalStorage.removeItem('accessToken');
+      localStorage.removeItem('tokenLogin');
+      navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+      return;
+    }
 
-  //   const apiUrl = 'http://10.80.244.168:12987/maps/v1/auth/session-expiry';
-  //   const headers = {
-  //     Authorization: `${accessToken}`,
-  //   };
+    const apiUrl = `https://apigw-int.bankmuamalat.co.id/api/v1/auth/session-login`;
 
-  //   try {
-  //     const response = await axiosServices.get(apiUrl, { headers });
+    const requestData = {
+      nikLogin: user.nikUser,
+      jwtTokenLogin: accessToken,
+    };
 
-  //     if (!response.data || response.data !== 'active') {
-  //       navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
-  //   }
-  // };
+    try {
+      const response = await axiosServices.post(apiUrl, requestData);
 
-  // checkSessionExpiry();
+      if (!response.data.responseCode || response.data.responseCode !== '00') {
+        alert('Sesi Anda Telah Habis');
+        secureLocalStorage.removeItem('accessToken');
+        localStorage.removeItem('tokenLogin');
+        navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+      }
+    } catch (error) {
+      alert('Sesi Anda Telah Habis');
+      secureLocalStorage.removeItem('accessToken');
+      localStorage.removeItem('tokenLogin');
+      navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+    }
+  };
+
+  process.env.REACT_APP_DEPLOY_STATE === 'true' ?? checkSessionExpiry();
 
   return (
     <ThemeProvider theme={theme}>
