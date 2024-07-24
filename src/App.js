@@ -30,7 +30,7 @@ function App() {
   //     menu === null
   //   ) {
   //     // navigate to login when no token/ menu item found
-  //     navigateTo('http://10.55.54.152/maps-login');
+  //     navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
   //     return;
   //   }
 
@@ -43,11 +43,11 @@ function App() {
   //     const response = await axiosServices.get(apiUrl, { headers });
 
   //     if (!response.data || response.data !== 'active') {
-  //       navigateTo('http://10.55.54.152/maps-login');
+  //       navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
   //     }
   //   } catch (error) {
   //     console.error(error);
-  //     navigateTo('http://10.55.54.152/maps-login');
+  //     navigateTo('http://smartops.bankmuamalat.co.id/maps-login');
   //   }
   // };
 

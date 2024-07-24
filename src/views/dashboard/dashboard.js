@@ -238,7 +238,7 @@ const userDev = {
   apps: [
     {
       id: 1,
-      url: 'http://10.55.54.152/maps-admin',
+      url: 'http://smartops.bankmuamalat.co.id/maps-admin',
       name: 'MAPS',
       logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
       isActive: true,
