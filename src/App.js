@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { ThemeSettings } from './theme/Theme';
@@ -61,7 +62,11 @@ function App() {
     }
   };
 
-  process.env.REACT_APP_DEPLOY_STATE === 'true' ?? checkSessionExpiry();
+  useEffect(() => {
+    if (process.env.REACT_APP_DEPLOY_STATE === 'true') {
+      checkSessionExpiry();
+    }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
