@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 
 // const API_URL = 'http://10.80.240.45:1933/api/v1/';
-// const API_URL = 'http://apigw-int.bankmuamalat.co.id/api/v1/';
+// const API_URL = 'https://apigw-int.bankmuamalat.co.id/api/v1/';
 const API_URL = 'apigw-int.bankmuamalat.co.id';
 
 export const FETCH_HISTORY_REQUEST = 'FETCH_HISTORY_REQUEST';

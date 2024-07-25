@@ -1,9 +1,9 @@
 import { stringify } from 'qs';
 
-// const API_URL = 'http://apigw-int.bankmuamalat.co.id/api/v1/';
+// const API_URL = 'https://apigw-int.bankmuamalat.co.id/api/v1/';
 const API_URL =
   process.env.REACT_APP_DEPLOY_STATE === 'true'
-    ? 'http://apigw-int.bankmuamalat.co.id/api/v1/'
+    ? 'https://apigw-int.bankmuamalat.co.id/api/v1/'
     : 'http://10.80.240.45:1933/api/v1/';
 
 export const FETCH_FORM_LED_REQUEST = 'FETCH_FORM_LED_REQUEST';
