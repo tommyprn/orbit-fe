@@ -171,7 +171,7 @@ const ListLED = (props) => {
                               <TableCell>{index + 1}</TableCell>
                               <TableCell>{row?.idLaporan}</TableCell>
                               <TableCell>
-                                {row?.unitKerja?.namaUnitKerja !== 'CABANG'
+                                {row?.unitKerja?.namaUnitKerja?.toLowecase() !== 'cabang'
                                   ? row?.unitKerja?.namaUnitKerja
                                   : row?.cabang?.kodeCabang + ' - ' + row?.cabang?.namaCabang}
                               </TableCell>

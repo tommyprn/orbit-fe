@@ -77,7 +77,7 @@ const Profile = () => {
             >
               {users?.nikUser} - {users?.nameUser}
             </Typography>
-            {users?.divisiUser === 'CABANG' ? (
+            {users?.idDivisiUser === '21' ? (
               <Typography variant="body" color="textSecondary">
                 {users?.namaCabangUser.charAt(0) + users?.namaCabangUser.substring(1).toLowerCase()}{' '}
                 -{' '}

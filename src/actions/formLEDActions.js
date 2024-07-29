@@ -46,7 +46,7 @@ export const createFormLed = (payload, user) => {
     formData.append('role', user.role);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
-    if (user.division === 'CABANG') {
+    if (user.idDivision === '21') {
       formData.append('kodeCabang', user.branchCode);
     } else {
       formData.append('kodeUnitKerja', user.idDivision);
@@ -130,7 +130,7 @@ export const editFormLed = (payload, user) => {
     formData.append('role', user.role);
     formData.append('namaInputer', user.name);
     formData.append('emailInputer', user.email);
-    if (user.division === 'CABANG') {
+    if (user.idDivision === '21') {
       formData.append('kodeCabang', user.branchCode);
     } else {
       formData.append('kodeUnitKerja', user.idDivision);

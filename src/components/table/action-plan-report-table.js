@@ -86,7 +86,7 @@ const ActionPlanReportTable = ({ data }) => {
                 <TableCell>{row.laporanLed?.idLaporan}</TableCell>
                 <TableCell>{row?.actionPlan}</TableCell>
                 <TableCell>
-                  {row?.unitKerjaEntity?.namaUnitKerja !== 'CABANG'
+                  {row?.unitKerjaEntity?.namaUnitKerja?.toLowecase() !== 'cabang'
                     ? row?.unitKerjaEntity?.namaUnitKerja
                     : row?.cabangEntity?.namaCabang}
                 </TableCell>

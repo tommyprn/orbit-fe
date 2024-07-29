@@ -226,14 +226,14 @@ const userDev = {
   isLdapUser: false,
   divisiUser: 'CABANG',
   idDivisiUser: '21',
-  kodeCabangUser: '101',
+  kodeCabangUser: '113',
   kodeRegionUser: '004',
   namaCabangUser: 'Kuningan Branch',
   namaRegionUser: 'JATENG DIY KALIMANTAN 2',
   departementUser: 'CABANG',
   statusCabangUser: 'KCP',
   idDepartementUser: '21',
-  kodeCabangKcuUser: '101',
+  kodeCabangKcuUser: '999',
   namaCabangKcuUser: 'KCO muamalat tower',
   apps: [
     {

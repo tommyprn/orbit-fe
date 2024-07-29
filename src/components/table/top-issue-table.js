@@ -77,7 +77,9 @@ const TopIssueTable = ({ data, title, header, fileName, setValue }) => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{' - '}</TableCell>
                 <TableCell>
-                  {row.namaUnitKerja === 'CABANG' ? row.namaCabang : row.namaUnitKerja}
+                  {row.namaUnitKerja?.toLowecase() !== 'cabang'
+                    ? row.namaCabang
+                    : row.namaUnitKerja}
                 </TableCell>
                 <TableCell>{dayjs(row.tglKejadian).format('DD - MMM - YYYY')}</TableCell>
                 <TableCell>{dayjs(row.tglLapor).format('DD - MMM - YYYY')}</TableCell>
