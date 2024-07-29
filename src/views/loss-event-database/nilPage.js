@@ -226,7 +226,7 @@ const NilPage = (props) => {
                           <TableCell>{dayjs(row.tanggalLapor).format('DD-MMM-YY')}</TableCell>
                           <TableCell>{row.unitKerjaEntity.namaApproverUnit}</TableCell>
                           <TableCell>
-                            {row.unitKerjaEntity.namaUnitKerja?.toLowecase() !== 'cabang' ? (
+                            {row.unitKerjaEntity.namaUnitKerja?.toLowerCase() !== 'cabang' ? (
                               <>
                                 {row.unitKerjaEntity.kodeUnitKerja} -{' '}
                                 {row.unitKerjaEntity.namaUnitKerja}

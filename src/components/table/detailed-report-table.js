@@ -73,7 +73,7 @@ const DetailedReportTable = ({
         bulanInputLed: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').format('MMMM'),
         Tahun: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').get('year'),
         divisiCabang:
-          item?.unitKerja?.namaUnitKerja?.toLowecase() !== 'cabang'
+          item?.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
             ? item.cabang?.namaCabang
             : item?.unitKerja?.namaUnitKerja,
         noLed: item.idLaporan,
@@ -100,7 +100,7 @@ const DetailedReportTable = ({
           item.statusKejadian?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
         catatan: item.catatan,
         picAndMail:
-          item.unitKerja?.namaUnitKerja?.toLowecase() !== 'cabang'
+          item.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
             ? item.cabang.emailPic
             : item.unitKerja?.emailPic,
         tindakLanjut: item.actionPlan[item.actionPlan?.length - 1]?.actionPlan,
@@ -118,7 +118,7 @@ const DetailedReportTable = ({
         nomorLed: item?.laporanLedEntity,
         plan: item?.actionPlan,
         divisi:
-          item?.unitKerjaEntity?.namaUnitKerja?.toLowecase() !== 'cabang'
+          item?.unitKerjaEntity?.namaUnitKerja?.toLowerCase() !== 'cabang'
             ? item?.unitKerjaEntity?.namaUnitKerja
             : item?.cabangEntity?.namaCabang,
         PIC: item?.penanggungJawab,
@@ -239,7 +239,7 @@ const DetailedReportTable = ({
                 <TableCell>{dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('MMMM')}</TableCell>
                 <TableCell>{dayjs(row?.tanggalLapor, 'DD-MM-YYYY').get('year')}</TableCell>
                 <TableCell>
-                  {row?.unitKerja?.namaUnitKerja?.toLowecase() !== 'cabang'
+                  {row?.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
                     ? row.cabang?.namaCabang
                     : row?.unitKerja?.namaUnitKerja}
                 </TableCell>

@@ -77,7 +77,7 @@ const TopIssueTable = ({ data, title, header, fileName, setValue }) => {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{' - '}</TableCell>
                 <TableCell>
-                  {row.namaUnitKerja?.toLowecase() !== 'cabang'
+                  {row.namaUnitKerja?.toLowerCase() !== 'cabang'
                     ? row.namaCabang
                     : row.namaUnitKerja}
                 </TableCell>
