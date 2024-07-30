@@ -61,7 +61,7 @@ const DetailLED = (props) => {
       ? 'https://apigw-int.bankmuamalat.co.id/api/v1/'
       : 'http://10.80.240.45:1933/api/v1/';
   const user = JSON.parse(secureLocalStorage.getItem('history'));
-  const role = user?.role.toLowerCase();
+  const role = user?.role?.toLowerCase();
   const params = useParams();
   const navigate = useNavigate();
   const { detail, isLoading, approveIRM, rejectIRM, approveLED, sendBackLED, getOneFormLed } =

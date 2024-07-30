@@ -6,12 +6,12 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 const PieChart = ({ data, title, chosenMonth }) => {
   ChartJS.register(Title, Legend, Tooltip, ArcElement, ChartDataLabels);
   const label = data
-    ?.filter((item) => item.label.toLowerCase() !== 'grand total')
+    ?.filter((item) => item.label?.toLowerCase() !== 'grand total')
     .map((item) => item.label);
   const nominal = data
-    ?.filter((item) => item.label.toLowerCase() !== 'grand total')
+    ?.filter((item) => item.label?.toLowerCase() !== 'grand total')
     .map((item) => item.realisasiKerugian[chosenMonth - 1]);
-  const total = data.find((item) => item.label.toLowerCase() === 'grand total')?.realisasiKerugian[
+  const total = data.find((item) => item.label?.toLowerCase() === 'grand total')?.realisasiKerugian[
     chosenMonth - 1
   ];
 

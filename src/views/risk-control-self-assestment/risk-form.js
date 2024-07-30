@@ -30,7 +30,7 @@ import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
 
 const RiskForm = (props) => {
-  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName')).toLowerCase();
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'))?.toLowerCase();
   const { dropDown, getDropdown } = props;
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({

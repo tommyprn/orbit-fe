@@ -69,14 +69,14 @@ const InboxLED = (props) => {
   };
 
   const onEdit = (id, status) => {
-    if (role.toLowerCase() === 'inputer') {
+    if (role?.toLowerCase() === 'inputer') {
       if (status === 'Draft' || status === 'Need Update') {
         navigation(`/LED/edit-report/${id}`);
       } else {
         navigation(`/LED/update-report/${id}`);
       }
     }
-    if (role.toLowerCase() === 'approver') {
+    if (role?.toLowerCase() === 'approver') {
       navigation(`/LED/detail-report/${id}`);
     }
   };

@@ -85,7 +85,7 @@ const LedReport = (props) => {
 
   const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
-    filename: `laporan-LED-${month[dayjs().month() - 1].label.toLowerCase()}-${dayjs().year()}`,
+    filename: `laporan-LED-${month[dayjs().month() - 1].label?.toLowerCase()}-${dayjs().year()}`,
     sheet: 'LED',
   });
 
