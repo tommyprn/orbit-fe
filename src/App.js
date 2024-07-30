@@ -34,11 +34,11 @@ function App() {
       alert('Anda Tidak Memiliki Akses');
       secureLocalStorage.removeItem('accessToken');
       localStorage.removeItem('tokenLogin');
-      navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+      navigateTo(`https://10.55.54.152/maps-login`);
       return;
     }
 
-    const apiUrl = `https://apigw-int.bankmuamalat.co.id/api/v1/auth/session-login`;
+    const apiUrl = `https://10.55.54.161:30090/api/v1/auth/session-login`;
 
     const requestData = {
       nikLogin: user.nikUser,
@@ -52,13 +52,13 @@ function App() {
         alert('Sesi Anda Telah Habis');
         secureLocalStorage.removeItem('accessToken');
         localStorage.removeItem('tokenLogin');
-        navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+        navigateTo(`https://10.55.54.152/maps-login`);
       }
     } catch (error) {
       alert('Sesi Anda Telah Habis');
       secureLocalStorage.removeItem('accessToken');
       localStorage.removeItem('tokenLogin');
-      navigateTo(`https://smartops.bankmuamalat.co.id/maps-login`);
+      navigateTo(`https://10.55.54.152/maps-login`);
     }
   };
 

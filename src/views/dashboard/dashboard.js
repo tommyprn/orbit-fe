@@ -238,7 +238,7 @@ const userDev = {
   apps: [
     {
       id: 1,
-      url: 'https://smartops.bankmuamalat.co.id/maps-admin',
+      url: 'https://10.55.54.152/maps-admin',
       name: 'MAPS',
       logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
       isActive: true,
@@ -256,7 +256,7 @@ const userDev = {
     },
     {
       id: 2,
-      url: 'https://smartops.bankmuamalat.co.id/appn/session/signin',
+      url: 'https://10.55.54.152/appn/session/signin',
       name: 'APPN',
       logo: '/static/media/logoDIN.791ea0fc31567e4e539fa461d1ba2482.svg',
       isActive: true,

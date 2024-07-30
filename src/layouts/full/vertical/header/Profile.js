@@ -18,7 +18,7 @@ const Profile = () => {
     setAnchorEl2(null);
   };
   const handleBack = () => {
-    window.location.href = 'https://smartops.bankmuamalat.co.id/maps-login';
+    window.location.href = 'https://10.55.54.152/maps-login';
     secureLocalStorage.removeItem('menuItem');
   };
 
