@@ -92,17 +92,17 @@ const ListLED = (props) => {
   };
 
   const getPending = (status, fraud) => {
-    if (status.toLowerCase() === 'draft') {
+    if (status?.toLowerCase() === 'draft') {
       return 'Inputer';
-    } else if (status.toLowerCase() === 'recorded') {
+    } else if (status?.toLowerCase() === 'recorded') {
       return 'Approver';
-    } else if (status.toLowerCase() === 'need update') {
+    } else if (status?.toLowerCase() === 'need update') {
       return 'Inputer';
-    } else if (status.toLowerCase() === 'validated') {
+    } else if (status?.toLowerCase() === 'validated') {
       return 'IRM Approval';
-    } else if (status.toLowerCase() === 'on progress' && !fraud) {
+    } else if (status?.toLowerCase() === 'on progress' && !fraud) {
       return 'IRM Validator';
-    } else if (status.toLowerCase() === 'on progress' && fraud) {
+    } else if (status?.toLowerCase() === 'on progress' && fraud) {
       return 'AFR Validator';
     } else {
       return '-';
