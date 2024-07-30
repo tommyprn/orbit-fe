@@ -64,7 +64,7 @@ function App() {
 
   useEffect(() => {
     if (process.env.REACT_APP_DEPLOY_STATE === 'true') {
-      checkSessionExpiry();
+      // checkSessionExpiry();
     }
   }, []);
 
