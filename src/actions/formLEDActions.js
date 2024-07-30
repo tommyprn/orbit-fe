@@ -1,9 +1,9 @@
 import { stringify } from 'qs';
 
-// const API_URL = 'https://10.55.54.161:30090/api/v1/';
+// const API_URL = 'http://10.55.54.161:30090/api/v1/';
 const API_URL =
   process.env.REACT_APP_DEPLOY_STATE === 'true'
-    ? 'https://10.55.54.161:30090/api/v1/'
+    ? 'http://10.55.54.161:30090/api/v1/'
     : 'http://10.80.240.45:1933/api/v1/';
 
 export const FETCH_FORM_LED_REQUEST = 'FETCH_FORM_LED_REQUEST';

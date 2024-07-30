@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 
 // const API_URL = 'http://10.80.240.45:1933/api/v1/';
-// const API_URL = 'https://10.55.54.161:30090/api/v1/';
+// const API_URL = 'http://10.55.54.161:30090/api/v1/';
 const API_URL = '10.55.54.161:30090';
 
 export const FETCH_HISTORY_REQUEST = 'FETCH_HISTORY_REQUEST';

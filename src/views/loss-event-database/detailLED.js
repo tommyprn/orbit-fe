@@ -58,7 +58,7 @@ const style = {
 const DetailLED = (props) => {
   const API =
     process.env.REACT_APP_DEPLOY_STATE === 'true'
-      ? 'https://10.55.54.161:30090/api/v1/'
+      ? 'http://10.55.54.161:30090/api/v1/'
       : 'http://10.80.240.45:1933/api/v1/';
   const user = JSON.parse(secureLocalStorage.getItem('history'));
   const role = user?.role.toLowerCase();
