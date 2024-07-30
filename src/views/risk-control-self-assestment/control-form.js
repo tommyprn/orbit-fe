@@ -26,7 +26,7 @@ import DashboardCard from '../../components/shared/DashboardCard';
 import PageContainer from 'src/components/container/PageContainer';
 
 const ControlForm = (props) => {
-  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName')).toLowerCase();
+  const role = JSON.parse(secureLocalStorage.getItem('selectedRoleName'))?.toLowerCase();
   const {} = props;
   const customizer = useSelector((state) => state.customizer);
 

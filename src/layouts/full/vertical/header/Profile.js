@@ -79,19 +79,20 @@ const Profile = () => {
             </Typography>
             {users?.idDivisiUser === '21' ? (
               <Typography variant="body" color="textSecondary">
-                {users?.namaCabangUser.charAt(0) + users?.namaCabangUser.substring(1).toLowerCase()}{' '}
+                {users?.namaCabangUser.charAt(0) +
+                  users?.namaCabangUser.substring(1)?.toLowerCase()}{' '}
                 -{' '}
                 {users?.namaCabangKcuUser.charAt(0) +
-                  users?.namaCabangKcuUser.substring(1).toLowerCase()}
+                  users?.namaCabangKcuUser.substring(1)?.toLowerCase()}
               </Typography>
             ) : (
               <Typography variant="body" color="textSecondary">
                 {users?.departementUser
                   ? users?.departementUser?.charAt(0) +
-                    users?.departementUser?.substring(1).toLowerCase()
+                    users?.departementUser?.substring(1)?.toLowerCase()
                   : null}
                 {users?.departementUser ? ' - ' : null}
-                {users?.divisiUser.charAt(0) + users?.divisiUser.substring(1).toLowerCase()}
+                {users?.divisiUser.charAt(0) + users?.divisiUser.substring(1)?.toLowerCase()}
               </Typography>
             )}
             <Typography variant="body" color="textSecondary">

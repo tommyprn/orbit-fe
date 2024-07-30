@@ -69,7 +69,7 @@ const TopIssueReport = (props) => {
           setValue={setPotentialMonth}
           fileName={`top-potensi-kerugian-${month[
             dayjs().month() - 1
-          ].label.toLowerCase()}-${dayjs().year()}.csv`}
+          ].label?.toLowerCase()}-${dayjs().year()}.csv`}
         />
       </DashboardCard>
 
@@ -81,7 +81,7 @@ const TopIssueReport = (props) => {
           setValue={setActualMonth}
           fileName={`top-kerugian-aktual-${month[
             dayjs().month() - 1
-          ].label.toLowerCase()}-${dayjs().year()}.csv`}
+          ].label?.toLowerCase()}-${dayjs().year()}.csv`}
         />
       </DashboardCard>
     </PageContainer>
