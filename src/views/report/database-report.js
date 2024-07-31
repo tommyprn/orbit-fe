@@ -44,11 +44,11 @@ const DatabaseReport = (props) => {
       <DashboardCard>
         <div>
           <DetailedReportTable
-            data={report.database?.general}
+            data={report?.database?.general}
             title="Database LED"
             endDate={endDate}
             startDate={startDate}
-            actionPlan={report.database?.actionPlan}
+            actionPlan={report?.database?.actionPlan}
             setEndDate={setEndDate}
             setStartDate={setStartDate}
           />

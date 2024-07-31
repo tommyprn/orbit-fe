@@ -47,7 +47,7 @@ const ControlForm = (props) => {
     ],
     validationSchema: controlFormSchema,
     onSubmit: async (values) => {
-      console.log(values);
+      // console.log(values);
       //   const res = await createFormLed(values, user);
       //   if (res?.responseCode === 200) {
       //     showToast('success', 'berhasil submit laporan');

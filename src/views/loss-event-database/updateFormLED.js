@@ -112,18 +112,21 @@ const UpdateFormLED = (props) => {
       actionPlan: dataActionPlan?.map((item) => {
         return {
           id: item.id ?? 0,
-          PIC: item.penanggungJawab,
-          plan: item.actionPlan,
+          PIC: item?.penanggungJawab,
+          plan: item?.actionPlan,
           file: item?.namaFile ?? '',
-          email: item.email,
-          isBranch: item.cabangEntity ? true : false,
+          email: item?.email,
+          isBranch: item?.cabangEntity ? true : false,
           isEnable: item?.isDone,
-          targetDate: item.targetPenyelesaian,
-          branch: item.cabangEntity
-            ? { id: item.cabangEntity.id, label: item.cabangEntity.namaCabang }
+          targetDate: item?.targetPenyelesaian,
+          branch: item?.cabangEntity
+            ? { id: item?.cabangEntity?.id, label: item?.cabangEntity?.namaCabang }
             : { id: 0, label: '' },
-          workUnit: item.unitKerjaEntity
-            ? { id: item.unitKerjaEntity.idUnitKerja, label: item.unitKerjaEntity.namaUnitKerja }
+          workUnit: item?.unitKerjaEntity
+            ? {
+                id: item?.unitKerjaEntity?.idUnitKerja,
+                label: item?.unitKerjaEntity?.namaUnitKerja,
+              }
             : { id: 0, label: '' },
         };
       }),
@@ -141,8 +144,6 @@ const UpdateFormLED = (props) => {
       }
     },
   });
-
-  console.log(dataActionPlan);
 
   const onCancel = () => {
     navigate(-1);
@@ -619,7 +620,7 @@ const UpdateFormLED = (props) => {
                             <TableCell>
                               <Checkbox
                                 onClick={(e) => onCheck(e, index)}
-                                defaultChecked={row.isDone}
+                                defaultChecked={row?.isDone}
                               />
                             </TableCell>
                           </TableRow>

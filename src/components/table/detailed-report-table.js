@@ -68,45 +68,45 @@ const DetailedReportTable = ({
   ];
 
   const generateGeneralData = (data) => {
-    return data.map((item) => {
+    return data?.map((item) => {
       return {
         bulanInputLed: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').format('MMMM'),
         Tahun: dayjs(item?.tanggalLapor, 'DD-MM-YYYY').get('year'),
         divisiCabang:
           item?.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
-            ? item.cabang?.namaCabang
+            ? item?.cabang?.namaCabang
             : item?.unitKerja?.namaUnitKerja,
-        noLed: item.idLaporan,
-        statusKejadian: item.statusKejadian?.nama,
-        tanggalKejadianStart: item.tanggalKejadianStart,
-        tanggalKejadianEnd: item.tanggalKejadianEnd,
-        tanggalTeridentifikasi: item.tanggalIdentifikasi,
-        tanggalLapor: item.tanggalLapor,
-        penyebabKejadian: item.penyebabKejadian?.nama,
-        kategori: item.aktivitas?.subKategori?.kategoriKejadian?.nama,
-        subKategori: item.aktivitas?.subKategori?.nama,
-        aktivitas: item.aktivitas?.nama,
-        highlight: item.kronologiSingkat,
+        noLed: item?.idLaporan,
+        statusKejadian: item?.statusKejadian?.nama,
+        tanggalKejadianStart: item?.tanggalKejadianStart,
+        tanggalKejadianEnd: item?.tanggalKejadianEnd,
+        tanggalTeridentifikasi: item?.tanggalIdentifikasi,
+        tanggalLapor: item?.tanggalLapor,
+        penyebabKejadian: item?.penyebabKejadian?.nama,
+        kategori: item?.aktivitas?.subKategori?.kategoriKejadian?.nama,
+        subKategori: item?.aktivitas?.subKategori?.nama,
+        aktivitas: item?.aktivitas?.nama,
+        highlight: item?.kronologiSingkat,
         kronologis: formatText(item?.kronologi),
         rencanaTindakan: formatText(item?.tindakLanjut),
         potensiKerugian: String(item?.potensiKerugian),
         recovery: String(item?.nominalRecovery),
         grossLoss: String(item?.nominalRealisasiKerugian),
         netLoss: String(item?.nominalRealisasiKerugian - item?.nominalRecovery),
-        statusLed: item.statusLaporan?.nama,
-        targetDate: item.actionPlan[item.actionPlan?.length - 1]?.targetPenyelesaian,
+        statusLed: item?.statusLaporan?.nama,
+        targetDate: item?.actionPlan[item?.actionPlan?.length - 1]?.targetPenyelesaian,
         sumberRecovery: item?.sumberRecovery,
         statusOtorisasi:
-          item.statusKejadian?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
-        catatan: item.catatan,
+          item?.statusKejadian?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui',
+        catatan: item?.catatan,
         picAndMail:
-          item.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
-            ? item.cabang.emailPic
-            : item.unitKerja?.emailPic,
-        tindakLanjut: item.actionPlan[item.actionPlan?.length - 1]?.actionPlan,
+          item?.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
+            ? item?.cabang?.emailPic
+            : item?.unitKerja?.emailPic,
+        tindakLanjut: item?.actionPlan[item?.actionPlan?.length - 1]?.actionPlan,
         statusAkhir:
-          item.statusLaporan?.nama === 'Void' || item.statusLaporan?.nama === 'Closed'
-            ? item.statusLaporan.nama
+          item?.statusLaporan?.nama === 'Void' || item?.statusLaporan?.nama === 'Closed'
+            ? item?.statusLaporan?.nama
             : null,
       };
     });
@@ -240,22 +240,22 @@ const DetailedReportTable = ({
                 <TableCell>{dayjs(row?.tanggalLapor, 'DD-MM-YYYY').get('year')}</TableCell>
                 <TableCell>
                   {row?.unitKerja?.namaUnitKerja?.toLowerCase() !== 'cabang'
-                    ? row.cabang?.namaCabang
+                    ? row?.cabang?.namaCabang
                     : row?.unitKerja?.namaUnitKerja}
                 </TableCell>
-                <TableCell>{row.idLaporan}</TableCell>
-                <TableCell>{row.statusKejadian?.nama}</TableCell>
+                <TableCell>{row?.idLaporan}</TableCell>
+                <TableCell>{row?.statusKejadian?.nama}</TableCell>
                 <TableCell>
-                  {dayjs(row.tanggalKejadianStart, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                  {dayjs(row?.tanggalKejadianStart, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
                 <TableCell>
-                  {dayjs(row.tanggalKejadianEnd, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                  {dayjs(row?.tanggalKejadianEnd, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
                 <TableCell>
-                  {dayjs(row.tanggalIdentifikasi, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                  {dayjs(row?.tanggalIdentifikasi, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
                 <TableCell sx={{ textWrap: 'noWrap' }}>
-                  {dayjs(row.tanggalLapor, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
+                  {dayjs(row?.tanggalLapor, 'DD-MM-YYYY').format('DD - MMM - YYYY')}
                 </TableCell>
                 <TableCell>{row.penyebabKejadian?.nama}</TableCell>
                 <TableCell>{row.aktivitas?.subKategori?.kategoriKejadian?.nama}</TableCell>
@@ -263,7 +263,7 @@ const DetailedReportTable = ({
                 <TableCell>{row.aktivitas?.nama}</TableCell>
                 <TableCell>
                   <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
-                    {row.kronologiSingkat}
+                    {row?.kronologiSingkat}
                   </Typography>
                 </TableCell>
                 <TableCell>
@@ -292,20 +292,20 @@ const DetailedReportTable = ({
                 <TableCell sx={{ textWrap: 'noWrap', textAlign: 'right' }}>
                   {formatNumber(row?.nominalRealisasiKerugian - row?.nominalRecovery)}
                 </TableCell>
-                <TableCell>{row.statusLaporan?.nama}</TableCell>
+                <TableCell>{row?.statusLaporan?.nama}</TableCell>
 
                 <TableCell>{row?.sumberRecovery}</TableCell>
                 <TableCell>
-                  {row.statusLaporan?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
+                  {row?.statusLaporan?.nama !== 'Recorded' ? 'Telah Disetujui' : 'Belum Disetujui'}
                 </TableCell>
                 <TableCell>
                   <Typography sx={{ maxWidth: '200px', fontSize: '12px' }} noWrap>
-                    {row.catatan}
+                    {row?.catatan}
                   </Typography>
                 </TableCell>
                 <TableCell>
                   {row.statusLaporan?.nama === 'Void' || row.statusLaporan?.nama === 'Closed'
-                    ? row.statusLaporan.nama
+                    ? row?.statusLaporan?.nama
                     : '-'}
                 </TableCell>
               </StyledTableRow>
